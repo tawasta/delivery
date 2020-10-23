@@ -11,8 +11,8 @@ Physical Package Summary for Transfers
 
 Configuration
 =============
-* Enable the 'Record packages used on packing: pallets, boxes, ...' core 
-  setting in inventory configuration to utilize packages.
+* Enable the 'Product Packagings' core setting in inventory configuration to
+  utilize packages.
 
 Usage
 =====
