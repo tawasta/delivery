@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Oy Tawasta OS Technologies Ltd.
@@ -20,26 +19,17 @@
 ##############################################################################
 
 {
-    'name': 'Carrier Contract Number',
-    'summary': "New field for storing the contract no.",
-    'version': '10.0.1.0.0',
-    'category': 'Delivery',
-    'website': 'http://www.tawasta.fi',
-    'author': 'Oy Tawasta Technologies Ltd.',
-    'license': 'AGPL-3',
-    'application': False,
-    'installable': True,
-    'external_dependencies': {
-        'python': [],
-        'bin': [],
-    },
-    'depends': [
-        'delivery',
-
+    "name": "Carrier Contract Number",
+    "summary": "New field for storing the contract no.",
+    "version": "12.0.1.0.0",
+    "category": "Delivery",
+    "website": "https://github.com/Tawasta/delivery",
+    "author": "Tawasta",
+    "license": "AGPL-3",
+    "application": False,
+    "installable": True,
+    "depends": ["delivery"],
+    "data": [
+        "views/delivery_carrier.xml",
     ],
-    'data': [
-        'views/delivery_carrier.xml',
-    ],
-    'demo': [
-    ]
 }
