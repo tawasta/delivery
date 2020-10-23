@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Oy Tawasta OS Technologies Ltd.
@@ -22,23 +21,15 @@
 {
     'name': 'Measurement UOMs for Product Packages',
     'summary': 'UoM labels for package dimensions',
-    'version': '10.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Inventory',
-    'website': 'http://www.tawasta.fi',
-    'author': 'Oy Tawasta Technologies Ltd.',
+    'website': 'https://github.com/Tawasta/delivery',
+    'author': 'Tawasta',
     'license': 'AGPL-3',
     'application': False,
     'installable': True,
-    'external_dependencies': {
-        'python': [],
-        'bin': [],
-    },
-    'depends': [
-        'delivery',
-    ],
+    'depends': ['delivery'],
     'data': [
         'views/product_packaging.xml',
     ],
-    'demo': [
-    ]
 }
