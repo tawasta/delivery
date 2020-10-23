@@ -1,26 +1,28 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* delivery_carrier_contract_number
+# 	* delivery_carrier_contract_number
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 10.0\n"
+"Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-14 18:46+0000\n"
-"PO-Revision-Date: 2018-04-14 18:46+0000\n"
+"POT-Creation-Date: 2020-10-23 09:30+0000\n"
+"PO-Revision-Date: 2020-10-23 12:31+0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"Language: fi\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#. module: delivery_carrier_contract_number
+#: model:ir.model.fields,field_description:delivery_carrier_contract_number.field_delivery_carrier__contract_number
+msgid "Contract Number"
+msgstr "Sopimusnumero"
 
 #. module: delivery_carrier_contract_number
 #: model:ir.model,name:delivery_carrier_contract_number.model_delivery_carrier
-msgid "Carrier"
-msgstr "Huolitsija"
-
-#. module: delivery_carrier_contract_number
-#: model:ir.model.fields,field_description:delivery_carrier_contract_number.field_delivery_carrier_contract_number
-msgid "Contract Number"
-msgstr "Sopimusnumero"
+msgid "Delivery Methods"
+msgstr "Toimitustavat"
