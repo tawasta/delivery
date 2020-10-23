@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Oy Tawasta OS Technologies Ltd.
@@ -20,26 +19,17 @@
 ##############################################################################
 
 {
-    'name': 'Physical Package Summary for Transfers',
-    'summary': 'Show info about packages on delivery order',
-    'version': '10.0.1.0.0',
-    'category': 'Delivery',
-    'website': 'http://www.tawasta.fi',
-    'author': 'Oy Tawasta Technologies Ltd.',
-    'license': 'AGPL-3',
-    'application': False,
-    'installable': True,
-    'external_dependencies': {
-        'python': [],
-        'bin': [],
-    },
-    'depends': [
-        'delivery',
-        'product_packaging_measurement_uoms',
-    ],
-    'data': [
-        'views/stock_picking.xml',
-    ],
-    'demo': [
+    "name": "Physical Package Summary for Transfers",
+    "summary": "Show info about packages on delivery order",
+    "version": "12.0.1.0.0",
+    "category": "Delivery",
+    "website": "https://github.com/Tawasta/delivery",
+    "author": "Tawasta",
+    "license": "AGPL-3",
+    "application": False,
+    "installable": True,
+    "depends": ["delivery", "product_packaging_measurement_uoms"],
+    "data": [
+        "views/stock_picking.xml",
     ],
 }
