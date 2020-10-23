@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Oy Tawasta OS Technologies Ltd.
@@ -20,26 +19,17 @@
 ##############################################################################
 
 {
-    'name': 'Carrier For Purchase Orders',
-    'summary': "Enables setting the carrier for a PO",
-    'version': '10.0.1.0.0',
-    'category': 'Purchases',
-    'website': 'http://www.tawasta.fi',
-    'author': 'Oy Tawasta Technologies Ltd.',
-    'license': 'AGPL-3',
-    'application': False,
-    'installable': True,
-    'external_dependencies': {
-        'python': [],
-        'bin': [],
-    },
-    'depends': [
-        'purchase',
-        'delivery',
-    ],
-    'data': [
-        'views/purchase_order.xml',
-    ],
-    'demo': [
+    "name": "Carrier For Purchase Orders",
+    "summary": "Enables setting the carrier for a PO",
+    "version": "12.0.1.0.0",
+    "category": "Purchases",
+    "website": "https://github.com/Tawasta/delivery",
+    "author": "Tawasta",
+    "license": "AGPL-3",
+    "application": False,
+    "installable": True,
+    "depends": ["purchase", "delivery"],
+    "data": [
+        "views/purchase_order.xml",
     ],
 }
