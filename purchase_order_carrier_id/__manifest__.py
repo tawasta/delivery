@@ -21,7 +21,7 @@
 {
     "name": "Carrier For Purchase Orders",
     "summary": "Enables setting the carrier for a PO",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.1.0",
     "category": "Purchases",
     "website": "https://github.com/Tawasta/delivery",
     "author": "Tawasta",
@@ -29,7 +29,5 @@
     "application": False,
     "installable": True,
     "depends": ["purchase", "delivery"],
-    "data": [
-        "views/purchase_order.xml",
-    ],
+    "data": ["report/purchase_report.xml", "views/purchase_order.xml"],
 }
