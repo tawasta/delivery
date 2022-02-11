@@ -1,0 +1,8 @@
+stages:
+  - test
+
+code-check:
+  stage: test
+  script:
+    - pip3 install pre-commit
+    - pre-commit run --all-files
