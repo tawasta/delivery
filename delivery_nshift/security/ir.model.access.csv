@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_delivery_carrier_nshift,access_delivery_carrier_nshift,model_delivery_carrier_nshift,stock.group_stock_user,1,1,1,1
