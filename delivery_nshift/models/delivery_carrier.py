@@ -1,8 +1,8 @@
 import logging
-from odoo import fields
-from odoo import models
-from odoo import _
+
+from odoo import _, fields, models
 from odoo.exceptions import ValidationError
+
 from .nshift_request import NshiftRequest
 
 _logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class DeliveryCarrier(models.Model):
 
     # region Helper functions
     def get_pdf_config(self):
-        """ Return PDF config """
+        """Return PDF config"""
         # TODO: configurable PDF config
 
         return dict(
@@ -251,11 +251,14 @@ class DeliveryCarrier(models.Model):
         return True
 
     def nshift_get_tracking_link(self, picking):
-        url = "https://www.unifaunonline.com/ext.uo.{region}.{language}.track?apiKey={apikey}&order={reference}".format(
-            region="fi",
-            language="fi",
-            apikey=self.nshift_username,
-            reference=picking.carrier_tracking_ref,
+        url = (
+            "{url}.{region}.{language}.track?apiKey={apikey}&order={reference}".format(
+                url="https://www.unifaunonline.com/ext.uo",
+                region="fi",
+                language="fi",
+                apikey=self.nshift_username,
+                reference=picking.carrier_tracking_ref,
+            )
         )
         # TODO: customizable region and language
         #  https://help.unifaun.com/uo-se/en/integrations/unifaun-track---trace.html

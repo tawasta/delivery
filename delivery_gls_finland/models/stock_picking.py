@@ -11,14 +11,9 @@ class StockPicking(models.Model):
         string="Package contents",
         help="Package contents description for the shipper/recipient",
     )
-
-    nshift_packages = fields.Selection(
-        string="Packages",
-        selection=[
-            ("one", "One package for the whole delivery"),
-            ("row", "Multiple packages"),
-        ],
-        default="row",
+    gls_finland_uuid = fields.Char(
+        "GLS Finland UUID",
+        help="Unique identifier for a GLS Finland delivery",
     )
 
     @api.depends("product_id", "move_lines")

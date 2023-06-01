@@ -1,4 +1,3 @@
-import json
 import logging
 
 import requests
@@ -8,39 +7,29 @@ from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
-NSHIFT_API_URL = {
-    "test": "https://api.unifaun.com/rs-extapi/v1",
-    "prod": "https://api.unifaun.com/rs-extapi/v1",
+GLS_FINLAND_API_URL = {
+    "test": "https://api.gls.fi/api/shipping/",
+    "prod": "https://api.gls.fi/api/shipping/",
 }
 
 
-class NshiftRequest:
+class GlsFinlandRequest:
     def __init__(
         self,
-        username=None,
-        password=None,
+        api_key=None,
         prod=False,
-        customer_number=None,
-        partner_code=None,
-        service_code=None,
-        customer_id=None,
     ):
         api_env = "prod" if prod else "test"
-        self.url = NSHIFT_API_URL[api_env]
-        self.username = username
-        self.password = password
-        self.customer_number = customer_number
-        self.partner_code = partner_code
-        self.service_code = service_code
-        self.customer_id = customer_id
+        self.url = GLS_FINLAND_API_URL[api_env]
+        self.api_key = api_key
 
     # region Request helpers
     def _validate_response(self, response):
         status_code = response.status_code
 
+        _logger.debug("Response headers: {}".format(response.headers))
         _logger.debug("Response status code: {}".format(status_code))
         _logger.debug("Response content: {}".format(response.text))
-
         # Go through most common error codes
         # 200 = OK
         # 201 = Created (e.g. POST requests)
@@ -50,27 +39,18 @@ class NshiftRequest:
             msg = _("Error {} in request: {}\n").format(status_code, response.reason)
 
             # Go through some common errors
+            if status_code == 400:
+                msg += _("\nInvalid client request")
             if status_code == 401:
-                msg += _("\nYou should check your username and password")
+                msg += _("\nYou should check your API Key")
             elif status_code == 403:
-                msg += _("\nYou should check your API permissions")
+                msg += _("\nYou should check your API Key")
             elif status_code == 404:
                 msg += _("\nCheck your API URL or try again later")
             elif status_code == 500:
                 msg += _(
                     "\nThe API server can not be reached. You should try again later"
                 )
-
-            if response.text:
-                res_json = json.loads(response.text)
-
-                for res in res_json:
-                    field = res.get("field", "")
-                    if not field:
-                        field = "Error"
-
-                    error = "{}: {}".format(field, res.get("message", ""))
-                    msg += "\n{}".format(error)
 
             raise ValidationError(msg)
 
@@ -80,40 +60,33 @@ class NshiftRequest:
         """
         Return endpoint URL
         """
-        return "{}/{}".format(self.url, endpoint)
+        # Remove extra slash, if given
+        endpoint = endpoint.lstrip("/")
+
+        # Add ending slash, if missing
+        if endpoint[-1:] != "/":
+            endpoint = "{}/".format(endpoint)
+        return "{}{}".format(self.url, endpoint)
 
     def _get_headers(self):
-        auth_token = "{}-{}".format(self.username, self.password)
-
         headers = {
-            "Authorization": "Bearer " + auth_token,
+            "X-API-Key": self.api_key,
             "Content-type": "application/json",
             "Accept": "application/json",
         }
 
         return headers
 
-    def _auth(self):
-        """
-        Authenticate against Unifaun REST API
-        """
-        session = requests.Session()
-        session.auth = (self.username, self.password)
-
-        return session
-
     def _get(self, endpoint, **kwargs):
         """
         Authenticate and make a get request
         """
-        session = self._auth()
-
         _logger.debug(_("Making a get request to '%s'") % endpoint)
-        response = session.get(endpoint, **kwargs)
+        response = requests.get(endpoint, **kwargs)
 
         self._validate_response(response)
 
-        return json.loads(response.text)
+        return response.json()
 
     def _post(self, endpoint, values=None, params=None, **kwargs):
         """
@@ -121,16 +94,17 @@ class NshiftRequest:
         """
         headers = self._get_headers()
 
-        _logger.debug(
-            _("Making a post request to '%s' using values %s") % (endpoint, values)
-        )
+        _logger.debug(_("Making a post request to '{}'".format(endpoint)))
+        _logger.debug(_("Using headers {}".format(headers)))
+        _logger.debug(_("Using values {}".format(values)))
+
         response = requests.post(
             url=endpoint, json=values, params=params, headers=headers, **kwargs
         )
 
         self._validate_response(response)
 
-        return json.loads(response.text)
+        return response.json()
 
     def _delete(self, endpoint, **kwargs):
         """
@@ -149,41 +123,28 @@ class NshiftRequest:
     # endregion
 
     # region API Calls
-    def api_get_zipcode_info(self, zipcode, countryCode):
-        params = {
-            "zip": zipcode,
-            "countryCode": countryCode,
-        }
-
-        endpoint = self._get_endpoint_url("addresses/zipcodes")
-
-        return self._get(endpoint, params=params)
-
-    def _get_carriers(self):
-        """
-        Get all carriers and their services
-        """
-        endpoint = self._get_endpoint_url("meta/lists/partners")
-
-        return self._get(endpoint)
-
     def _send_shipping(self, values):
         """
         Post a new shipment
         """
 
-        endpoint = self._get_endpoint_url("shipments")
-
-        # Return PDF in response
-        params = {"returnFile": True}
-
+        endpoint = self._get_endpoint_url("create-shipment")
+        params = {}
+        _logger.debug("_send_shipping: {}".format(values))
         return self._post(endpoint, values, params)
 
     def _cancel_shipment(self, shipment_id):
         """
         Delete a shipment
         """
-        endpoint = self._get_endpoint_url("shipments/{}".format(shipment_id))
+        endpoint = self._get_endpoint_url("cancel-shipment")
+
+        if endpoint:
+            # TODO: not implemented on the API
+            raise ValidationError(
+                _("Cancelling shipments is not supported by GLS Finland API.\n")
+                + _("You will need to cancel the shipment from website portal")
+            )
 
         return self._delete(endpoint)
 

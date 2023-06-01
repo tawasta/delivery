@@ -2,32 +2,29 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-===============
-nShift Shipping
-===============
+====================
+GLS Finland Shipping
+====================
 
-Send your shippings through nShift and track them online
+Send your shipments through GLS Finland and track them online
 
 Configuration
 =============
 
-nShift
+GLS
 ------
-1. Generate API Key https://help.unifaun.com/udc-se/en/12097-api-key---about.html
-2. Go to Help->Code lists and show "Services (ERP-connection XML)
+1. Generate API Key
 
 Odoo
 ----
 1. Go to Inventory->Configuration->Delivery->Shipping methods
 2. Add Carrier name and Delivery Product
-3. Select nShift as Provider
-4. "Username/ID" and "Password/Secret ID" from nShift API Key
-5. Save
+3. Select "GLS Finland" as Provider
+4. Set GLS product (and service, if necessary)
+5. Add your GLS Finland customer number and API key
+6. Save
 
-6. Click "Update nShift carriers". This will fetch available carriers and their information
-7. Select "Carrier/service"
-
-Repeat steps if you need multiple carriers or carrier services
+Repeat steps if you need multiple products or services
 
 Usage
 =====

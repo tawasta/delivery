@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+
+    <record id="product_product_delivery_gls_finland" model="product.product">
+        <field name="name">GLS Delivery</field>
+        <field name="default_code">gls</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries" />
+        <field name="sale_ok" eval="False" />
+        <field name="purchase_ok" eval="False" />
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+
+    <record
+    id="delivery_carrier_gls_euro_business_parcel"
+    model="delivery.carrier"
+  >
+        <field name="name">GLS Euro Business Parcel</field>
+        <field name="sequence">991</field>
+        <field name="delivery_type">gls_finland</field>
+        <field
+      name="product_id"
+      ref="delivery_gls_finland.product_product_delivery_gls_finland"
+    />
+        <field name="gls_finland_product_code">10000</field>
+    </record>
+
+    <record
+    id="delivery_carrier_gls_euro_business_freight"
+    model="delivery.carrier"
+  >
+        <field name="name">GLS Euro Business Freight</field>
+        <field name="sequence">992</field>
+        <field name="delivery_type">gls_finland</field>
+        <field
+      name="product_id"
+      ref="delivery_gls_finland.product_product_delivery_gls_finland"
+    />
+        <field name="gls_finland_product_code">10013</field>
+    </record>
+
+    <record
+    id="delivery_carrier_gls_global_business_parcel"
+    model="delivery.carrier"
+  >
+        <field name="name">GLS Global Business Parcel</field>
+        <field name="sequence">993</field>
+        <field name="delivery_type">gls_finland</field>
+        <field
+      name="product_id"
+      ref="delivery_gls_finland.product_product_delivery_gls_finland"
+    />
+        <field name="gls_finland_product_code">10015</field>
+    </record>
+
+    <record
+    id="delivery_carrier_gls_global_express_parcel"
+    model="delivery.carrier"
+  >
+        <field name="name">GLS Global Express Parcel</field>
+        <field name="sequence">994</field>
+        <field name="delivery_type">gls_finland</field>
+        <field
+      name="product_id"
+      ref="delivery_gls_finland.product_product_delivery_gls_finland"
+    />
+        <field name="gls_finland_product_code">10010</field>
+    </record>
+
+</odoo>
