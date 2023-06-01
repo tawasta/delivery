@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_withcarrier_out_form" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.gls.finland.shipments</field>
+        <field name="model">stock.picking</field>
+        <field
+      name="inherit_id"
+      ref="delivery.view_picking_withcarrier_out_form"
+    />
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="volume" />
+                <field
+          name="contents"
+          attrs="{'invisible': [('carrier_id', '=', False)]}"
+        />
+                <field name="gls_finland_uuid" />
+            </field>
+        </field>
+    </record>
+</odoo>
