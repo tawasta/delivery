@@ -16,10 +16,6 @@ class DeliveryCarrier(models.Model):
         selection_add=[("gls_finland", "GLS Finland")],
         ondelete={"gls_finland": "set default"},
     )
-    gls_finland_carrier_id = fields.Many2one(
-        string="Carrier",
-        comodel_name="delivery.carrier.gls.finland",
-    )
     gls_finland_api_key = fields.Char(
         string="GLS Finland API key",
     )
