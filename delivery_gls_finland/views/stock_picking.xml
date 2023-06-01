@@ -14,7 +14,7 @@
           name="contents"
           attrs="{'invisible': [('carrier_id', '=', False)]}"
         />
-                <field name="gls_finland_uuid" />
+                <field name="gls_finland_uuid" invisible="1" />
             </field>
         </field>
     </record>

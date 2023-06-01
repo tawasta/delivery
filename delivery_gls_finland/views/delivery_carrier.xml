@@ -21,7 +21,7 @@
             />
                         <field name="gls_finland_service_code" />
                         <field name="gls_finland_customer_number" />
-                        <field name="gls_finland_api_key" widget="password" />
+                        <field name="gls_finland_api_key" password="1" />
                     </group>
                 </page>
             </xpath>
