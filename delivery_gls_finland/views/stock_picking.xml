@@ -9,7 +9,6 @@
     />
         <field name="arch" type="xml">
             <field name="origin" position="after">
-                <field name="volume" />
                 <field
           name="contents"
           attrs="{'invisible': [('carrier_id', '=', False)]}"

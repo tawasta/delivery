@@ -79,17 +79,32 @@ class DeliveryCarrier(models.Model):
             },
         }
 
-        # TODO: support for packages
-        for package in picking:
-            values["transportunits"] = [
-                {
-                    "contents": package.contents or "",
-                    "weight": package.shipping_weight or package.weight,
-                    # "height": 30,
-                    # "length": 40,
-                    # "width": 30
+        transport_units = []
+        if picking.package_ids:
+            for package in picking.package_ids:
+                package_values = {
+                        # TODO: package-specific contents
+                        "contents": picking.contents or "",
+                        "weight": package.shipping_weight or package.weight
                 }
-            ]
+                if package.packaging_id:
+                    package_values.update({
+                        "height": package.packaging_id.height,
+                        "length": package.packaging_id.packaging_length,
+                        "width": package.packaging_id.width
+                    })
+
+                transport_units.append(package_values)
+        else:
+            # The whole picking is a one package
+            transport_units.append(
+                {
+                    "contents": picking.contents or "",
+                    "weight": picking.shipping_weight or picking.weight,
+                }
+            )
+
+        values["transportunits"] = transport_units
 
         if self.gls_finland_service_code:
             values["services"] = [{"service": self.gls_finland_service_code}]
