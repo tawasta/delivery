@@ -9,7 +9,7 @@
     />
         <field name="arch" type="xml">
             <field name="origin" position="after">
-                <field name="carrier_id" />
+                <field name="carrier_id" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" options="{'no_create': True, 'no_open': True}" />
                 <field name="carrier_delivery_type" attrs="{'invisible': [('carrier_id', '=', False)]}" />
             </field>
         </field>
