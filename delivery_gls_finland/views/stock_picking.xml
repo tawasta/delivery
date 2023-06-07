@@ -9,10 +9,9 @@
     />
         <field name="arch" type="xml">
             <field name="origin" position="after">
-                <field
-          name="contents"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
-        />
+                <field name="contents" attrs="{'invisible': [('carrier_id', '=', False)]}"/>
+                <field name="shipment_info" attrs="{'invisible': [('carrier_id', '=', False)]}"/>
+                <field name="parcels" attrs="{'invisible': [('carrier_id', '=', False)]}"/>
                 <field name="gls_finland_uuid" invisible="1" />
             </field>
         </field>

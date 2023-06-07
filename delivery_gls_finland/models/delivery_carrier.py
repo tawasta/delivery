@@ -56,6 +56,8 @@ class DeliveryCarrier(models.Model):
         mode = "production" if self.prod_environment else "test"
         picking.gls_finland_uuid = str(uuid.uuid4())
 
+        contents = picking.contents or picking.origin or ""
+
         values = {
             "api": {
                 "uuid": picking.gls_finland_uuid,
@@ -69,22 +71,37 @@ class DeliveryCarrier(models.Model):
             },
             "deladdr": self._get_gls_finland_address(picking.partner_id),
             "shipment": {
-                "contents": picking.contents or "",
+                "contents": contents,
                 # "donotstack": "",
                 "glsproduct": self.gls_finland_product_code,
                 # "inco": "",
-                "info": picking.comment or "",
+                "info": picking.shipment_info or "",
                 "shipperref": picking.origin or "",
                 "totalweight": picking.shipping_weight or picking.weight,
             },
         }
 
         transport_units = []
-        if picking.package_ids:
+        if picking.parcels:
+            # Manual parcel amount will override packages
+
+            # A simplified weight: shipping weight distributed to parcels
+            weight = picking.shipping_weight or picking.weight / picking.parcels
+
+            # Create x parcels, where x is parcel amount
+            for x in range(0, picking.parcels):
+                transport_units.append(
+                    {
+                        "contents": contents,
+                        "weight": weight
+                    }
+                )
+
+        elif picking.package_ids:
             for package in picking.package_ids:
                 package_values = {
                         # TODO: package-specific contents
-                        "contents": picking.contents or "",
+                        "contents": contents,
                         "weight": package.shipping_weight or package.weight
                 }
                 if package.packaging_id:
@@ -99,7 +116,7 @@ class DeliveryCarrier(models.Model):
             # The whole picking is a one package
             transport_units.append(
                 {
-                    "contents": picking.contents or "",
+                    "contents": contents,
                     "weight": picking.shipping_weight or picking.weight,
                 }
             )
@@ -117,7 +134,7 @@ class DeliveryCarrier(models.Model):
         """
 
         address = {
-            "addrtype": "business" if partner.is_company else "personal",
+            "addrtype": "business" if partner.is_company else "private",
             "contactname": partner.name or "",
             "country": partner.country_id.code or "",
             "email": partner.email or "",
