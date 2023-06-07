@@ -17,7 +17,11 @@ class StockPicking(models.Model):
         for record in self:
             if record.carrier_id:
                 options = dict(self.carrier_id._fields['delivery_type'].selection)
-                delivery_type = options[record.carrier_id.delivery_type]
+                try:
+                    delivery_type = options[record.carrier_id.delivery_type]
+                except KeyError:
+                    delivery_type = False
+
                 record.carrier_delivery_type = delivery_type
             else:
                 record.carrier_delivery_type = False
