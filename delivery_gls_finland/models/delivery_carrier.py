@@ -132,14 +132,15 @@ class DeliveryCarrier(models.Model):
         """
         Get Address from a partner
         """
+        commercial_partner = partner.commercial_partner_id
 
         address = {
-            "addrtype": "business" if partner.is_company else "private",
-            "contactname": partner.name or "",
+            "addrtype": "business" if commercial_partner.is_company else "private",
+            "contactname": partner.name or commercial_partner.name or "",
             "country": partner.country_id.code or "",
-            "email": partner.email or "",
+            "email": partner.email or commercial_partner.email or "",
             # "eori": "",
-            "mobile": partner.mobile or "",
+            "mobile": partner.mobile or commercial_partner.mobile or "",
             "name1": partner.commercial_company_name or "",
             # "name2": "",
             "postaddr": partner.city or "",
@@ -148,8 +149,8 @@ class DeliveryCarrier(models.Model):
             "provincecode": "str",
             "street1": partner.street or "",
             "street2": partner.street2 or "",
-            "telephone": partner.phone or "",
-            "vatid": partner.vat or "",
+            "telephone": partner.phone or commercial_partner.phone or "",
+            "vatid": partner.vat or commercial_partner.vat or "",
         }
 
         return address
