@@ -77,7 +77,7 @@ class DeliveryCarrier(models.Model):
                 # "inco": "",
                 "info": picking.shipment_info or "",
                 "shipperref": picking.origin or "",
-                "totalweight": picking.shipping_weight or picking.weight,
+                "totalweight": picking._get_gls_finland_picking_weight()
             },
         }
 
@@ -86,7 +86,7 @@ class DeliveryCarrier(models.Model):
             # Manual parcel amount will override packages
 
             # A simplified weight: shipping weight distributed to parcels
-            weight = picking.shipping_weight or picking.weight / picking.parcels
+            weight = picking._get_gls_finland_picking_weight() / picking.parcels
 
             # Create x parcels, where x is parcel amount
             for x in range(0, picking.parcels):
@@ -154,6 +154,14 @@ class DeliveryCarrier(models.Model):
         }
 
         return address
+
+    def _get_gls_finland_picking_weight(self):
+        # Helper for getting picking weight, to allow overriding
+        self.ensure_one()
+
+        weight = self.shipping_weight or self.weight
+
+        return weight
 
     # endregion
 
