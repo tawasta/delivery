@@ -32,4 +32,10 @@ class StockPicking(models.Model):
 
             record.contents = contents
 
+    def _get_gls_finland_picking_weight(self):
+        # Helper for getting picking weight, to allow overriding
+        self.ensure_one()
 
+        weight = self.shipping_weight or self.weight
+
+        return weight

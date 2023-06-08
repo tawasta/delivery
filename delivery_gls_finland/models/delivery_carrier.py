@@ -155,14 +155,6 @@ class DeliveryCarrier(models.Model):
 
         return address
 
-    def _get_gls_finland_picking_weight(self):
-        # Helper for getting picking weight, to allow overriding
-        self.ensure_one()
-
-        weight = self.shipping_weight or self.weight
-
-        return weight
-
     # endregion
 
     # region Business methods
