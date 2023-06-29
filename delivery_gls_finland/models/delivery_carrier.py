@@ -77,7 +77,7 @@ class DeliveryCarrier(models.Model):
                 # "inco": "",
                 "info": picking.shipment_info or "",
                 "shipperref": picking.origin or "",
-                "totalweight": picking._get_gls_finland_picking_weight()
+                "totalweight": picking._get_gls_finland_picking_weight(),
             },
         }
 
@@ -90,26 +90,23 @@ class DeliveryCarrier(models.Model):
 
             # Create x parcels, where x is parcel amount
             for x in range(0, picking.parcels):
-                transport_units.append(
-                    {
-                        "contents": contents,
-                        "weight": weight
-                    }
-                )
+                transport_units.append({"contents": contents, "weight": weight})
 
         elif picking.package_ids:
             for package in picking.package_ids:
                 package_values = {
-                        # TODO: package-specific contents
-                        "contents": contents,
-                        "weight": package.shipping_weight or package.weight
+                    # TODO: package-specific contents
+                    "contents": contents,
+                    "weight": package.shipping_weight or package.weight,
                 }
                 if package.packaging_id:
-                    package_values.update({
-                        "height": package.packaging_id.height,
-                        "length": package.packaging_id.packaging_length,
-                        "width": package.packaging_id.width
-                    })
+                    package_values.update(
+                        {
+                            "height": package.packaging_id.height,
+                            "length": package.packaging_id.packaging_length,
+                            "width": package.packaging_id.width,
+                        }
+                    )
 
                 transport_units.append(package_values)
         else:
