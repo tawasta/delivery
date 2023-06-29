@@ -136,22 +136,59 @@ class DeliveryCarrier(models.Model):
 
         address = {
             "addrtype": "business" if commercial_partner.is_company else "private",
-            "contactname": partner.name or commercial_partner.name or "",
-            "country": partner.country_id.code or "",
-            "email": partner.email or commercial_partner.email or "",
-            # "eori": "",
-            "mobile": partner.mobile or commercial_partner.mobile or "",
+            # Name is required, and there should never be a situation where it is missing
             "name1": partner.commercial_company_name or "",
-            # "name2": "",
-            "postaddr": partner.city or "",
-            "zipcode": partner.zip or "",
-            "province": "string",
-            "provincecode": "str",
-            "street1": partner.street or "",
-            "street2": partner.street2 or "",
-            "telephone": partner.phone or commercial_partner.phone or "",
-            "vatid": partner.vat or commercial_partner.vat or "",
+            # Province is not used in API yet
+            # "province": ""[0:40],
+            # "provincecode": ""[0:3],
+            # Street is mandatory
+            "street1": partner.street[0:40],
         }
+
+        # Contact name
+        contact_name = partner.name or commercial_partner.name
+        if contact_name:
+            address["contactname"] = contact_name[0:40]
+
+        # Country
+        if partner.country_id.code:
+            address["country"] = partner.country_id.code or ""
+
+        # Email
+        partner_email = partner.email or commercial_partner.email
+        if partner_email:
+            address["email"] = partner_email[0:255]
+
+        # TODO: eori
+
+        # Mobile
+        partner_mobile = partner.mobile or commercial_partner.mobile
+        if partner_mobile:
+            address["mobile"] = partner_mobile[0:40]
+
+        # TODO: name2
+
+        # City
+        if partner.city:
+            address["postaddr"] = partner.city[0:40]
+
+        # ZIP code
+        if partner.zip:
+            address["zipcode"] = partner.zip[0:10]
+
+        # Street 2
+        if partner.street2:
+            address["street2"] = partner.street2[0:40]
+
+        # Telephone
+        partner_telephone = partner.phone or commercial_partner.phone
+        if partner_telephone:
+            address["telephone"] = partner_telephone[0:40]
+
+        # VAT
+        partner_vat = partner.vat or commercial_partner.vat
+        if partner_vat:
+            address["vatid"] = partner_vat[0:17]
 
         return address
 
