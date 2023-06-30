@@ -70,7 +70,7 @@ class GlsFinlandRequest:
 
     def _get_headers(self):
         headers = {
-            "X-API-Key": self.api_key,
+            "X-API-Key": self.api_key or "",
             "Content-type": "application/json",
             "Accept": "application/json",
         }

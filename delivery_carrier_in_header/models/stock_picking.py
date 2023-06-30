@@ -16,7 +16,7 @@ class StockPicking(models.Model):
     def _compute_carrier_delivery_type(self):
         for record in self:
             if record.carrier_id:
-                options = dict(self.carrier_id._fields['delivery_type'].selection)
+                options = dict(self.carrier_id._fields["delivery_type"].selection)
                 try:
                     delivery_type = options[record.carrier_id.delivery_type]
                 except KeyError:
@@ -25,5 +25,3 @@ class StockPicking(models.Model):
                 record.carrier_delivery_type = delivery_type
             else:
                 record.carrier_delivery_type = False
-
-

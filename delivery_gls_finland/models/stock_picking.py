@@ -14,14 +14,9 @@ class StockPicking(models.Model):
         help="Unique identifier for a GLS Finland delivery",
     )
     shipment_info = fields.Char(
-        "Shipment info",
-        help="Information text for the shipment",
-        size=40
+        "Shipment info", help="Information text for the shipment", size=40
     )
-    parcels = fields.Integer(
-        "Parcels",
-        help="How many parcels are in the shipment"
-    )
+    parcels = fields.Integer("Parcels", help="How many parcels are in the shipment")
 
     @api.depends("origin")
     def _compute_contents(self):
