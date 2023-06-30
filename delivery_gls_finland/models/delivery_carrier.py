@@ -89,7 +89,7 @@ class DeliveryCarrier(models.Model):
             weight = picking._get_gls_finland_picking_weight() / picking.parcels
 
             # Create x parcels, where x is parcel amount
-            for x in range(0, picking.parcels):
+            for _x in range(0, picking.parcels):
                 transport_units.append({"contents": contents, "weight": weight})
 
         elif picking.package_ids:
