@@ -134,7 +134,7 @@ class DeliveryCarrier(models.Model):
         address = {
             "addrtype": "business" if commercial_partner.is_company else "private",
             # Name is required, and there should never be a situation where it is missing
-            "name1": partner.commercial_company_name or "",
+            "name1": partner.commercial_company_name or partner.name,
             # Province is not used in API yet
             # "province": ""[0:40],
             # "provincecode": ""[0:3],
