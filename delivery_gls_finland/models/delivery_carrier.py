@@ -32,6 +32,19 @@ class DeliveryCarrier(models.Model):
             ("10010", "GlobalExpressParcel"),
         ],
     )
+    gls_label_type = fields.Selection(
+        string="Label type",
+        selection=[
+            ("A4", "A4, one label per page"),
+            ("A4FIT", "A4, two labels per page"),
+            ("A5", "A5, one label per page"),
+            ("label", "Sticker"),
+            ("glslabel", "Sticker with embedded logo"),
+            ("none", "None"),
+        ],
+        default="label",
+        required=True,
+    )
     gls_finland_service_code = fields.Selection(
         string="GLS service",
         help="GLS Finland service code",
@@ -67,7 +80,7 @@ class DeliveryCarrier(models.Model):
             },
             "order": {
                 "glscustno": self.gls_finland_customer_number or "",
-                "labeltype": "label",
+                "labeltype": self.gls_label_type,
             },
             "deladdr": self._get_gls_finland_address(picking.partner_id),
             "shipment": {
