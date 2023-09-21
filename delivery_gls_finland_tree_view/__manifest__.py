@@ -21,7 +21,7 @@
 {
     "name": "GLS Finlans - tree view fields",
     "summary": "GLS Finlans - tree view fields",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "category": "Stock",
     "website": "https://gitlab.com/tawasta/odoo/delivery",
     "author": "Tawasta",
