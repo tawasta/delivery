@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="vpicktree" model="ir.ui.view">
+        <field name="name">stock.picking.tree.gls.fields</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree" />
+        <field name="arch" type="xml">
+            <field name="origin" position="before">
+                <field name="carrier_tracking_ref" optional="hide" />
+                <field name="parcels" optional="hide" />
+            </field>
+        </field>
+    </record>
+</odoo>
