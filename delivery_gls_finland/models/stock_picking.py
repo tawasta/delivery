@@ -13,6 +13,10 @@ class StockPicking(models.Model):
         "GLS Finland UUID",
         help="Unique identifier for a GLS Finland delivery",
     )
+    gls_finland_tracking_codes = fields.Char(
+        "GLS tracking codes",
+    )
+
     shipment_info = fields.Char(
         "Shipment info", help="Information text for the shipment", size=40
     )

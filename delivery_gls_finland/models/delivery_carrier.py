@@ -235,10 +235,18 @@ class DeliveryCarrier(models.Model):
                     _logger.warning(
                         _("Multiple transport units received. This is not supported!")
                     )
+
+                tracking_codes = ""
                 for transportunit in transportunits:
                     trackingno = transportunit.get("glstrackingno")
+                    tracking_codes += _("{},").format(trackingno)
+
+                # Strip the last comma
+                tracking_codes = tracking_codes.rstrip(",")
 
                 values["tracking_number"] = trackingno
+                # Add all tracking codes as a comma-separated list
+                picking.gls_finland_tracking_codes = tracking_codes
 
                 # Filename is usually "Label_12345678.pdf"
                 filename = "{}_{}.pdf".format(picking.name, trackingno)
@@ -270,8 +278,14 @@ class DeliveryCarrier(models.Model):
         return True
 
     def gls_finland_get_tracking_link(self, picking):
-        # TODO: tracking url with tracking number
-        url = "https://gls-group.com/FI/en/parcel-tracking"
+        # TODO: selectable language
+        lang = "en"
+        if lang == "en":
+            url = "https://gls-group.eu/FI/en/parcel-tracking?match="
+        else:
+            url = "https://gls-group.eu/FI/fi/laehetysseuranta?match="
+
+        url += picking.gls_finland_tracking_codes
 
         return url
 
