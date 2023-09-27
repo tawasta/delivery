@@ -20,7 +20,10 @@
               attrs="{'required': [('delivery_type', '=', 'gls_finland')]}"
             />
                         <field name="gls_label_type" />
-                        <field name="gls_finland_service_code" />
+                        <field
+              name="gls_finland_service_ids"
+              widget="many2many_tags"
+            />
                         <field name="gls_finland_customer_number" />
                         <field name="gls_finland_api_key" password="1" />
                     </group>

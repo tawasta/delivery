@@ -45,16 +45,8 @@ class DeliveryCarrier(models.Model):
         default="label",
         required=True,
     )
-    gls_finland_service_code = fields.Selection(
-        string="GLS service",
-        help="GLS Finland service code",
-        selection=[
-            ("11028", "AddOnInsuranceService"),
-            ("11047", "ShopReturnService"),
-            ("11055", "ShopDeliveryService"),
-            ("11069", "FlexDeliveryService"),
-            ("90000", "Email preadvice"),
-        ],
+    gls_finland_service_ids = fields.Many2many(
+        string="GLS services", comodel_name="gls.finland.service"
     )
 
     # region Business methods
@@ -133,8 +125,22 @@ class DeliveryCarrier(models.Model):
 
         values["transportunits"] = transport_units
 
-        if self.gls_finland_service_code:
-            values["services"] = [{"service": self.gls_finland_service_code}]
+        # Add GLS Finland service codes
+        services = []
+        for gls_service in picking.gls_finland_service_ids:
+            service = {"service": gls_service.code}
+
+            if gls_service.code == "90000":
+                # Email Preadvice
+                partner_email = (
+                    picking.partner_id.email or picking.commercial_partner.email or ""
+                )
+                service["email"] = partner_email
+
+            services.append(service)
+
+        if services:
+            values["services"] = services
 
         return values
 
