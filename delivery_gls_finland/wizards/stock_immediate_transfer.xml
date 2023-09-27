@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_immediate_transfer" model="ir.ui.view">
+        <field
+      name="name"
+    >stock.immediate.transfer.view.form.gls.finland</field>
+        <field name="model">stock.immediate.transfer</field>
+        <field name="inherit_id" ref="stock.view_immediate_transfer" />
+        <field name="arch" type="xml">
+            <field name="picking_id" position="after">
+                <field name="carrier_id" />
+            </field>
+
+            <field name="immediate_transfer_line_ids" position="after">
+                <group string="GLS Shipping">
+                    <p
+          >All selected deliveries with GLS as carrier will be sent as one GLS shipment!</p>
+                    <field name="parcels" />
+                    <field name="total_weight" />
+                </group>
+            </field>
+        </field>
+    </record>
+
+</odoo>
