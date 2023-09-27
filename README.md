@@ -12,7 +12,6 @@ addon | version | summary
 --- | --- | ---
 [delivery_carrier_in_header](delivery_carrier_in_header/) | 14.0.1.0.2 | Show stock picking carrier selection in header
 [delivery_gls_finland](delivery_gls_finland/) | 14.0.1.5.0 | Send your shipments through GLS Finland and track them online
-[delivery_gls_finland_consolidated_package_shipping](delivery_gls_finland_consolidated_package_shipping/) | 14.0.1.0.0 | Send multiple packaged pickings in one GLS Finland shipment
 [delivery_gls_finland_tree_view](delivery_gls_finland_tree_view/) | 14.0.1.0.1 | GLS Finlans - tree view fields
 
 [//]: # (end addons)
