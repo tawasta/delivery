@@ -12,6 +12,7 @@ class DeliveryCarrier(models.Model):
 
     _inherit = "delivery.carrier"
 
+    # region Fields
     delivery_type = fields.Selection(
         selection_add=[("gls_finland", "GLS Finland")],
         ondelete={"gls_finland": "set default"},
@@ -48,8 +49,9 @@ class DeliveryCarrier(models.Model):
     gls_finland_service_ids = fields.Many2many(
         string="GLS services", comodel_name="gls.finland.service"
     )
+    # endregion
 
-    # region Business methods
+    # region Helpers
     def _get_gls_finland_config(self):
         config = {
             "api_key": self.gls_finland_api_key,
@@ -212,7 +214,7 @@ class DeliveryCarrier(models.Model):
 
     # endregion
 
-    # region Business methods
+    # region API Calls
     def gls_finland_send_shipping(self, pickings):
         gls_request = GlsFinlandRequest(**self._get_gls_finland_config())
         result = []

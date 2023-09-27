@@ -10,27 +10,31 @@
         <field name="arch" type="xml">
             <field name="origin" position="after">
                 <field
+          name="carrier_tracking_ref"
+          readonly="1"
+          attrs="{'invisible': [('carrier_tracking_ref', '=', False)]}"
+        />
+                <field
           name="contents"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
                 <field
           name="shipment_info"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
                 <field
           name="parcels"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
                 <field name="gls_finland_uuid" invisible="1" />
                 <field
           name="gls_finland_service_ids"
-          invisible="0"
-          readonly="0"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
           widget="many2many_tags"
         />
                 <field
           name="gls_finland_tracking_codes"
-          attrs="{'invisible': [('gls_finland_tracking_codes', '=', False)]}"
+          attrs="{'invisible': [('gls_finland_tracking_codes', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
             </field>
         </field>
