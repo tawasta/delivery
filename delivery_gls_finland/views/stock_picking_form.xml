@@ -10,11 +10,6 @@
         <field name="arch" type="xml">
             <field name="origin" position="after">
                 <field
-          name="carrier_tracking_ref"
-          readonly="1"
-          attrs="{'invisible': [('carrier_tracking_ref', '=', False)]}"
-        />
-                <field
           name="contents"
           attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
