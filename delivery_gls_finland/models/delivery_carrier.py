@@ -112,7 +112,7 @@ class DeliveryCarrier(models.Model):
         }
 
         transport_units = []
-        if picking.parcels:
+        if parcels > 0:
             # Manual parcel amount will override packages
 
             # A simplified weight: shipping weight distributed to parcels
