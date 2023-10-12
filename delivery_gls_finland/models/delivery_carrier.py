@@ -162,7 +162,9 @@ class DeliveryCarrier(models.Model):
             if gls_service.code == "90000":
                 # Email Preadvice
                 partner_email = (
-                    picking.partner_id.email or picking.commercial_partner.email or ""
+                    picking.partner_id.email
+                    or picking.partner_id.commercial_partner_id.email
+                    or ""
                 )
                 service["email"] = partner_email
 

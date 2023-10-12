@@ -16,8 +16,14 @@ class StockImmediateTransfer(models.TransientModel):
         "Total weight",
         compute="_compute_total_weight",
     )
-    gls_shipment_allowed = fields.Boolean(
-        "GLS Shipment allowed", compute="_compute_gls_shipment_allowed"
+    gls_consolidated_shipment = fields.Boolean(
+        string="Consolidated GLS shipment",
+        help="Send all GLS transfer as one shipment",
+        default=False,
+    )
+    gls_consolidated_shipment_allowed = fields.Boolean(
+        "Consolidated GLS shipment allowed",
+        compute="_compute_gls_consolidated_shipment_allowed",
     )
 
     @api.onchange(
@@ -45,24 +51,27 @@ class StockImmediateTransfer(models.TransientModel):
     @api.onchange(
         "immediate_transfer_line_ids", "immediate_transfer_line_ids.to_immediate"
     )
-    def _compute_gls_shipment_allowed(self):
-        pickings_to_do = self.env["stock.picking"]
-        for line in self.immediate_transfer_line_ids:
-            if line.to_immediate is True:
-                pickings_to_do |= line.picking_id
+    def _compute_gls_consolidated_shipment_allowed(self):
+        if self.gls_consolidated_shipment:
+            pickings_to_do = self.env["stock.picking"]
+            for line in self.immediate_transfer_line_ids:
+                if line.to_immediate is True:
+                    pickings_to_do |= line.picking_id
 
-        gls_pickings = pickings_to_do.filtered(
-            lambda p: p.carrier_id.delivery_type == "gls_finland"
-        )
+            gls_pickings = pickings_to_do.filtered(
+                lambda p: p.carrier_id.delivery_type == "gls_finland"
+            )
 
-        if len(gls_pickings.mapped("partner_id")) > 1:
-            self.gls_shipment_allowed = False
+            if len(gls_pickings.mapped("partner_id")) > 1:
+                self.gls_consolidated_shipment_allowed = False
+            else:
+                self.gls_consolidated_shipment_allowed = True
+
+            if not self.gls_consolidated_shipment_allowed:
+                msg = _("Trying to send GLS shipment to multiple destinations!")
+                raise ValidationError(msg)
         else:
-            self.gls_shipment_allowed = True
-
-        if not self.gls_shipment_allowed:
-            msg = _("Trying to send GLS shipment to multiple destinations!")
-            raise ValidationError(msg)
+            self.gls_consolidated_shipment_allowed = False
 
     def process(self):
         pickings_to_do = self.env["stock.picking"]
@@ -74,6 +83,7 @@ class StockImmediateTransfer(models.TransientModel):
                 pickings_not_to_do |= line.picking_id
 
         # Set UUID here to send all pickings in one shipping
-        pickings_to_do.write({"gls_finland_uuid": str(uuid.uuid4())})
+        if self.gls_consolidated_shipment and self.gls_consolidated_shipment_allowed:
+            pickings_to_do.write({"gls_finland_uuid": str(uuid.uuid4())})
 
         return super().process()

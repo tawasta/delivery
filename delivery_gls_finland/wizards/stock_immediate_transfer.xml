@@ -9,11 +9,22 @@
         <field name="inherit_id" ref="stock.view_immediate_transfer" />
         <field name="arch" type="xml">
             <field name="picking_id" position="after">
+                <field name="partner_id" />
                 <field name="carrier_id" />
             </field>
 
             <field name="immediate_transfer_line_ids" position="after">
-                <group string="GLS Shipping">
+                <group name="gls_consolidated">
+                    <field
+            name="gls_consolidated_shipment"
+            widget="boolean_toggle"
+          />
+                </group>
+                <group
+          name="gls_shipping"
+          string="GLS Shipping"
+          attrs="{'invisible': [('gls_consolidated_shipment', '=', False)]}"
+        >
                     <p
           >All selected deliveries with GLS as carrier will be sent as one GLS shipment!</p>
                     <field name="parcels" />
