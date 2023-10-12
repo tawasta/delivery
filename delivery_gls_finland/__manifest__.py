@@ -21,7 +21,7 @@
 {
     "name": "GLS Finland Shipping",
     "summary": "Send your shipments through GLS Finland and track them online",
-    "version": "14.0.1.2.7",
+    "version": "14.0.1.3.0",
     "category": "Connector",
     "website": "https://gitlab.com/tawasta/odoo/delivery",
     "author": "Tawasta",
@@ -31,7 +31,11 @@
     "depends": ["delivery", "mail", "stock_picking_comment"],
     "data": [
         "data/delivery_carrier.xml",
+        "data/gls_finland_service.xml",
+        "security/ir_model_access.xml",
         "views/delivery_carrier.xml",
-        "views/stock_picking.xml",
+        "views/stock_picking_form.xml",
+        "views/stock_picking_tree.xml",
+        "wizards/stock_immediate_transfer.xml",
     ],
 }

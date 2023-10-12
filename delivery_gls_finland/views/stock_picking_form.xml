@@ -11,17 +11,26 @@
             <field name="origin" position="after">
                 <field
           name="contents"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
                 <field
           name="shipment_info"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
                 <field
           name="parcels"
-          attrs="{'invisible': [('carrier_id', '=', False)]}"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
         />
                 <field name="gls_finland_uuid" invisible="1" />
+                <field
+          name="gls_finland_service_ids"
+          attrs="{'invisible': [('carrier_id', '=', False)], 'readonly': [('state', '=', 'done')]}"
+          widget="many2many_tags"
+        />
+                <field
+          name="gls_finland_tracking_codes"
+          attrs="{'invisible': [('gls_finland_tracking_codes', '=', False)], 'readonly': [('state', '=', 'done')]}"
+        />
             </field>
         </field>
     </record>

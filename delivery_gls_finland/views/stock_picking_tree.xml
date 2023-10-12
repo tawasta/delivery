@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="vpicktree" model="ir.ui.view">
+        <field name="name">stock.picking.tree.gls.finland.shipments</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="gls_finland_tracking_codes" optional="hide" />
+                <field name="contents" optional="hide" />
+                <field name="parcels" optional="hide" />
+                <field name="shipment_info" optional="hide" />
+            </field>
+        </field>
+    </record>
+</odoo>

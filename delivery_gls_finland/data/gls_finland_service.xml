@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="0">
+
+    <record id="gls_finland_service_11028" model="gls.finland.service">
+        <field name="name">AddOnInsuranceService</field>
+        <field name="code">11028</field>
+    </record>
+
+    <record id="gls_finland_service_11047" model="gls.finland.service">
+        <field name="name">ShopReturnService</field>
+        <field name="code">11047</field>
+    </record>
+
+    <record id="gls_finland_service_11055" model="gls.finland.service">
+        <field name="name">ShopDeliveryService</field>
+        <field name="code">11055</field>
+    </record>
+
+    <record id="gls_finland_service_11069" model="gls.finland.service">
+        <field name="name">FlexDeliveryService</field>
+        <field name="code">11069</field>
+    </record>
+
+    <record id="gls_finland_service_90000" model="gls.finland.service">
+        <field name="name">Email preadvice</field>
+        <field name="code">90000</field>
+    </record>
+
+</odoo>
