@@ -24,18 +24,23 @@ class StockPicking(models.Model):
                 )
                 attachments |= attachs
 
-        if attachments:
-            ids = ",".join(map(str, attachments.ids))
+        attach_url = []
 
+        for attach in attachments:
             parameter_model = self.env["ir.config_parameter"]
 
             base_url = parameter_model.sudo().get_param("web.base.url").rstrip("/")
             url = "{}/web/content/{}?download=1".format(
                 base_url,
-                ids,
+                attach.id,
             )
-            return {
-                "type": "ir.actions.act_url",
-                "url": url,
-                "target": "current",
-            }
+
+            attach_url.append(
+                {
+                    "type": "ir.actions.act_url",
+                    "url": url,
+                    "target": "current",
+                }
+            )
+
+        return {"type": "ir.actions.act_multi", "actions": attach_url}
