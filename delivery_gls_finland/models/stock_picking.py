@@ -38,7 +38,7 @@ class StockPicking(models.Model):
 
             record.contents = contents
 
-    @api.depends("carrier_id")
+    @api.onchange("carrier_id")
     def _compute_gls_finland_service_ids(self):
         for record in self:
             if record.carrier_id:
