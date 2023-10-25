@@ -17,6 +17,7 @@
                     <field
             name="gls_consolidated_shipment"
             widget="boolean_toggle"
+            attrs="{'invisible': [('show_transfers', '=', False)]}"
           />
                 </group>
                 <group

@@ -19,23 +19,18 @@
 ##############################################################################
 
 {
-    "name": "GLS Finland Shipping",
-    "summary": "Send your shipments through GLS Finland and track them online",
-    "version": "14.0.1.3.1",
-    "category": "Connector",
+    "name": "Mass print GLS attachments after transfer mass action",
+    "summary": "Mass print GLS attachments after transfer mass action",
+    "version": "14.0.1.0.0",
+    "category": "Delivery",
     "website": "https://gitlab.com/tawasta/odoo/delivery",
     "author": "Tawasta",
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["delivery", "mail", "stock_picking_comment"],
-    "data": [
-        "data/delivery_carrier.xml",
-        "data/gls_finland_service.xml",
-        "security/ir_model_access.xml",
-        "views/delivery_carrier.xml",
-        "views/stock_picking_form.xml",
-        "views/stock_picking_tree.xml",
-        "wizards/stock_immediate_transfer.xml",
+    "depends": [
+        "delivery_gls_finland",
+        "stock_picking_mass_action_print_pdf",
     ],
+    "data": [],
 }
