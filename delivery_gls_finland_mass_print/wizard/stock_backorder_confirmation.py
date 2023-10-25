@@ -10,7 +10,7 @@ class StockBackorderConfirmation(models.TransientModel):
         pickings = self.pick_ids.sorted(key=lambda t: t.id).print_gls_document()
 
         if pickings:
-            return pickings
+            return {"type": "ir.actions.act_multi", "actions": [res, pickings]}
         return res
 
     def process_cancel_backorder(self):
@@ -18,5 +18,5 @@ class StockBackorderConfirmation(models.TransientModel):
         pickings = self.pick_ids.sorted(key=lambda t: t.id).print_gls_document()
 
         if pickings:
-            return pickings
+            return {"type": "ir.actions.act_multi", "actions": [res, pickings]}
         return res
