@@ -361,7 +361,8 @@ class DeliveryCarrier(models.Model):
         else:
             url = "https://gls-group.eu/FI/fi/laehetysseuranta?match="
 
-        url += picking.gls_finland_tracking_codes
+        if picking.gls_finland_tracking_codes:
+            url += picking.gls_finland_tracking_codes
 
         return url
 

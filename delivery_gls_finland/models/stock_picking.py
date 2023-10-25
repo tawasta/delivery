@@ -42,10 +42,12 @@ class StockPicking(models.Model):
     def _compute_gls_finland_service_ids(self):
         for record in self:
             if record.carrier_id:
+                # Get services from carrier
                 record.gls_finland_service_ids = (
                     record.carrier_id.gls_finland_service_ids
                 )
             else:
+                # Unset carrier services
                 record.gls_finland_service_ids = False
 
     def _get_gls_finland_picking_weight(self):
