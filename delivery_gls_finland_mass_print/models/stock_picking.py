@@ -6,7 +6,9 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def print_gls_document(self):
-        pickings = self.filtered(lambda x: not x.purchase_id)
+        pickings = self.filtered(
+            lambda x: not x.purchase_id or not x.mass_transfer_done
+        )
 
         attachments = self.env["ir.attachment"]
 
@@ -24,18 +26,25 @@ class StockPicking(models.Model):
                 )
                 attachments |= attachs
 
-        if attachments:
-            ids = ",".join(map(str, attachments.ids))
+            attach_url = []
 
-            parameter_model = self.env["ir.config_parameter"]
+            for attach in attachments:
+                parameter_model = self.env["ir.config_parameter"]
 
-            base_url = parameter_model.sudo().get_param("web.base.url").rstrip("/")
-            url = "{}/web/content/{}?download=1".format(
-                base_url,
-                ids,
-            )
-            return {
-                "type": "ir.actions.act_url",
-                "url": url,
-                "target": "current",
-            }
+                base_url = parameter_model.sudo().get_param("web.base.url").rstrip("/")
+                url = "{}/web/content/{}?download=1".format(
+                    base_url,
+                    attach.id,
+                )
+
+                attach_url.append(
+                    {
+                        "type": "ir.actions.act_url",
+                        "url": url,
+                        "target": "current",
+                    }
+                )
+
+            return {"type": "ir.actions.act_multi", "actions": attach_url}
+        else:
+            return None
