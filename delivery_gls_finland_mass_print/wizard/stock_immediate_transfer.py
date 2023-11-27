@@ -15,6 +15,18 @@ class StockImmediateTransfer(models.TransientModel):
 
         close_window = {"type": "ir.actions.act_window_close"}
 
+        receipts = [
+            p
+            for p in self.pick_ids
+            if p.picking_type_id and p.picking_type_id.code == "incoming"
+        ]
+
+        if receipts:
+            return {
+                "type": "ir.actions.act_multi",
+                "actions": [close_window],
+            }
+
         if pickings:
             return {
                 "type": "ir.actions.act_multi",
