@@ -21,7 +21,7 @@
 {
     "name": "Mass print GLS attachments after transfer mass action",
     "summary": "Mass print GLS attachments after transfer mass action",
-    "version": "14.0.1.0.3",
+    "version": "14.0.1.0.4",
     "category": "Delivery",
     "website": "https://gitlab.com/tawasta/odoo/delivery",
     "author": "Tawasta",
