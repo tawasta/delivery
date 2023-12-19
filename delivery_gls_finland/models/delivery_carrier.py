@@ -160,12 +160,8 @@ class DeliveryCarrier(models.Model):
             service = {"service": gls_service.code}
 
             if gls_service.code == "90000":
-                # Email Preadvice
-                partner_email = (
-                    picking.partner_id.email
-                    or picking.partner_id.commercial_partner_id.email
-                    or ""
-                )
+                # Email Pre-advice
+                partner_email = self._get_email_pre_advice_email(picking)
                 service["email"] = partner_email
 
             services.append(service)
@@ -174,6 +170,16 @@ class DeliveryCarrier(models.Model):
             values["services"] = services
 
         return values
+
+    def _get_email_pre_advice_email(self, picking):
+        # Helper for getting email pre-advice email
+        email = (
+            picking.partner_id.email
+            or picking.partner_id.commercial_partner_id.email
+            or ""
+        )
+
+        return email
 
     def _get_gls_finland_address(self, partner):
         """
