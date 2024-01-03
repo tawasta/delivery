@@ -197,11 +197,11 @@ class DeliveryCarrier(models.Model):
             # "province": ""[0:40],
             # "provincecode": ""[0:3],
             # Street is mandatory
-            "street1": partner.street[0:40],
+            "street1": partner.street and partner.street[0:40],
         }
 
         # Contact name
-        contact_name = partner.name or commercial_partner.name
+        contact_name = partner.name or commercial_partner.name or ""
         if contact_name:
             address["contactname"] = contact_name[0:40]
 
@@ -210,14 +210,14 @@ class DeliveryCarrier(models.Model):
             address["country"] = partner.country_id.code or ""
 
         # Email
-        partner_email = partner.email or commercial_partner.email
+        partner_email = partner.email or commercial_partner.email or ""
         if partner_email:
             address["email"] = partner_email[0:255]
 
         # TODO: eori
 
         # Mobile
-        partner_mobile = partner.mobile or commercial_partner.mobile
+        partner_mobile = partner.mobile or commercial_partner.mobile or ""
         if partner_mobile:
             address["mobile"] = partner_mobile[0:40]
 
@@ -225,23 +225,23 @@ class DeliveryCarrier(models.Model):
 
         # City
         if partner.city:
-            address["postaddr"] = partner.city[0:40]
+            address["postaddr"] = partner.city and partner.city[0:40]
 
         # ZIP code
         if partner.zip:
-            address["zipcode"] = partner.zip[0:10]
+            address["zipcode"] = partner.zip and partner.zip[0:10]
 
         # Street 2
         if partner.street2:
-            address["street2"] = partner.street2[0:40]
+            address["street2"] = partner.street2 and partner.street2[0:40]
 
         # Telephone
-        partner_telephone = partner.phone or commercial_partner.phone
+        partner_telephone = partner.phone or commercial_partner.phone or ""
         if partner_telephone:
             address["telephone"] = partner_telephone[0:40]
 
         # VAT
-        partner_vat = partner.vat or commercial_partner.vat
+        partner_vat = partner.vat or commercial_partner.vat or ""
         if partner_vat:
             address["vatid"] = partner_vat[0:17]
 
