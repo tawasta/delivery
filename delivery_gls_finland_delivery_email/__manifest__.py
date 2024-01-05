@@ -19,23 +19,19 @@
 ##############################################################################
 
 {
-    "name": "GLS Finland Shipping",
-    "summary": "Send your shipments through GLS Finland and track them online",
-    "version": "14.0.1.3.3",
-    "category": "Connector",
+    "name": "Delivery Email for GLS Finland Shipping",
+    "summary": "Set a delivery email for a partner",
+    "version": "14.0.1.0.0",
+    "category": "Delivery",
     "website": "https://gitlab.com/tawasta/odoo/delivery",
     "author": "Tawasta",
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["delivery", "mail", "stock_picking_comment"],
+    "depends": [
+        "delivery_gls_finland",
+    ],
     "data": [
-        "data/delivery_carrier.xml",
-        "data/gls_finland_service.xml",
-        "security/ir_model_access.xml",
-        "views/delivery_carrier.xml",
-        "views/stock_picking_form.xml",
-        "views/stock_picking_tree.xml",
-        "wizards/stock_immediate_transfer.xml",
+        "views/res_partner.xml",
     ],
 }
