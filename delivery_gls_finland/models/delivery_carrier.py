@@ -104,12 +104,23 @@ class DeliveryCarrier(models.Model):
                 "contents": contents,
                 # "donotstack": "",
                 "glsproduct": self.gls_finland_product_code,
-                # "inco": "",
                 "info": info,
                 "shipperref": origin,
                 "totalweight": totalweight,
             },
         }
+
+        gls_incoterms = [
+            p.sale_id.incoterm.gls_finland_incoterm
+            for p in pickings
+            if p.sale_id.incoterm.gls_finland_incoterm
+        ]
+        if len(gls_incoterms) > 1:
+            raise ValidationError(_("Trying to use multiple incoterms on a shipment!"))
+        elif gls_incoterms:
+            # Incoterm is only used in non-EU shipments.
+            # It can be always sent, but will be ignored in EU shipments
+            values["shipment"]["inco"] = gls_incoterms[0]
 
         transport_units = []
         if parcels > 0:
