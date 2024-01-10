@@ -104,7 +104,6 @@ class DeliveryCarrier(models.Model):
                 "contents": contents,
                 # "donotstack": "",
                 "glsproduct": self.gls_finland_product_code,
-                # "inco": "",
                 "info": info,
                 "shipperref": origin,
                 "totalweight": totalweight,
@@ -112,7 +111,9 @@ class DeliveryCarrier(models.Model):
         }
 
         gls_incoterms = [
-            p.sale_id.incoterm.gls_finland_incoterm for p in pickings if p.sale_id
+            p.sale_id.incoterm.gls_finland_incoterm
+            for p in pickings
+            if p.sale_id.incoterm.gls_finland_incoterm
         ]
         if len(gls_incoterms) > 1:
             raise ValidationError(_("Trying to use multiple incoterms on a shipment!"))
