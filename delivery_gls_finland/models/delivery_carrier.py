@@ -111,6 +111,16 @@ class DeliveryCarrier(models.Model):
             },
         }
 
+        gls_incoterms = [
+            p.sale_id.incoterm.gls_finland_incoterm for p in pickings if p.sale_id
+        ]
+        if len(gls_incoterms) > 1:
+            raise ValidationError(_("Trying to use multiple incoterms on a shipment!"))
+        elif gls_incoterms:
+            # Incoterm is only used in non-EU shipments.
+            # It can be always sent, but will be ignored in EU shipments
+            values["shipment"]["inco"] = gls_incoterms[0]
+
         transport_units = []
         if parcels > 0:
             # Manual parcel amount will override packages
