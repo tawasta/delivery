@@ -5,4 +5,11 @@ Delivery
 ========
 
 [//]: # (addons)
+
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[delivery_carrier_price_with_tax](delivery_carrier_price_with_tax/) | 17.0.1.0.0 |  | Show also price with tax on the delivery carrier
+
 [//]: # (end addons)

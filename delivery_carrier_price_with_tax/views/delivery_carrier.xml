@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="deliver_carrier_price_with_tax">
+        <field name="name">delivery_carrier_price_with_tax</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='fixed_price']" position="after">
+                <field name="fixed_price_with_tax" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
