@@ -35,8 +35,9 @@ class GlsDeliveryWizard(models.TransientModel):
             self.picking_ids.sudo().write(
                 {
                     "gls_finland_uuid": str(uuid.uuid4()),
-                    "gls_delivery_done": True,
                 }
             )
+
+        self.picking_ids.sudo().write({"gls_delivery_done": True})
 
         return self.picking_ids.sudo().button_validate()
