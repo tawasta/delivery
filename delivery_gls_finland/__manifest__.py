@@ -23,7 +23,7 @@
     "summary": "Send your shipments through GLS Finland and track them online",
     "version": "17.0.1.0.0",
     "category": "Connector",
-    "website": "https://gitlab.com/tawasta/odoo/delivery",
+    "website": "https://github.com/tawasta/delivery",
     "author": "Tawasta",
     "license": "AGPL-3",
     "application": False,
