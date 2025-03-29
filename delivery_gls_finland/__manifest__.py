@@ -1,7 +1,7 @@
 ##############################################################################
 #
-#    Author: Futural Oy
-#    Copyright 2020- Futural Oy (https://futural.fi)
+#    Author: Oy Tawasta OS Technologies Ltd.
+#    Copyright 2023 Oy Tawasta OS Technologies Ltd. (https://tawasta.fi)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,15 +19,32 @@
 ##############################################################################
 
 {
-    "name": "Delivery Carrier Price With Tax",
-    "summary": "Show also price with tax on the delivery carrier",
+    "name": "GLS Finland Shipping",
+    "summary": "Send your shipments through GLS Finland and track them online",
     "version": "17.0.1.0.0",
-    "category": "Stock",
+    "category": "Connector",
     "website": "https://github.com/tawasta/delivery",
-    "author": "Futural",
+    "author": "Tawasta",
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["delivery"],
-    "data": ["views/delivery_carrier.xml"],
+    "depends": [
+        "account",
+        "delivery",
+        "mail",
+        "sale_stock",
+        "stock_delivery",
+        "stock_picking_comment",
+    ],
+    "data": [
+        "data/delivery_carrier.xml",
+        "data/gls_finland_service.xml",
+        "security/ir_model_access.xml",
+        "security/ir.model.access.csv",
+        "views/account_incoterms.xml",
+        "views/delivery_carrier.xml",
+        "views/stock_picking_form.xml",
+        "views/stock_picking_tree.xml",
+        "wizards/gls_delivery_wizard.xml",
+    ],
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_gls_delivery" model="ir.ui.view">
+        <field name="name">gls.delivery.wizard.form</field>
+        <field name="model">gls.delivery.wizard</field>
+        <field name="arch" type="xml">
+            <form string="GLS Delivery?">
+                <field name="picking_ids" invisible="1" />
+
+                <group name="gls_consolidated">
+                    <field name="gls_consolidated_shipment" widget="boolean_toggle" />
+                </group>
+                <div
+                    name="gls_shipping"
+                    string="GLS Shipping"
+                    invisible="not gls_consolidated_shipment"
+                >
+                    <p
+                    >All selected deliveries with GLS as carrier will be sent as one GLS shipment!</p>
+                    <group>
+                        <field name="parcels" />
+                        <field name="total_weight" />
+                    </group>
+                </div>
+
+                <footer>
+                    <button
+                        name="process"
+                        string="Apply"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
