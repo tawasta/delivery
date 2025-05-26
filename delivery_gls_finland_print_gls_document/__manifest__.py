@@ -21,7 +21,7 @@
 {
     "name": "Print GLS attachments after transfer validation",
     "summary": "Print GLS attachments after transfer validation",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.1.0",
     "category": "Delivery",
     "website": "https://github.com/tawasta/delivery",
     "author": "Tawasta",
