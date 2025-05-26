@@ -201,7 +201,8 @@ class DeliveryCarrier(models.Model):
 
         address = {
             "addrtype": "business" if commercial_partner.is_company else "private",
-            # Name is required, and there should never be a situation where it is missing
+            # Name is required,
+            # and there should never be a situation where it is missing
             "name1": name1[0:40],
             # Province is not used in API yet
             # "province": ""[0:40],
@@ -266,7 +267,8 @@ class DeliveryCarrier(models.Model):
 
         for picking in pickings:
             if picking.gls_finland_uuid:
-                # This shipment may be already sent. Just copy information from another picking
+                # This shipment may be already sent.
+                # Just copy information from another picking
                 sent_picking = picking.search(
                     [
                         ("gls_finland_uuid", "=", picking.gls_finland_uuid),
@@ -314,7 +316,7 @@ class DeliveryCarrier(models.Model):
             except Exception as e:
                 raise e
 
-            _logger.info(_("Sent picking {}".format(picking.name)))
+            _logger.info(_(f"Sent picking {picking.name}"))
             if not response:
                 result.append(values)
                 continue
@@ -341,7 +343,7 @@ class DeliveryCarrier(models.Model):
                 picking.gls_finland_tracking_codes = tracking_codes
 
                 # Filename is usually "Label_12345678.pdf"
-                filename = "{}_{}.pdf".format(picking.name, trackingno)
+                filename = f"{picking.name}_{trackingno}.pdf"
 
                 self.env["ir.attachment"].sudo().create(
                     {

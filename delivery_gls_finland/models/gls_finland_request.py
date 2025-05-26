@@ -27,9 +27,9 @@ class GlsFinlandRequest:
     def _validate_response(self, response):
         status_code = response.status_code
 
-        _logger.debug("Response headers: {}".format(response.headers))
-        _logger.debug("Response status code: {}".format(status_code))
-        _logger.debug("Response content: {}".format(response.text))
+        _logger.debug(f"Response headers: {response.headers}")
+        _logger.debug(f"Response status code: {status_code}")
+        _logger.debug(f"Response content: {response.text}")
         # Go through most common error codes
         # 200 = OK
         # 201 = Created (e.g. POST requests)
@@ -64,8 +64,8 @@ class GlsFinlandRequest:
 
         # Add ending slash, if missing
         if endpoint[-1:] != "/":
-            endpoint = "{}/".format(endpoint)
-        return "{}{}".format(self.url, endpoint)
+            endpoint = f"{endpoint}/"
+        return f"{self.url}{endpoint}"
 
     def _get_headers(self):
         headers = {
@@ -93,9 +93,9 @@ class GlsFinlandRequest:
         """
         headers = self._get_headers()
 
-        _logger.debug(_("Making a post request to '{}'".format(endpoint)))
-        _logger.debug(_("Using headers {}".format(headers)))
-        _logger.debug(_("Using values {}".format(values)))
+        _logger.debug(_(f"Making a post request to '{endpoint}'"))
+        _logger.debug(_(f"Using headers {headers}"))
+        _logger.debug(_(f"Using values {values}"))
 
         response = requests.post(
             url=endpoint, json=values, params=params, headers=headers, **kwargs
@@ -129,7 +129,7 @@ class GlsFinlandRequest:
 
         endpoint = self._get_endpoint_url("create-shipment")
         params = {}
-        _logger.debug("_send_shipping: {}".format(values))
+        _logger.debug(f"_send_shipping: {values}")
         return self._post(endpoint, values, params)
 
     def _cancel_shipment(self, shipment_id):
