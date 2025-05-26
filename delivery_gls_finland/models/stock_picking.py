@@ -12,10 +12,13 @@ class StockPicking(models.Model):
     gls_finland_uuid = fields.Char(
         "GLS Finland UUID",
         help="Unique identifier for a GLS Finland delivery",
+        copy=False,
     )
     gls_finland_tracking_codes = fields.Char(
         "GLS tracking codes",
+        copy=False,
     )
+    gls_finland_payload = fields.Text(copy=False)
 
     shipment_info = fields.Char(
         "Shipment info", help="Information text for the shipment", size=40
@@ -28,7 +31,10 @@ class StockPicking(models.Model):
         compute="_compute_gls_finland_service_ids",
         store=True,
     )
-    gls_delivery_done = fields.Boolean(default=False)
+    gls_delivery_done = fields.Boolean(
+        default=False,
+        copy=False,
+    )
 
     @api.depends("origin")
     def _compute_contents(self):
@@ -69,8 +75,6 @@ class StockPicking(models.Model):
         gls_pickings = gls_pickings.filtered(lambda p: not p.gls_delivery_done)
 
         gls_delivery_wizard = self.env["gls.delivery.wizard"]
-
-        gls_consolidated_shipment_allowed = False
 
         if gls_pickings:
             if len(gls_pickings.mapped("partner_id")) > 1:

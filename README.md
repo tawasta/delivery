@@ -11,7 +11,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [delivery_carrier_price_with_tax](delivery_carrier_price_with_tax/) | 17.0.1.0.0 |  | Show also price with tax on the delivery carrier
-[delivery_gls_finland](delivery_gls_finland/) | 17.0.1.0.1 |  | Send your shipments through GLS Finland and track them online
+[delivery_gls_finland](delivery_gls_finland/) | 17.0.1.0.2 |  | Send your shipments through GLS Finland and track them online
 [delivery_gls_finland_delivery_email](delivery_gls_finland_delivery_email/) | 17.0.1.0.0 |  | Set a delivery email for a partner
 [delivery_gls_finland_print_gls_document](delivery_gls_finland_print_gls_document/) | 17.0.1.1.0 |  | Print GLS attachments after transfer validation
 
