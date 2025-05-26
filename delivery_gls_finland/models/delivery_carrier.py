@@ -310,6 +310,8 @@ class DeliveryCarrier(models.Model):
                 exact_price=0,
             )
             _logger.info(_("Using shipment values {}").format(values))
+            # Save payload for debugging purposes
+            picking.gls_finland_payload = values
 
             try:
                 response = gls_request._send_shipping([values["shipment"]])
