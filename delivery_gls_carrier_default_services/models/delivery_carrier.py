@@ -11,10 +11,10 @@ class DeliveryCarrier(models.Model):
     picking_order_autoadd_services_gls_finland_service_ids = fields.Many2many(
         "gls.finland.service",
         relation="delivery_gls_carrier_default_services_service_ids",
-        string="Add services to picking order when created from sale order"
+        string="Add services to picking order when created from sale order",
     )
     picking_order_autoadd_if_customer_email_services_gls_finland_service_ids = fields.Many2many(
         "gls.finland.service",
         relation="delivery_gls_carrier_if_email_default_services_service_ids",
-        string="Add services to picking order when created from sale order if customer has email set"
+        string="Add services to picking order when created from sale order if customer has email set",
     )
