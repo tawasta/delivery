@@ -1,0 +1,52 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* delivery_gls_carrier_default_services
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0-20250909\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-10 11:32+0000\n"
+"PO-Revision-Date: 2025-09-10 14:34+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#. module: delivery_gls_carrier_default_services
+#: model:ir.model.fields,field_description:delivery_gls_carrier_default_services.field_delivery_carrier__picking_order_autoadd_services_gls_finland_service_ids
+msgid "Add services to picking order when created from sale order"
+msgstr "Lisää palveluita toimitustilaukselle kun luodaan myyntitilauksesta"
+
+#. module: delivery_gls_carrier_default_services
+#: model:ir.model.fields,field_description:delivery_gls_carrier_default_services.field_delivery_carrier__picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+msgid ""
+"Add services to picking order when created from sale order if customer has "
+"email set"
+msgstr ""
+"Lisää palveluita toimitustilaukselle kun luodaan myyntitilauksesta jos "
+"asiakkaalla on sähköposti asetettu"
+
+#. module: delivery_gls_carrier_default_services
+#: model_terms:ir.ui.view,arch_db:delivery_gls_carrier_default_services.deliver_carrier_price_with_tax
+msgid "Automation"
+msgstr "Automaatio"
+
+#. module: delivery_gls_carrier_default_services
+#: model_terms:ir.ui.view,arch_db:delivery_gls_carrier_default_services.deliver_carrier_price_with_tax
+msgid "Picking order"
+msgstr "Toimitustilaus"
+
+#. module: delivery_gls_carrier_default_services
+#: model:ir.model,name:delivery_gls_carrier_default_services.model_delivery_carrier
+msgid "Shipping Methods"
+msgstr "Toimitustavat"
+
+#. module: delivery_gls_carrier_default_services
+#: model:ir.model,name:delivery_gls_carrier_default_services.model_stock_picking
+msgid "Transfer"
+msgstr "Siirto"
