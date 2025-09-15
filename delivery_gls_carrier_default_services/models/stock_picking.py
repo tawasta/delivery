@@ -34,7 +34,8 @@ class StockPicking(models.Model):
             )
             if (
                 len(
-                    delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids)
+                    delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids
+                )
                 > 0
             ):
                 vals[
