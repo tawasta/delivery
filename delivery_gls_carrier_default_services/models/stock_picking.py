@@ -14,14 +14,27 @@ class StockPicking(models.Model):
         for picking in pickings:
             sale_order = self.env["sale.order"].search([("name", "=", picking.origin)])
             if sale_order.carrier_id:
-                # If customer has email and carrier has services
+                # Add services to picking order when created from sale order if customer has email set
                 if (
                     sale_order["partner_id"]
                     and sale_order["partner_id"]["email"]
                     and sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
                 ):
                     picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
-                # If carrier has services
+                # Add services to picking order when created from sale order
                 elif sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids:
                     picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids
         return picking
+
+    def write(self, vals):
+        # Add services to picking order when this carrier is chosen
+        if "carrier_id" in list(vals.keys()):
+            delivery_carrier = self.env["delivery.carrier"].search([("id", "=", vals["carrier_id"])])
+            if delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids:
+                _logger.debug("ids: " + str(delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids))
+                if "gls_finland_service_ids" in list(vals.keys()):
+                    vals["gls_finland_service_ids"].extend(delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids)
+                else:
+                    vals["gls_finland_service_ids"] = delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids
+
+        return super().write(vals)
