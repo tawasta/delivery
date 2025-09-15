@@ -23,6 +23,6 @@ class DeliveryCarrier(models.Model):
         fields.Many2many(
             "gls.finland.service",
             relation="delivery_gls_carrier_when_chosen_default_services_service_ids",
-            string="Add services to picking order when this carrier is chosen",
+            string="Overwrite services to picking order when this carrier is chosen",
         )
     )
