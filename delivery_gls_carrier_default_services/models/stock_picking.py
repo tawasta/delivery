@@ -27,7 +27,7 @@ class StockPicking(models.Model):
         return picking
 
     def write(self, vals):
-        # Add services to picking order when this carrier is chosen
+        # Overwrite services to picking order when this carrier is chosen
         if "carrier_id" in list(vals.keys()):
             delivery_carrier = self.env["delivery.carrier"].search(
                 [("id", "=", vals["carrier_id"])]
