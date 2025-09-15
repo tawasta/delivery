@@ -31,7 +31,6 @@ class StockPicking(models.Model):
         if "carrier_id" in list(vals.keys()):
             delivery_carrier = self.env["delivery.carrier"].search([("id", "=", vals["carrier_id"])])
             if delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids:
-                _logger.debug("ids: " + str(delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids))
                 if "gls_finland_service_ids" in list(vals.keys()):
                     vals["gls_finland_service_ids"].extend(delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids)
                 else:
