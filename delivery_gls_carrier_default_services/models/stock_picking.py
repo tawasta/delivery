@@ -4,8 +4,6 @@ from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
-
-
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
@@ -20,28 +18,12 @@ class StockPicking(models.Model):
                 if (
                     sale_order["partner_id"]
                     and sale_order["partner_id"]["email"]
-                    and (
-    sale_order
-    .carrier_id
-    .picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
-                        )
+                    and sale_order.carrier_id.poasgfsi
                 ):
-                    picking.gls_finland_service_ids = (
-    sale_order
-    .carrier_id
-    .picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
-                )
+                    picking.gls_finland_service_ids = sale_order.carrier_id.poaicesgfsi
                 # Add services to picking order when created from sale order
-                elif (
-    sale_order
-    .carrier_id
-    .picking_order_autoadd_services_gls_finland_service_ids
-                ):
-                    picking.gls_finland_service_ids = (
-        sale_order
-        .carrier_id
-        .picking_order_autoadd_services_gls_finland_service_ids
-                    )
+                elif sale_order.carrier_id.poasgfsi:
+                    picking.gls_finland_service_ids = sale_order.carrier_id.poasgfsi
         return picking
 
     def write(self, vals):
@@ -50,16 +32,7 @@ class StockPicking(models.Model):
             delivery_carrier = self.env["delivery.carrier"].search(
                 [("id", "=", vals["carrier_id"])]
             )
-            if (
-                len(
-    delivery_carrier
-    .picking_order_autoadd_when_chosen_services_gls_finland_service_ids
-                )
-                > 0
-            ):
-                vals["gls_finland_service_ids"] = (
-    delivery_carrier
-    .picking_order_autoadd_when_chosen_services_gls_finland_service_ids
-                    )
+            if len(delivery_carrier.poawcsgfsi) > 0:
+                vals["gls_finland_service_ids"] = delivery_carrier.poawcsgfsi
 
         return super().write(vals)
