@@ -26,10 +26,7 @@ class StockPicking(models.Model):
             parameter_model = self.env["ir.config_parameter"]
 
             base_url = parameter_model.sudo().get_param("web.base.url").rstrip("/")
-            url = "{}/web/content/{}?download=1".format(
-                base_url,
-                attach.id,
-            )
+            url = f"{base_url}/web/content/{attach.id}?download=1"
 
             attach_url.append(
                 {
