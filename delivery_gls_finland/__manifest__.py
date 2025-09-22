@@ -21,7 +21,7 @@
 {
     "name": "GLS Finland Shipping",
     "summary": "Send your shipments through GLS Finland and track them online",
-    "version": "17.0.1.0.1",
+    "version": "17.0.1.0.2",
     "category": "Connector",
     "website": "https://github.com/tawasta/delivery",
     "author": "Tawasta",
