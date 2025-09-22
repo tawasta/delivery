@@ -8,18 +8,9 @@
             <xpath expr="//page[@name='destination']" position="after">
                 <page string="Automation" name="automation">
                     <group string="Picking order" name="picking_order_automation">
-                        <field
-                            name="picking_order_autoadd_services_gls_finland_service_ids"
-                            widget="many2many_tags"
-                        />
-                        <field
-                            name="picking_order_autoadd_if_customer_email_services_gls_finland_service_ids"
-                            widget="many2many_tags"
-                        />
-                        <field
-                            name="picking_order_autoadd_when_chosen_services_gls_finland_service_ids"
-                            widget="many2many_tags"
-                        />
+                        <field name="picking_autoadd_default" widget="many2many_tags" />
+                        <field name="picking_autoadd_email" widget="many2many_tags" />
+                        <field name="picking_autoadd_chosen" widget="many2many_tags" />
                     </group>
                 </page>
             </xpath>

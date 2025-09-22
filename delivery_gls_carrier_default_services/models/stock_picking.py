@@ -14,16 +14,19 @@ class StockPicking(models.Model):
         for picking in pickings:
             sale_order = self.env["sale.order"].search([("name", "=", picking.origin)])
             if sale_order.carrier_id:
-                # Add services to picking order when created from sale order if customer has email set
+                ci = sale_order.carrier_id
+                # Add services to picking order when created from sale order if
+                # customer has email set
                 if (
                     sale_order["partner_id"]
                     and sale_order["partner_id"]["email"]
-                    and sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+                    and ci.picking_autoadd_email
                 ):
-                    picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+                    picking.gls_finland_service_ids = ci.picking_autoadd_email
                 # Add services to picking order when created from sale order
-                elif sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids:
-                    picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids
+                elif ci.picking_autoadd_default:
+                    ci = sale_order.carrier_id
+                    picking.gls_finland_service_ids = ci.picking_autoadd_default
         return picking
 
     def write(self, vals):
@@ -32,14 +35,8 @@ class StockPicking(models.Model):
             delivery_carrier = self.env["delivery.carrier"].search(
                 [("id", "=", vals["carrier_id"])]
             )
-            if (
-                len(
-                    delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids
-                )
-                > 0
-            ):
-                vals[
-                    "gls_finland_service_ids"
-                ] = delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids
+            dc = delivery_carrier
+            if len(dc.picking_autoadd_chosen) > 0:
+                vals["gls_finland_service_ids"] = dc.picking_autoadd_chosen
 
         return super().write(vals)
