@@ -5,6 +5,7 @@ from odoo import api, models
 _logger = logging.getLogger(__name__)
 
 
+
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
