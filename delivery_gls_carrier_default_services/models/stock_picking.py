@@ -8,19 +8,6 @@ _logger = logging.getLogger(__name__)
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    def has_customer_email_services(sale_order):
-        if (
-            sale_order["partner_id"]
-            and sale_order["partner_id"]["email"]
-            and sale_order\
-                    .carrier_id\
-                    .picking_order_autoadd_if\
-                    _customer_email_services_gls_finland_service_ids
-        ):
-            True
-        else:
-            False
-
     @api.model_create_multi
     def create(self, values_list):
         pickings = super().create(values_list)
@@ -29,11 +16,31 @@ class StockPicking(models.Model):
             if sale_order.carrier_id:
                 # Add services to picking order when created from sale order if
                 # customer has email set
-                if has_customer_email_services(sale_order):
-                    picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+                if (
+                    sale_order["partner_id"]
+                    and sale_order["partner_id"]["email"]
+                    and (
+    sale_order
+    .carrier_id
+    .picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+                        )
+                ):
+                    picking.gls_finland_service_ids = (
+    sale_order
+    .carrier_id
+    .picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+                )
                 # Add services to picking order when created from sale order
-                elif sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids:
-                    picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids
+                elif (
+    sale_order
+    .carrier_id
+    .picking_order_autoadd_services_gls_finland_service_ids
+                ):
+                    picking.gls_finland_service_ids = (
+        sale_order
+        .carrier_id
+        .picking_order_autoadd_services_gls_finland_service_ids
+                    )
         return picking
 
     def write(self, vals):
@@ -44,12 +51,14 @@ class StockPicking(models.Model):
             )
             if (
                 len(
-                    delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids
+    delivery_carrier
+    .picking_order_autoadd_when_chosen_services_gls_finland_service_ids
                 )
                 > 0
             ):
                 vals["gls_finland_service_ids"] = (
-                    delivery_carrier.picking_order_autoadd_when_chosen_services_gls_finland_service_ids
-                )
+    delivery_carrier
+    .picking_order_autoadd_when_chosen_services_gls_finland_service_ids
+                    )
 
         return super().write(vals)
