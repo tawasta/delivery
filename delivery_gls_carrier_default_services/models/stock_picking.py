@@ -14,7 +14,8 @@ class StockPicking(models.Model):
         for picking in pickings:
             sale_order = self.env["sale.order"].search([("name", "=", picking.origin)])
             if sale_order.carrier_id:
-                # Add services to picking order when created from sale order if customer has email set
+                # Add services to picking order when created from sale order if
+                # customer has email set
                 if (
                     sale_order["partner_id"]
                     and sale_order["partner_id"]["email"]
