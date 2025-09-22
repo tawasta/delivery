@@ -18,15 +18,13 @@ class DeliveryCarrier(models.Model):
         "gls.finland.service",
         relation="delivery_gls_carrier_if_email_default_services_service_ids",
         string="Add services to picking order when created from sale order if \
-                customer has email set",
+            customer has email set",
     )
 
     picking_order_autoadd_when_chosen_services_gls_finland_service_ids = (
         fields.Many2many(
             "gls.finland.service",
-            relation=\
-             "delivery_gls_carrier_when_chosen_default_services_service_ids",
-            string=\
-             "Overwrite services to picking order when this carrier is chosen",
+            relation="delivery_gls_carrier_when_chosen_default_services_service_ids",
+            string="Overwrite services to picking order when this carrier is chosen",
         )
     )
