@@ -19,7 +19,8 @@ class StockPicking(models.Model):
                 if (
                     sale_order["partner_id"]
                     and sale_order["partner_id"]["email"]
-                    and sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
+                    and \
+    sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
                 ):
                     picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
                 # Add services to picking order when created from sale order
