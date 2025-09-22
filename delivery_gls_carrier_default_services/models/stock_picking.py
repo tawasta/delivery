@@ -23,8 +23,7 @@ class StockPicking(models.Model):
                 ):
                     picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_if_customer_email_services_gls_finland_service_ids
                 # Add services to picking order when created from sale order
-                elif sale_order.carrier_id\
-    .picking_order_autoadd_services_gls_finland_service_ids:
+                elif sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids:
                     picking.gls_finland_service_ids = sale_order.carrier_id.picking_order_autoadd_services_gls_finland_service_ids
         return picking
 
