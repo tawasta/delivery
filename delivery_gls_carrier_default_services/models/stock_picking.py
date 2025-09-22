@@ -4,6 +4,7 @@ from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
+
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
@@ -13,17 +14,19 @@ class StockPicking(models.Model):
         for picking in pickings:
             sale_order = self.env["sale.order"].search([("name", "=", picking.origin)])
             if sale_order.carrier_id:
+                ci = sale_order.carrier_id
                 # Add services to picking order when created from sale order if
                 # customer has email set
                 if (
                     sale_order["partner_id"]
                     and sale_order["partner_id"]["email"]
-                    and sale_order.carrier_id.poasgfsi
+                    and ci.picking_autoadd_email
                 ):
-                    picking.gls_finland_service_ids = sale_order.carrier_id.poaicesgfsi
+                    picking.gls_finland_service_ids = ci.picking_autoadd_email
                 # Add services to picking order when created from sale order
-                elif sale_order.carrier_id.poasgfsi:
-                    picking.gls_finland_service_ids = sale_order.carrier_id.poasgfsi
+                elif ci.picking_autoadd_default:
+                    ci = sale_order.carrier_id
+                    picking.gls_finland_service_ids = ci.picking_autoadd_default
         return picking
 
     def write(self, vals):
@@ -32,7 +35,8 @@ class StockPicking(models.Model):
             delivery_carrier = self.env["delivery.carrier"].search(
                 [("id", "=", vals["carrier_id"])]
             )
-            if len(delivery_carrier.poawcsgfsi) > 0:
-                vals["gls_finland_service_ids"] = delivery_carrier.poawcsgfsi
+            dc = delivery_carrier
+            if len(dc.picking_autoadd_chosen) > 0:
+                vals["gls_finland_service_ids"] = dc.picking_autoadd_chosen
 
         return super().write(vals)
