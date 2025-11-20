@@ -24,7 +24,7 @@
     "version": "17.0.1.0.2",
     "category": "Connector",
     "website": "https://github.com/tawasta/delivery",
-    "author": "Tawasta",
+    "author": "Futural",
     "license": "AGPL-3",
     "application": False,
     "installable": True,

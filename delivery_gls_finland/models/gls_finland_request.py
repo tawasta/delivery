@@ -35,7 +35,10 @@ class GlsFinlandRequest:
         # 201 = Created (e.g. POST requests)
         # 204 = No content (e.g. DELETE requests, if no error occurs)
         if status_code not in [200, 201, 204]:
-            msg = _("Error {} in request: {}\n").format(status_code, response.reason)
+            msg = _("Error %(status_code)s in request: %(reason)s\n") % {
+                "status_code": status_code,
+                "reason": response.reason,
+            }
 
             # Go through some common errors
             if status_code == 400:
@@ -81,7 +84,7 @@ class GlsFinlandRequest:
         Authenticate and make a get request
         """
         _logger.debug(_("Making a get request to '%s'") % endpoint)
-        response = requests.get(endpoint, **kwargs)
+        response = requests.get(endpoint, **kwargs, timeout=30)
 
         self._validate_response(response)
 
@@ -98,7 +101,12 @@ class GlsFinlandRequest:
         _logger.debug(_(f"Using values {values}"))
 
         response = requests.post(
-            url=endpoint, json=values, params=params, headers=headers, **kwargs
+            url=endpoint,
+            json=values,
+            params=params,
+            headers=headers,
+            **kwargs,
+            timeout=30,
         )
 
         self._validate_response(response)
@@ -113,7 +121,7 @@ class GlsFinlandRequest:
 
         _logger.debug(_("Making a delete request to '{}'").format(endpoint))
 
-        response = requests.delete(url=endpoint, headers=headers, **kwargs)
+        response = requests.delete(url=endpoint, headers=headers, **kwargs, timeout=30)
 
         self._validate_response(response)
 
