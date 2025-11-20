@@ -23,7 +23,7 @@ class StockPicking(models.Model):
     shipment_info = fields.Char(
         "Shipment info", help="Information text for the shipment", size=40
     )
-    parcels = fields.Integer("Parcels", help="How many parcels are in the shipment")
+    parcels = fields.Integer(help="How many parcels are in the shipment")
 
     gls_finland_service_ids = fields.Many2many(
         string="GLS services",
