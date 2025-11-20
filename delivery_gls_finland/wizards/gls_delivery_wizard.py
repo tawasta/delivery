@@ -1,7 +1,6 @@
 import uuid
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import fields, models
 
 
 class GlsDeliveryWizard(models.TransientModel):
@@ -10,11 +9,9 @@ class GlsDeliveryWizard(models.TransientModel):
 
     picking_ids = fields.Many2many("stock.picking")
     parcels = fields.Integer(
-        "Parcels",
         compute="_compute_parcels",
     )
     total_weight = fields.Float(
-        "Total weight",
         compute="_compute_total_weight",
     )
     gls_consolidated_shipment = fields.Boolean(
