@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_withcarrier_out_form_shipit" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.shipit.shipments</field>
+        <field name="model">stock.picking</field>
+        <field
+            name="inherit_id"
+            ref="stock_delivery.view_picking_withcarrier_out_form"
+        />
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="shipit_shipment_id" readonly="state == 'done'" />
+                <field name="shipit_tracking_codes" readonly="state == 'done'" />
+                <field name="shipit_last_error" readonly="1" />
+                <field name="shipit_payload" readonly="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
