@@ -25,6 +25,7 @@ This version implements a first ShipIT happy path:
 2. Build shipment payload from picking data
 3. Create shipment via ShipIT API
 4. Store shipment id, tracking data and label attachment to picking
+5. Trigger shipment creation from delivery ``Validate`` action for ShipIT carriers
 
 Known issues / Roadmap
 ======================

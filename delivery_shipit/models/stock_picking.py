@@ -29,3 +29,27 @@ class StockPicking(models.Model):
         string="ShipIT last error",
         copy=False,
     )
+    shipit_delivery_done = fields.Boolean(
+        default=False,
+        copy=False,
+    )
+
+    def _shipit_send_before_validate(self):
+        shipit_pickings = self.filtered(
+            lambda p: p.carrier_id.delivery_type == "shipit"
+            and not p.shipit_delivery_done
+            and not p.shipit_shipment_id
+        )
+
+        for picking in shipit_pickings:
+            values = picking.carrier_id.shipit_send_shipping(picking)
+            tracking_number = values and values[0].get("tracking_number")
+
+            if tracking_number and not picking.carrier_tracking_ref:
+                picking.carrier_tracking_ref = tracking_number
+
+            picking.shipit_delivery_done = True
+
+    def button_validate(self):
+        self._shipit_send_before_validate()
+        return super().button_validate()
