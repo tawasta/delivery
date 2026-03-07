@@ -12,6 +12,15 @@ class StockPicking(models.Model):
         string="ShipIT tracking codes",
         copy=False,
     )
+    shipit_tracking_url = fields.Char(
+        string="ShipIT tracking URL",
+        copy=False,
+    )
+    shipit_label_attachment_id = fields.Many2one(
+        comodel_name="ir.attachment",
+        string="ShipIT label attachment",
+        copy=False,
+    )
     shipit_payload = fields.Text(
         string="ShipIT payload",
         copy=False,

@@ -8,6 +8,7 @@
             <field name="origin" position="before">
                 <field name="shipit_shipment_id" optional="hide" />
                 <field name="shipit_tracking_codes" optional="hide" />
+                <field name="shipit_tracking_url" optional="hide" />
             </field>
         </field>
     </record>

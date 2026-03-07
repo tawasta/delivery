@@ -19,14 +19,19 @@ Configuration
 Usage
 =====
 
-This initial version provides provider and configuration scaffolding.
-Shipment API calls are implemented in a later commit.
+This version implements a first ShipIT happy path:
+
+1. Validate required sender/recipient/carrier fields
+2. Build shipment payload from picking data
+3. Create shipment via ShipIT API
+4. Store shipment id, tracking data and label attachment to picking
 
 Known issues / Roadmap
 ======================
 
-* Implement shipment creation
-* Implement tracking and label retrieval
+* Improve response mapping for endpoint-specific payloads
+* Add pickup point support
+* Add multi-package support
 
 Credits
 =======
