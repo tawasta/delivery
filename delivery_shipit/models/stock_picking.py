@@ -25,6 +25,10 @@ class StockPicking(models.Model):
         string="ShipIT payload",
         copy=False,
     )
+    shipit_response = fields.Text(
+        string="ShipIT response",
+        copy=False,
+    )
     shipit_last_error = fields.Text(
         string="ShipIT last error",
         copy=False,

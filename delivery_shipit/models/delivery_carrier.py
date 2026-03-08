@@ -360,6 +360,7 @@ class DeliveryCarrier(models.Model):
                 "tracking_number": False,
             }
             picking.shipit_last_error = False
+            picking.shipit_response = False
 
             payload = self._shipit_build_payload(picking)
             picking.shipit_payload = json.dumps(payload, indent=2)
@@ -375,6 +376,11 @@ class DeliveryCarrier(models.Model):
                         "message": str(error),
                     }
                 ) from error
+
+            if isinstance(response, dict | list):
+                picking.shipit_response = json.dumps(response, indent=2)
+            else:
+                picking.shipit_response = str(response)
 
             parsed = self._shipit_parse_response(response)
             tracking_codes = parsed["tracking_codes"]

@@ -19,6 +19,7 @@
                 />
                 <field name="shipit_last_error" readonly="1" />
                 <field name="shipit_payload" readonly="1" />
+                <field name="shipit_response" readonly="1" />
             </field>
         </field>
     </record>
