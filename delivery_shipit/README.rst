@@ -15,6 +15,7 @@ Configuration
 2. Create or open a carrier
 3. Set Provider to ``ShipIT``
 4. Fill in ShipIT configuration fields
+5. Optionally adjust advanced API settings (base URL, endpoints, auth mode, timeout)
 
 Usage
 =====

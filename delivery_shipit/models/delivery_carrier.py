@@ -22,6 +22,34 @@ class DeliveryCarrier(models.Model):
         ondelete={"shipit": "set default"},
     )
     shipit_api_key = fields.Char(string="ShipIT API key")
+    shipit_api_base_url = fields.Char(
+        string="ShipIT API base URL",
+        help="Optional override for ShipIT API base URL.",
+    )
+    shipit_auth_mode = fields.Selection(
+        string="ShipIT auth mode",
+        selection=[
+            ("both", "Bearer + X-API-Key"),
+            ("bearer", "Bearer only"),
+            ("x_api_key", "X-API-Key only"),
+        ],
+        default="both",
+        required=True,
+    )
+    shipit_create_endpoints = fields.Char(
+        string="ShipIT create endpoints",
+        default="shipments,create-shipment",
+        help="Comma-separated endpoint paths used for create shipment call.",
+    )
+    shipit_cancel_endpoint_template = fields.Char(
+        string="ShipIT cancel endpoint template",
+        default="shipments/{shipment_id}",
+        help="Endpoint template used for cancellation call.",
+    )
+    shipit_timeout_seconds = fields.Integer(
+        string="ShipIT timeout (seconds)",
+        default=30,
+    )
     shipit_reseller_id = fields.Char(string="ShipIT reseller ID")
     shipit_service_code = fields.Char(string="ShipIT service code")
     shipit_label_format = fields.Selection(
@@ -42,6 +70,11 @@ class DeliveryCarrier(models.Model):
         return {
             "api_key": self.shipit_api_key,
             "prod": self.prod_environment,
+            "base_url": (self.shipit_api_base_url or "").strip() or None,
+            "auth_mode": self.shipit_auth_mode,
+            "create_endpoints": self.shipit_create_endpoints,
+            "cancel_endpoint_template": self.shipit_cancel_endpoint_template,
+            "timeout": max(1, self.shipit_timeout_seconds or 30),
         }
 
     def _shipit_get_sender_partner(self, picking):

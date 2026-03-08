@@ -20,23 +20,56 @@ class ShipitAPIError(Exception):
 
 
 class ShipitRequest:
-    def __init__(self, api_key=None, prod=False, timeout=30):
+    def __init__(
+        self,
+        api_key=None,
+        prod=False,
+        timeout=30,
+        base_url=None,
+        auth_mode="both",
+        create_endpoints=None,
+        cancel_endpoint_template=None,
+    ):
         api_env = "prod" if prod else "test"
         self.api_key = api_key or ""
-        self.base_url = SHIPIT_API_BASE_URL[api_env]
+        self.base_url = (base_url or SHIPIT_API_BASE_URL[api_env]).rstrip("/")
+        self.auth_mode = auth_mode or "both"
+        self.create_endpoints = self._parse_create_endpoints(create_endpoints)
+        self.cancel_endpoint_template = (
+            cancel_endpoint_template or "shipments/{shipment_id}"
+        )
         self.timeout = timeout
+
+    def _parse_create_endpoints(self, create_endpoints):
+        if not create_endpoints:
+            return ["shipments", "create-shipment"]
+
+        if isinstance(create_endpoints, str):
+            values = [endpoint.strip() for endpoint in create_endpoints.split(",")]
+            return [endpoint for endpoint in values if endpoint]
+
+        if isinstance(create_endpoints, list | tuple):
+            return [str(endpoint).strip() for endpoint in create_endpoints if endpoint]
+
+        return ["shipments", "create-shipment"]
 
     def _get_endpoint_url(self, endpoint):
         endpoint = endpoint.lstrip("/")
         return f"{self.base_url}/{endpoint}"
 
     def _get_headers(self):
-        return {
-            "X-API-Key": self.api_key,
-            "Authorization": f"Bearer {self.api_key}",
+        headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
+
+        if self.auth_mode in ["both", "x_api_key"]:
+            headers["X-API-Key"] = self.api_key
+
+        if self.auth_mode in ["both", "bearer"]:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        return headers
 
     def _parse_response_content(self, response):
         try:
@@ -106,7 +139,7 @@ class ShipitRequest:
         return self._parse_response_content(response)
 
     def create_shipment(self, payload):
-        endpoints = ["shipments", "create-shipment"]
+        endpoints = self.create_endpoints
         last_error = None
 
         for endpoint in endpoints:
@@ -125,5 +158,13 @@ class ShipitRequest:
         raise ShipitAPIError(_("Unable to create shipment."))
 
     def cancel_shipment(self, shipment_id):
-        endpoint = self._get_endpoint_url(f"shipments/{shipment_id}")
+        try:
+            endpoint = self.cancel_endpoint_template.format(shipment_id=shipment_id)
+        except Exception as error:
+            raise ShipitAPIError(
+                _("Invalid ShipIT cancel endpoint template: %(message)s")
+                % {"message": str(error)}
+            ) from error
+
+        endpoint = self._get_endpoint_url(endpoint)
         return self._delete(endpoint)
