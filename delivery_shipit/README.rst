@@ -17,6 +17,9 @@ Configuration
 4. Fill in ShipIT configuration fields
 5. Optionally adjust advanced API settings (base URL, endpoints, auth mode, timeout)
 
+The module also installs a default delivery product and a ``ShipIT Default`` carrier
+template that can be used as a starting point.
+
 Usage
 =====
 

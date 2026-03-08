@@ -33,6 +33,7 @@
         "stock_delivery",
     ],
     "data": [
+        "data/delivery_carrier.xml",
         "views/delivery_carrier.xml",
         "views/stock_picking_form.xml",
         "views/stock_picking_tree.xml",
