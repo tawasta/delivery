@@ -41,6 +41,7 @@
                         <field name="shipit_cancel_endpoint_template" />
                         <field name="shipit_label_endpoint_template" />
                         <field name="shipit_timeout_seconds" />
+                        <field name="shipit_store_debug_payloads" />
                     </group>
                 </page>
             </xpath>

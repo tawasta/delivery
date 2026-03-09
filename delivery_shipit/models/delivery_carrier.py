@@ -55,6 +55,11 @@ class DeliveryCarrier(models.Model):
         string="ShipIT timeout (seconds)",
         default=30,
     )
+    shipit_store_debug_payloads = fields.Boolean(
+        string="Store ShipIT debug payloads",
+        help="Store request/response payloads to picking debug fields.",
+        default=False,
+    )
     shipit_reseller_id = fields.Char(string="ShipIT reseller ID")
     shipit_service_code = fields.Char(string="ShipIT service code")
     shipit_label_format = fields.Selection(
@@ -374,10 +379,13 @@ class DeliveryCarrier(models.Model):
                 "tracking_number": False,
             }
             picking.shipit_last_error = False
-            picking.shipit_response = False
+            if self.shipit_store_debug_payloads:
+                picking.shipit_payload = False
+                picking.shipit_response = False
 
             payload = self._shipit_build_payload(picking)
-            picking.shipit_payload = json.dumps(payload, indent=2)
+            if self.shipit_store_debug_payloads:
+                picking.shipit_payload = json.dumps(payload, indent=2)
 
             try:
                 response = shipit_request.create_shipment(payload)
@@ -416,10 +424,11 @@ class DeliveryCarrier(models.Model):
                         str(error),
                     )
 
-            if isinstance(response_bundle, dict | list):
-                picking.shipit_response = json.dumps(response_bundle, indent=2)
-            else:
-                picking.shipit_response = str(response_bundle)
+            if self.shipit_store_debug_payloads:
+                if isinstance(response_bundle, dict | list):
+                    picking.shipit_response = json.dumps(response_bundle, indent=2)
+                else:
+                    picking.shipit_response = str(response_bundle)
 
             if label_data:
                 self._shipit_create_label_attachment(
