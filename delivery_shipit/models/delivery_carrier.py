@@ -91,7 +91,15 @@ class DeliveryCarrier(models.Model):
         if not partner:
             return ""
         commercial_partner = partner.commercial_partner_id
-        return partner.email or commercial_partner.email or ""
+        partner_delivery_email = getattr(partner, "email_delivery", False)
+        commercial_delivery_email = getattr(commercial_partner, "email_delivery", False)
+        return (
+            partner_delivery_email
+            or partner.email
+            or commercial_delivery_email
+            or commercial_partner.email
+            or ""
+        )
 
     def _shipit_get_phone(self, partner):
         if not partner:
