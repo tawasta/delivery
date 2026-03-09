@@ -29,6 +29,7 @@ class ShipitRequest:
         auth_mode="both",
         create_endpoints=None,
         cancel_endpoint_template=None,
+        label_endpoint_template=None,
     ):
         api_env = "prod" if prod else "test"
         self.api_key = api_key or ""
@@ -37,6 +38,9 @@ class ShipitRequest:
         self.create_endpoints = self._parse_create_endpoints(create_endpoints)
         self.cancel_endpoint_template = (
             cancel_endpoint_template or "shipments/{shipment_id}"
+        )
+        self.label_endpoint_template = (
+            label_endpoint_template or "shipments/{shipment_id}/label"
         )
         self.timeout = timeout
 
@@ -123,6 +127,23 @@ class ShipitRequest:
         self._validate_response(response)
         return self._parse_response_content(response)
 
+    def _get(self, endpoint, params=None):
+        headers = self._get_headers()
+        try:
+            response = requests.get(
+                url=endpoint,
+                params=params,
+                headers=headers,
+                timeout=self.timeout,
+            )
+        except requests.RequestException as error:
+            raise ShipitAPIError(
+                _("ShipIT API request failed: %(message)s") % {"message": str(error)}
+            ) from error
+
+        self._validate_response(response)
+        return self._parse_response_content(response)
+
     def _delete(self, endpoint):
         headers = self._get_headers()
         try:
@@ -168,3 +189,15 @@ class ShipitRequest:
 
         endpoint = self._get_endpoint_url(endpoint)
         return self._delete(endpoint)
+
+    def get_label(self, shipment_id):
+        try:
+            endpoint = self.label_endpoint_template.format(shipment_id=shipment_id)
+        except Exception as error:
+            raise ShipitAPIError(
+                _("Invalid ShipIT label endpoint template: %(message)s")
+                % {"message": str(error)}
+            ) from error
+
+        endpoint = self._get_endpoint_url(endpoint)
+        return self._get(endpoint)

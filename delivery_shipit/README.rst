@@ -31,6 +31,7 @@ This version implements a first ShipIT happy path:
 4. Store shipment id, tracking data and label attachment to picking
 5. Trigger shipment creation from delivery ``Validate`` action for ShipIT carriers
 6. Store request/response debug payloads to picking fields
+7. Fallback to a separate label endpoint if create response has no label data
 
 Known issues / Roadmap
 ======================

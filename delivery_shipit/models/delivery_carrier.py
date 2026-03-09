@@ -46,6 +46,11 @@ class DeliveryCarrier(models.Model):
         default="shipments/{shipment_id}",
         help="Endpoint template used for cancellation call.",
     )
+    shipit_label_endpoint_template = fields.Char(
+        string="ShipIT label endpoint template",
+        default="shipments/{shipment_id}/label",
+        help="Endpoint template used for label fetch fallback call.",
+    )
     shipit_timeout_seconds = fields.Integer(
         string="ShipIT timeout (seconds)",
         default=30,
@@ -74,6 +79,7 @@ class DeliveryCarrier(models.Model):
             "auth_mode": self.shipit_auth_mode,
             "create_endpoints": self.shipit_create_endpoints,
             "cancel_endpoint_template": self.shipit_cancel_endpoint_template,
+            "label_endpoint_template": self.shipit_label_endpoint_template,
             "timeout": max(1, self.shipit_timeout_seconds or 30),
         }
 
@@ -377,13 +383,10 @@ class DeliveryCarrier(models.Model):
                     }
                 ) from error
 
-            if isinstance(response, dict | list):
-                picking.shipit_response = json.dumps(response, indent=2)
-            else:
-                picking.shipit_response = str(response)
-
+            response_bundle = {"create_shipment": response}
             parsed = self._shipit_parse_response(response)
             tracking_codes = parsed["tracking_codes"]
+            label_data = parsed["label_data"]
 
             if parsed["shipment_id"]:
                 picking.shipit_shipment_id = str(parsed["shipment_id"])
@@ -392,10 +395,28 @@ class DeliveryCarrier(models.Model):
                 values["tracking_number"] = tracking_codes.split(",")[0]
             if parsed["tracking_url"]:
                 picking.shipit_tracking_url = parsed["tracking_url"]
-            if parsed["label_data"]:
+
+            if not label_data and parsed["shipment_id"]:
+                try:
+                    label_response = shipit_request.get_label(parsed["shipment_id"])
+                    response_bundle["label"] = label_response
+                    label_data = self._shipit_extract_label_data(label_response)
+                except ShipitAPIError as error:
+                    _logger.info(
+                        "ShipIT label fetch fallback skipped for %s: %s",
+                        picking.name,
+                        str(error),
+                    )
+
+            if isinstance(response_bundle, dict | list):
+                picking.shipit_response = json.dumps(response_bundle, indent=2)
+            else:
+                picking.shipit_response = str(response_bundle)
+
+            if label_data:
                 self._shipit_create_label_attachment(
                     picking=picking,
-                    label_data=parsed["label_data"],
+                    label_data=label_data,
                     tracking_code=values["tracking_number"],
                 )
 
