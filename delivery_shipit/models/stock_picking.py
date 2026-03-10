@@ -41,8 +41,10 @@ class StockPicking(models.Model):
     def _shipit_send_before_validate(self):
         shipit_pickings = self.filtered(
             lambda p: p.carrier_id.delivery_type == "shipit"
+            and p.picking_type_code == "outgoing"
             and not p.shipit_delivery_done
             and not p.shipit_shipment_id
+            and p.state not in ("done", "cancel")
         )
 
         for picking in shipit_pickings:
