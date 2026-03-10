@@ -22,6 +22,21 @@ Configuration
 The module also installs a default delivery product and a ``ShipIT Default`` carrier
 template that can be used as a starting point.
 
+Local setup notes
+=================
+
+To use this addon in the current local workspace, Odoo must include both project
+and delivery addon paths. Example:
+
+* ``docker-compose.yml``:
+
+  * ``./project:/mnt/extra-addons``
+  * ``./delivery:/mnt/delivery-addons``
+
+* ``config/odoo.conf``:
+
+  * ``addons_path = /mnt/extra-addons,/mnt/delivery-addons``
+
 Usage
 =====
 
@@ -34,6 +49,21 @@ This version implements a first ShipIT happy path:
 5. Trigger shipment creation from delivery ``Validate`` action for ShipIT carriers
 6. Store request/response debug payloads to picking fields
 7. Fallback to a separate label endpoint if create response has no label data
+
+Manual test checklist
+=====================
+
+1. Create/verify a ShipIT carrier with API key, reseller id and service code.
+2. Create a delivery order with ShipIT as carrier.
+3. Run ``Validate`` on the delivery.
+4. Verify:
+
+   * ``shipit_shipment_id`` is set
+   * ``shipit_tracking_codes`` is set
+   * label attachment exists on the picking
+
+5. Negative test: remove recipient phone/email and validate that user-facing
+   validation error is shown before API call.
 
 Known issues / Roadmap
 ======================
