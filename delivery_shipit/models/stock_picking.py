@@ -1,9 +1,12 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    shipit_is_carrier = fields.Boolean(
+        compute="_compute_shipit_is_carrier",
+    )
     shipit_shipment_id = fields.Char(
         string="ShipIT shipment ID",
         copy=False,
@@ -37,6 +40,11 @@ class StockPicking(models.Model):
         default=False,
         copy=False,
     )
+
+    @api.depends("carrier_id")
+    def _compute_shipit_is_carrier(self):
+        for picking in self:
+            picking.shipit_is_carrier = picking.carrier_id.delivery_type == "shipit"
 
     def _shipit_send_before_validate(self):
         shipit_pickings = self.filtered(

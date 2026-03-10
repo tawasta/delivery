@@ -9,41 +9,42 @@
         />
         <field name="arch" type="xml">
             <field name="origin" position="after">
+                <field name="shipit_is_carrier" invisible="1" />
                 <field
                     name="shipit_shipment_id"
                     readonly="state == 'done'"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_shipment_id"
+                    invisible="not shipit_is_carrier and not shipit_shipment_id"
                 />
                 <field
                     name="shipit_tracking_codes"
                     readonly="state == 'done'"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_tracking_codes"
+                    invisible="not shipit_is_carrier and not shipit_tracking_codes"
                 />
                 <field
                     name="shipit_tracking_url"
                     readonly="1"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_tracking_url"
+                    invisible="not shipit_is_carrier and not shipit_tracking_url"
                 />
                 <field
                     name="shipit_label_attachment_id"
                     readonly="1"
                     options="{'no_create': True}"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_label_attachment_id"
+                    invisible="not shipit_is_carrier and not shipit_label_attachment_id"
                 />
                 <field
                     name="shipit_last_error"
                     readonly="1"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_last_error"
+                    invisible="not shipit_is_carrier and not shipit_last_error"
                 />
                 <field
                     name="shipit_payload"
                     readonly="1"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_payload"
+                    invisible="not shipit_is_carrier and not shipit_payload"
                 />
                 <field
                     name="shipit_response"
                     readonly="1"
-                    invisible="carrier_id.delivery_type != 'shipit' and not shipit_response"
+                    invisible="not shipit_is_carrier and not shipit_response"
                 />
             </field>
         </field>
