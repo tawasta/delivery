@@ -441,6 +441,17 @@ class DeliveryCarrier(models.Model):
 
         return result
 
+    def shipit_rate_shipment(self, order):
+        self.ensure_one()
+
+        price = self.fixed_price or 0.0
+        return {
+            "success": True,
+            "price": price,
+            "error_message": False,
+            "warning_message": False,
+        }
+
     def shipit_get_tracking_link(self, picking):
         if picking.shipit_tracking_url:
             return picking.shipit_tracking_url
