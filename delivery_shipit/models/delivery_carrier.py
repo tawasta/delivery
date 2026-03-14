@@ -139,11 +139,13 @@ class DeliveryCarrier(models.Model):
             or commercial_partner.name
             or "",
             "contactName": partner.name or commercial_partner.name or "",
-            "street1": partner.street or "",
-            "street2": partner.street2 or "",
-            "postalCode": partner.zip or "",
-            "city": partner.city or "",
-            "countryCode": partner.country_id.code or "",
+            "street1": partner.street or commercial_partner.street or "",
+            "street2": partner.street2 or commercial_partner.street2 or "",
+            "postalCode": partner.zip or commercial_partner.zip or "",
+            "city": partner.city or commercial_partner.city or "",
+            "countryCode": partner.country_id.code
+            or commercial_partner.country_id.code
+            or "",
             "email": self._shipit_get_email(partner),
             "phone": self._shipit_get_phone(partner),
         }
