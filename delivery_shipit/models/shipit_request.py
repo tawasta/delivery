@@ -81,6 +81,39 @@ class ShipitRequest:
         except Exception:
             return response.text
 
+    def _raise_if_api_payload_error(self, content):
+        if not isinstance(content, dict):
+            return
+
+        has_error = content.get("error")
+        status_value = content.get("status")
+        success_value = content.get("success")
+
+        is_error_status = status_value in [0, "0", False] or success_value is False
+        if not has_error and not is_error_status:
+            return
+
+        if isinstance(has_error, dict):
+            error_message = has_error.get("message") or ""
+            error_code = has_error.get("code")
+        else:
+            error_message = str(has_error or "")
+            error_code = None
+
+        if not error_message:
+            error_message = _("ShipIT API returned an error response.")
+
+        if error_code not in [None, ""]:
+            error_message = _("[Code %(code)s] %(message)s") % {
+                "code": error_code,
+                "message": error_message,
+            }
+
+        raise ShipitAPIError(
+            message=error_message,
+            response_body=content,
+        )
+
     def _validate_response(self, response):
         if response.status_code in [200, 201, 202, 204]:
             return True
@@ -125,7 +158,9 @@ class ShipitRequest:
             ) from error
 
         self._validate_response(response)
-        return self._parse_response_content(response)
+        content = self._parse_response_content(response)
+        self._raise_if_api_payload_error(content)
+        return content
 
     def _get(self, endpoint, params=None):
         headers = self._get_headers()
@@ -142,7 +177,9 @@ class ShipitRequest:
             ) from error
 
         self._validate_response(response)
-        return self._parse_response_content(response)
+        content = self._parse_response_content(response)
+        self._raise_if_api_payload_error(content)
+        return content
 
     def _delete(self, endpoint):
         headers = self._get_headers()
@@ -168,7 +205,12 @@ class ShipitRequest:
             try:
                 return self._post(endpoint_url, payload=payload)
             except ShipitAPIError as error:
-                if error.status_code == 404:
+                error_message = str(error).lower()
+                method_not_supported = (
+                    "method is not supported" in error_message
+                    or "method not allowed" in error_message
+                )
+                if error.status_code == 404 or method_not_supported:
                     last_error = error
                     continue
                 raise
