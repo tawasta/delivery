@@ -29,27 +29,26 @@ class DeliveryCarrier(models.Model):
     shipit_auth_mode = fields.Selection(
         string="ShipIT auth mode",
         selection=[
-            ("both", "Bearer + X-API-Key"),
-            ("bearer", "Bearer only"),
-            ("x_api_key", "X-API-Key only"),
+            ("x_shipit_key", "X-SHIPIT-KEY"),
+            ("both", "X-SHIPIT-KEY + Bearer + X-API-Key"),
+            ("bearer", "Bearer (legacy)"),
+            ("x_api_key", "X-API-Key (legacy)"),
         ],
-        default="both",
+        default="x_shipit_key",
         required=True,
     )
     shipit_create_endpoints = fields.Char(
         string="ShipIT create endpoints",
-        default="shipments,create-shipment",
-        help="Comma-separated endpoint paths used for create shipment call.",
+        default="shipment",
+        help="Comma-separated endpoint paths used for create shipment PUT call.",
     )
     shipit_cancel_endpoint_template = fields.Char(
         string="ShipIT cancel endpoint template",
-        default="shipments/{shipment_id}",
-        help="Endpoint template used for cancellation call.",
+        help="Optional endpoint template for cancellation call.",
     )
     shipit_label_endpoint_template = fields.Char(
         string="ShipIT label endpoint template",
-        default="shipments/{shipment_id}/label",
-        help="Endpoint template used for label fetch fallback call.",
+        help="Optional endpoint template for legacy label fetch fallback.",
     )
     shipit_timeout_seconds = fields.Integer(
         string="ShipIT timeout (seconds)",
@@ -61,7 +60,10 @@ class DeliveryCarrier(models.Model):
         default=False,
     )
     shipit_reseller_id = fields.Char(string="ShipIT reseller ID")
-    shipit_service_code = fields.Char(string="ShipIT service code")
+    shipit_service_code = fields.Char(
+        string="ShipIT service ID",
+        help="ShipIT v1 serviceId, e.g. posti.po2103",
+    )
     shipit_label_format = fields.Selection(
         string="ShipIT label format",
         selection=[
@@ -122,32 +124,50 @@ class DeliveryCarrier(models.Model):
         if not partner:
             return {
                 "name": "",
-                "contactName": "",
-                "street1": "",
-                "street2": "",
-                "postalCode": "",
-                "city": "",
-                "countryCode": "",
                 "email": "",
                 "phone": "",
+                "address": "",
+                "city": "",
+                "postcode": "",
+                "country": "",
+                "address2": "",
+                "state": "",
+                "isCompany": False,
+                "contactPerson": "",
+                "vatNumber": "",
+                "eoriNumber": "",
             }
 
         commercial_partner = partner.commercial_partner_id
+        country = partner.country_id.code or commercial_partner.country_id.code or ""
+        state = (
+            partner.state_id.code
+            or partner.state_id.name
+            or commercial_partner.state_id.code
+            or commercial_partner.state_id.name
+            or ""
+        )
         return {
             "name": partner.commercial_company_name
             or partner.name
             or commercial_partner.name
             or "",
-            "contactName": partner.name or commercial_partner.name or "",
-            "street1": partner.street or commercial_partner.street or "",
-            "street2": partner.street2 or commercial_partner.street2 or "",
-            "postalCode": partner.zip or commercial_partner.zip or "",
-            "city": partner.city or commercial_partner.city or "",
-            "countryCode": partner.country_id.code
-            or commercial_partner.country_id.code
-            or "",
             "email": self._shipit_get_email(partner),
             "phone": self._shipit_get_phone(partner),
+            "address": partner.street or commercial_partner.street or "",
+            "city": partner.city or commercial_partner.city or "",
+            "postcode": partner.zip or commercial_partner.zip or "",
+            "country": country,
+            "address2": partner.street2 or commercial_partner.street2 or "",
+            "state": state,
+            "isCompany": bool(
+                partner.is_company
+                or commercial_partner.is_company
+                or partner.commercial_company_name
+            ),
+            "contactPerson": partner.name or commercial_partner.name or "",
+            "vatNumber": partner.vat or commercial_partner.vat or "",
+            "eoriNumber": "",
         }
 
     def _shipit_get_picking_weight(self, picking):
@@ -183,35 +203,33 @@ class DeliveryCarrier(models.Model):
 
         return values
 
-    def _shipit_validate_required_fields(self, picking, sender, recipient, weight):
+    def _shipit_validate_required_fields(self, picking, sender, receiver, weight):
         missing_fields = []
 
         if not self.shipit_api_key:
             missing_fields.append(_("Carrier ShipIT API key"))
-        if not self.shipit_reseller_id:
-            missing_fields.append(_("Carrier ShipIT reseller ID"))
         if not self.shipit_service_code:
-            missing_fields.append(_("Carrier ShipIT service code"))
+            missing_fields.append(_("Carrier ShipIT service ID"))
 
         required_sender_fields = {
             _("Sender name"): sender.get("name"),
-            _("Sender street"): sender.get("street1"),
-            _("Sender postal code"): sender.get("postalCode"),
+            _("Sender street"): sender.get("address"),
+            _("Sender postal code"): sender.get("postcode"),
             _("Sender city"): sender.get("city"),
-            _("Sender country code"): sender.get("countryCode"),
+            _("Sender country code"): sender.get("country"),
         }
         for label, value in required_sender_fields.items():
             if not value:
                 missing_fields.append(label)
 
         required_recipient_fields = {
-            _("Recipient name"): recipient.get("name"),
-            _("Recipient street"): recipient.get("street1"),
-            _("Recipient postal code"): recipient.get("postalCode"),
-            _("Recipient city"): recipient.get("city"),
-            _("Recipient country code"): recipient.get("countryCode"),
-            _("Recipient email"): recipient.get("email"),
-            _("Recipient phone"): recipient.get("phone"),
+            _("Recipient name"): receiver.get("name"),
+            _("Recipient street"): receiver.get("address"),
+            _("Recipient postal code"): receiver.get("postcode"),
+            _("Recipient city"): receiver.get("city"),
+            _("Recipient country code"): receiver.get("country"),
+            _("Recipient email"): receiver.get("email"),
+            _("Recipient phone"): receiver.get("phone"),
         }
         for label, value in required_recipient_fields.items():
             if not value:
@@ -235,30 +253,39 @@ class DeliveryCarrier(models.Model):
         recipient_partner = picking.partner_id
 
         sender = self._shipit_map_address(sender_partner)
-        recipient = self._shipit_map_address(recipient_partner)
+        receiver = self._shipit_map_address(recipient_partner)
         weight = self._shipit_get_picking_weight(picking)
         dimensions = self._shipit_get_package_dimensions(picking)
 
-        self._shipit_validate_required_fields(picking, sender, recipient, weight)
+        self._shipit_validate_required_fields(picking, sender, receiver, weight)
 
-        shipment = {
-            "resellerId": self.shipit_reseller_id,
-            "serviceCode": self.shipit_service_code,
+        payload = {
             "reference": picking.origin or picking.name,
             "sender": sender,
-            "recipient": recipient,
-            "label": {"format": self.shipit_label_format},
+            "receiver": receiver,
             "parcels": [
                 {
+                    "type": "PACKAGE",
                     "weight": weight,
                     "length": dimensions["length"],
                     "width": dimensions["width"],
                     "height": dimensions["height"],
+                    "copies": 1,
                 }
             ],
+            "serviceId": self.shipit_service_code,
+            "externalId": picking.name,
+            "sendOrderConfirmationEmail": False,
         }
 
-        return {"shipments": [shipment]}
+        reseller_id = (self.shipit_reseller_id or "").strip()
+        if reseller_id:
+            try:
+                payload["resellerId"] = int(reseller_id)
+            except ValueError:
+                payload["resellerId"] = reseller_id
+
+        return payload
 
     @classmethod
     def _shipit_find_value(cls, value, keys):
@@ -296,6 +323,16 @@ class DeliveryCarrier(models.Model):
             label_data = label_data[0] if label_data else False
         return label_data if isinstance(label_data, str) else False
 
+    def _shipit_extract_first_url(self, value):
+        if isinstance(value, list):
+            for item in value:
+                if isinstance(item, str) and item:
+                    return item
+            return False
+        if isinstance(value, str):
+            return value
+        return False
+
     def _shipit_parse_response(self, response):
         tracking_value = self._shipit_find_value(
             response,
@@ -316,22 +353,36 @@ class DeliveryCarrier(models.Model):
         else:
             tracking_codes = False
 
+        tracking_url_value = self._shipit_find_value(
+            response,
+            {"trackingUrl", "trackingURL", "tracking_link", "trackingUrls"},
+        )
+        label_url_value = self._shipit_find_value(response, {"freightDoc"})
+
         return {
             "shipment_id": self._shipit_find_value(
                 response,
-                {"id", "shipmentId", "shipment_id", "shipmentNo"},
+                {
+                    "shipmentNumber",
+                    "shipmentId",
+                    "shipment_id",
+                    "shipmentNo",
+                    "id",
+                    "orderId",
+                },
             ),
             "tracking_codes": tracking_codes,
-            "tracking_url": self._shipit_find_value(
-                response,
-                {"trackingUrl", "trackingURL", "tracking_link"},
-            ),
+            "tracking_url": self._shipit_extract_first_url(tracking_url_value),
             "label_data": self._shipit_extract_label_data(response),
+            "label_url": self._shipit_extract_first_url(label_url_value),
         }
 
     def _shipit_normalize_attachment_data(self, label_data):
         if not label_data:
             return False
+
+        if isinstance(label_data, bytes):
+            return base64.b64encode(label_data).decode("utf-8")
 
         normalized = label_data
         if normalized.startswith("data:") and "," in normalized:
@@ -414,7 +465,22 @@ class DeliveryCarrier(models.Model):
             if parsed["tracking_url"]:
                 picking.shipit_tracking_url = parsed["tracking_url"]
 
-            if not label_data and parsed["shipment_id"]:
+            if not label_data and parsed["label_url"]:
+                try:
+                    label_data = shipit_request.download_document(parsed["label_url"])
+                    response_bundle["label_document_url"] = parsed["label_url"]
+                except ShipitAPIError as error:
+                    _logger.info(
+                        "ShipIT label document download skipped for %s: %s",
+                        picking.name,
+                        str(error),
+                    )
+
+            if (
+                not label_data
+                and parsed["shipment_id"]
+                and self.shipit_label_endpoint_template
+            ):
                 try:
                     label_response = shipit_request.get_label(parsed["shipment_id"])
                     response_bundle["label"] = label_response

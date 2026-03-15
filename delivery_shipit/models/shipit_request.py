@@ -26,7 +26,7 @@ class ShipitRequest:
         prod=False,
         timeout=30,
         base_url=None,
-        auth_mode="both",
+        auth_mode="x_shipit_key",
         create_endpoints=None,
         cancel_endpoint_template=None,
         label_endpoint_template=None,
@@ -34,43 +34,53 @@ class ShipitRequest:
         api_env = "prod" if prod else "test"
         self.api_key = api_key or ""
         self.base_url = (base_url or SHIPIT_API_BASE_URL[api_env]).rstrip("/")
-        self.auth_mode = auth_mode or "both"
+        self.auth_mode = auth_mode or "x_shipit_key"
         self.create_endpoints = self._parse_create_endpoints(create_endpoints)
         self.cancel_endpoint_template = (
-            cancel_endpoint_template or "shipments/{shipment_id}"
+            cancel_endpoint_template.strip() if cancel_endpoint_template else ""
         )
         self.label_endpoint_template = (
-            label_endpoint_template or "shipments/{shipment_id}/label"
+            label_endpoint_template.strip() if label_endpoint_template else ""
         )
         self.timeout = timeout
 
     def _parse_create_endpoints(self, create_endpoints):
         if not create_endpoints:
-            return ["shipments", "create-shipment"]
+            return ["shipment"]
 
         if isinstance(create_endpoints, str):
             values = [endpoint.strip() for endpoint in create_endpoints.split(",")]
-            return [endpoint for endpoint in values if endpoint]
+            endpoints = [endpoint.lstrip("/") for endpoint in values if endpoint]
+        elif isinstance(create_endpoints, list | tuple):
+            endpoints = [
+                str(endpoint).strip().lstrip("/")
+                for endpoint in create_endpoints
+                if endpoint
+            ]
+        else:
+            endpoints = ["shipment"]
 
-        if isinstance(create_endpoints, list | tuple):
-            return [str(endpoint).strip() for endpoint in create_endpoints if endpoint]
+        if "shipment" not in endpoints:
+            endpoints.append("shipment")
 
-        return ["shipments", "create-shipment"]
+        return endpoints
 
     def _get_endpoint_url(self, endpoint):
         endpoint = endpoint.lstrip("/")
         return f"{self.base_url}/{endpoint}"
 
     def _get_headers(self):
+        mode = (self.auth_mode or "x_shipit_key").strip()
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
+            "X-SHIPIT-KEY": self.api_key,
         }
 
-        if self.auth_mode in ["both", "x_api_key"]:
+        if mode in ["both", "x_api_key"]:
             headers["X-API-Key"] = self.api_key
 
-        if self.auth_mode in ["both", "bearer"]:
+        if mode in ["both", "bearer"]:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
         return headers
@@ -162,6 +172,29 @@ class ShipitRequest:
         self._raise_if_api_payload_error(content)
         return content
 
+    def _put(self, endpoint, payload=None, params=None):
+        headers = self._get_headers()
+
+        _logger.debug("ShipIT PUT endpoint=%s payload=%s", endpoint, payload)
+
+        try:
+            response = requests.put(
+                url=endpoint,
+                json=payload,
+                params=params,
+                headers=headers,
+                timeout=self.timeout,
+            )
+        except requests.RequestException as error:
+            raise ShipitAPIError(
+                _("ShipIT API request failed: %(message)s") % {"message": str(error)}
+            ) from error
+
+        self._validate_response(response)
+        content = self._parse_response_content(response)
+        self._raise_if_api_payload_error(content)
+        return content
+
     def _get(self, endpoint, params=None):
         headers = self._get_headers()
         try:
@@ -194,7 +227,9 @@ class ShipitRequest:
                 _("ShipIT API request failed: %(message)s") % {"message": str(error)}
             ) from error
         self._validate_response(response)
-        return self._parse_response_content(response)
+        content = self._parse_response_content(response)
+        self._raise_if_api_payload_error(content)
+        return content
 
     def create_shipment(self, payload):
         endpoints = self.create_endpoints
@@ -203,14 +238,14 @@ class ShipitRequest:
         for endpoint in endpoints:
             endpoint_url = self._get_endpoint_url(endpoint)
             try:
-                return self._post(endpoint_url, payload=payload)
+                return self._put(endpoint_url, payload=payload)
             except ShipitAPIError as error:
                 error_message = str(error).lower()
                 method_not_supported = (
                     "method is not supported" in error_message
                     or "method not allowed" in error_message
                 )
-                if error.status_code == 404 or method_not_supported:
+                if error.status_code in [404, 405] or method_not_supported:
                     last_error = error
                     continue
                 raise
@@ -221,6 +256,9 @@ class ShipitRequest:
         raise ShipitAPIError(_("Unable to create shipment."))
 
     def cancel_shipment(self, shipment_id):
+        if not self.cancel_endpoint_template:
+            raise ShipitAPIError(_("ShipIT cancel endpoint is not configured."))
+
         try:
             endpoint = self.cancel_endpoint_template.format(shipment_id=shipment_id)
         except Exception as error:
@@ -233,6 +271,9 @@ class ShipitRequest:
         return self._delete(endpoint)
 
     def get_label(self, shipment_id):
+        if not self.label_endpoint_template:
+            raise ShipitAPIError(_("ShipIT label endpoint is not configured."))
+
         try:
             endpoint = self.label_endpoint_template.format(shipment_id=shipment_id)
         except Exception as error:
@@ -243,3 +284,20 @@ class ShipitRequest:
 
         endpoint = self._get_endpoint_url(endpoint)
         return self._get(endpoint)
+
+    def download_document(self, document_url):
+        headers = self._get_headers()
+        try:
+            response = requests.get(
+                url=document_url,
+                headers=headers,
+                timeout=self.timeout,
+            )
+        except requests.RequestException as error:
+            raise ShipitAPIError(
+                _("ShipIT document download failed: %(message)s")
+                % {"message": str(error)}
+            ) from error
+
+        self._validate_response(response)
+        return response.content

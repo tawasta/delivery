@@ -44,17 +44,18 @@ This version implements a first ShipIT happy path:
 
 1. Validate required sender/recipient/carrier fields
 2. Build shipment payload from picking data
-3. Create shipment via ShipIT API
+3. Create shipment via ShipIT v1 API (``PUT /v1/shipment`` with ``X-SHIPIT-KEY``)
 4. Store shipment id, tracking data and label attachment to picking
 5. Trigger shipment creation from delivery ``Validate`` action for ShipIT carriers
 6. Store request/response debug payloads to picking fields
-7. Fallback to a separate label endpoint if create response has no label data
-8. Only trigger API calls automatically for outgoing pickings
+7. Download label document from ``freightDoc`` URL when available
+8. Optional fallback to separate label endpoint if configured
+9. Only trigger API calls automatically for outgoing pickings
 
 Manual test checklist
 =====================
 
-1. Create/verify a ShipIT carrier with API key, reseller id and service code.
+1. Create/verify a ShipIT carrier with API key and service ID (reseller ID optional).
 2. Create a delivery order with ShipIT as carrier.
 3. Run ``Validate`` on the delivery.
 4. Verify:
@@ -69,7 +70,6 @@ Manual test checklist
 Known issues / Roadmap
 ======================
 
-* Improve response mapping for endpoint-specific payloads
 * Add pickup point support
 * Add multi-package support
 
