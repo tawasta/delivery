@@ -301,3 +301,87 @@ class ShipitRequest:
 
         self._validate_response(response)
         return response.content
+
+    def _normalize_service_ids(self, service_ids):
+        if not service_ids:
+            return []
+
+        if isinstance(service_ids, str):
+            values = [service_id.strip() for service_id in service_ids.split(",")]
+            return [service_id for service_id in values if service_id]
+
+        if isinstance(service_ids, list | tuple):
+            return [str(service_id).strip() for service_id in service_ids if service_id]
+
+        return [str(service_ids).strip()]
+
+    @staticmethod
+    def _normalize_service_point(point):
+        if not isinstance(point, dict):
+            return {}
+
+        return {
+            "id": point.get("id"),
+            "name": point.get("name"),
+            "address": point.get("address1"),
+            "zipcode": point.get("zipcode"),
+            "city": point.get("city"),
+            "country_code": point.get("countryCode"),
+            "service_id": point.get("serviceId"),
+            "carrier": point.get("carrier"),
+            "distance_meters": point.get("distanceInMeters"),
+            "distance_kilometers": point.get("distanceInKilometers"),
+            "latitude": point.get("latitude"),
+            "longitude": point.get("longitude"),
+            "metadata": point.get("metadata"),
+            "raw": point,
+        }
+
+    def search_service_points(
+        self,
+        postcode,
+        country_code,
+        service_ids,
+        point_type="service_point",
+        limit=None,
+        latitude=None,
+        longitude=None,
+        exclude_outdoor_lockers=False,
+    ):
+        service_ids = self._normalize_service_ids(service_ids)
+        if not service_ids:
+            raise ShipitAPIError(_("ShipIT service point search requires service IDs."))
+
+        payload = {
+            "postcode": str(postcode or "").strip(),
+            "country": str(country_code or "").strip(),
+            "serviceId": service_ids,
+            "type": point_type or "service_point",
+        }
+
+        if not payload["postcode"] or not payload["country"]:
+            raise ShipitAPIError(
+                _("ShipIT service point search requires postcode and country.")
+            )
+
+        if limit:
+            payload["limit"] = int(limit)
+
+        if latitude not in [None, ""] and longitude not in [None, ""]:
+            payload["latitude"] = float(latitude)
+            payload["longitude"] = float(longitude)
+
+        if exclude_outdoor_lockers:
+            payload["excludeOutdoorLockers"] = True
+
+        endpoint = self._get_endpoint_url("agents")
+        content = self._post(endpoint, payload=payload)
+
+        if not isinstance(content, dict):
+            return []
+
+        locations = content.get("locations")
+        if not isinstance(locations, list):
+            return []
+
+        return [self._normalize_service_point(point) for point in locations if point]
