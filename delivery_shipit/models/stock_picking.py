@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class StockPicking(models.Model):
@@ -22,6 +23,34 @@ class StockPicking(models.Model):
     shipit_label_attachment_id = fields.Many2one(
         comodel_name="ir.attachment",
         string="ShipIT label attachment",
+        copy=False,
+    )
+    shipit_pickup_point_id = fields.Char(
+        string="ShipIT pickup point ID",
+        copy=False,
+    )
+    shipit_pickup_point_name = fields.Char(
+        string="ShipIT pickup point name",
+        copy=False,
+    )
+    shipit_pickup_point_address = fields.Char(
+        string="ShipIT pickup point address",
+        copy=False,
+    )
+    shipit_pickup_point_zipcode = fields.Char(
+        string="ShipIT pickup point ZIP",
+        copy=False,
+    )
+    shipit_pickup_point_city = fields.Char(
+        string="ShipIT pickup point city",
+        copy=False,
+    )
+    shipit_pickup_point_country_code = fields.Char(
+        string="ShipIT pickup point country",
+        copy=False,
+    )
+    shipit_pickup_point_service_id = fields.Char(
+        string="ShipIT pickup point service ID",
         copy=False,
     )
     shipit_payload = fields.Text(
@@ -67,3 +96,25 @@ class StockPicking(models.Model):
     def button_validate(self):
         self._shipit_send_before_validate()
         return super().button_validate()
+
+    def action_open_shipit_pickup_point_wizard(self):
+        self.ensure_one()
+
+        if self.carrier_id.delivery_type != "shipit":
+            raise UserError(
+                _("ShipIT pickup point search is available only for ShipIT carrier.")
+            )
+
+        view = self.env.ref("delivery_shipit.view_shipit_pickup_point_wizard")
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("ShipIT pickup points"),
+            "res_model": "shipit.pickup.point.wizard",
+            "view_mode": "form",
+            "view_id": view.id,
+            "target": "new",
+            "context": {
+                "active_model": "stock.picking",
+                "active_id": self.id,
+            },
+        }

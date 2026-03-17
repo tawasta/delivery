@@ -10,9 +10,51 @@
         <field name="arch" type="xml">
             <field name="origin" position="after">
                 <field name="shipit_is_carrier" invisible="1" />
+                <button
+                    name="action_open_shipit_pickup_point_wizard"
+                    string="Hae noutopiste"
+                    type="object"
+                    class="btn-secondary"
+                    invisible="not shipit_is_carrier or state in ('done', 'cancel')"
+                />
                 <field
                     name="shipit_shipment_id"
                     readonly="state == 'done'"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_id"
+                    readonly="1"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_name"
+                    readonly="1"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_address"
+                    readonly="1"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_zipcode"
+                    readonly="1"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_city"
+                    readonly="1"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_country_code"
+                    readonly="1"
+                    invisible="not shipit_is_carrier"
+                />
+                <field
+                    name="shipit_pickup_point_service_id"
+                    readonly="1"
                     invisible="not shipit_is_carrier"
                 />
                 <field
