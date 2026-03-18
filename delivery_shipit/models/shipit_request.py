@@ -337,6 +337,37 @@ class ShipitRequest:
             "raw": point,
         }
 
+    @staticmethod
+    def _normalize_list_method(method):
+        if not isinstance(method, dict):
+            return {}
+
+        service_id = str(method.get("serviceId") or "").strip()
+        if not service_id:
+            return {}
+
+        return {
+            "service_id": service_id,
+            "name": str(method.get("name") or service_id).strip(),
+            "carrier": str(
+                method.get("carrier") or method.get("carrierId") or ""
+            ).strip(),
+            "raw": method,
+        }
+
+    def list_methods(self):
+        endpoint = self._get_endpoint_url("list-methods")
+        content = self._get(endpoint)
+
+        if not isinstance(content, list):
+            return []
+
+        return [
+            method
+            for method in (self._normalize_list_method(item) for item in content)
+            if method
+        ]
+
     def search_service_points(
         self,
         postcode,

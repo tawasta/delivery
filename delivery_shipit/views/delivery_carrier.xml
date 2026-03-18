@@ -19,16 +19,18 @@
                             password="1"
                             required="delivery_type == 'shipit'"
                         />
-                        <field name="shipit_auth_mode" />
                         <field
                             name="shipit_reseller_id"
                             required="delivery_type == 'shipit'"
                         />
                         <field
-                            name="shipit_service_code"
+                            name="shipit_service_option_ids"
+                            widget="many2many_tags"
+                            options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
                             required="delivery_type == 'shipit'"
                         />
-                        <field name="shipit_label_format" />
+                        <field name="shipit_service_code" invisible="1" />
+                        <field name="shipit_require_pickup_point" />
                     </group>
                     <group name="shipit_default_dimensions" string="Default dimensions">
                         <field name="shipit_default_length_cm" />
@@ -36,11 +38,6 @@
                         <field name="shipit_default_height_cm" />
                     </group>
                     <group name="shipit_advanced_api" string="Advanced API settings">
-                        <field name="shipit_api_base_url" />
-                        <field name="shipit_create_endpoints" />
-                        <field name="shipit_cancel_endpoint_template" />
-                        <field name="shipit_label_endpoint_template" />
-                        <field name="shipit_timeout_seconds" />
                         <field name="shipit_store_debug_payloads" />
                     </group>
                 </page>

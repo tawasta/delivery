@@ -9,10 +9,14 @@
 
                 <group string="Search parameters">
                     <field name="postcode" />
-                    <field name="country_code" />
-                    <field name="service_ids" />
+                    <field name="available_service_option_ids" invisible="1" />
+                    <field
+                        name="service_option_ids"
+                        widget="many2many_tags"
+                        domain="[('id', 'in', available_service_option_ids)]"
+                        options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                    />
                     <field name="point_type" />
-                    <field name="limit" />
                 </group>
 
                 <div class="oe_title">
@@ -35,7 +39,7 @@
                         <field name="address" />
                         <field name="zipcode" />
                         <field name="city" />
-                        <field name="service_id" />
+                        <field name="service_name" />
                         <field name="distance_kilometers" />
                     </tree>
                 </field>

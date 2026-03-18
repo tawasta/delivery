@@ -118,3 +118,19 @@ class StockPicking(models.Model):
                 "active_id": self.id,
             },
         }
+
+    def action_clear_shipit_pickup_point(self):
+        self.ensure_one()
+
+        self.write(
+            {
+                "shipit_pickup_point_id": False,
+                "shipit_pickup_point_name": False,
+                "shipit_pickup_point_address": False,
+                "shipit_pickup_point_zipcode": False,
+                "shipit_pickup_point_city": False,
+                "shipit_pickup_point_country_code": False,
+                "shipit_pickup_point_service_id": False,
+            }
+        )
+        return True

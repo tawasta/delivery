@@ -34,8 +34,10 @@
     ],
     "data": [
         "data/delivery_carrier.xml",
+        "data/shipit_service_option.xml",
         "security/ir.model.access.csv",
         "views/delivery_carrier.xml",
+        "views/choose_delivery_carrier.xml",
         "views/stock_picking_form.xml",
         "views/stock_picking_tree.xml",
         "wizards/shipit_pickup_point_wizard.xml",

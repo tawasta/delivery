@@ -3,6 +3,9 @@ from odoo.exceptions import UserError
 
 from ..models.shipit_request import ShipitAPIError, ShipitRequest
 
+PICKUP_POINT_COUNTRY_CODE = "FI"
+PICKUP_POINT_LIMIT = 10
+
 
 class ShipitPickupPointWizard(models.TransientModel):
     _name = "shipit.pickup.point.wizard"
@@ -16,12 +19,19 @@ class ShipitPickupPointWizard(models.TransientModel):
         required=True,
     )
     country_code = fields.Char(
+        default=PICKUP_POINT_COUNTRY_CODE,
         required=True,
+        readonly=True,
     )
-    service_ids = fields.Char(
+    service_option_ids = fields.Many2many(
+        comodel_name="shipit.service.option",
         string="Service IDs",
         required=True,
-        help="Comma-separated ShipIT serviceId values used for pickup point search.",
+        help="ShipIT serviceId values used for pickup point search.",
+    )
+    available_service_option_ids = fields.Many2many(
+        comodel_name="shipit.service.option",
+        compute="_compute_available_service_option_ids",
     )
     point_type = fields.Selection(
         selection=[
@@ -34,7 +44,9 @@ class ShipitPickupPointWizard(models.TransientModel):
         required=True,
     )
     limit = fields.Integer(
-        default=10,
+        default=PICKUP_POINT_LIMIT,
+        required=True,
+        readonly=True,
     )
     line_ids = fields.One2many(
         comodel_name="shipit.pickup.point.wizard.line",
@@ -63,14 +75,32 @@ class ShipitPickupPointWizard(models.TransientModel):
         receiver_partner = picking.partner_id
         commercial_partner = receiver_partner.commercial_partner_id
         postcode = receiver_partner.zip or commercial_partner.zip or ""
-        country_code = (
-            receiver_partner.country_id.code or commercial_partner.country_id.code or ""
-        )
         result.setdefault("picking_id", picking.id)
         result.setdefault("postcode", postcode)
-        result.setdefault("country_code", country_code)
-        result.setdefault("service_ids", picking.carrier_id.shipit_service_code or "")
+        result["country_code"] = PICKUP_POINT_COUNTRY_CODE
+        result["limit"] = PICKUP_POINT_LIMIT
+        carrier_service_ids = picking.carrier_id._shipit_get_service_codes()
+        if carrier_service_ids:
+            service_options = self.env["shipit.service.option"].search(
+                [("code", "in", carrier_service_ids)]
+            )
+            if service_options:
+                result.setdefault("service_option_ids", [(6, 0, service_options.ids)])
         return result
+
+    @api.depends("picking_id")
+    def _compute_available_service_option_ids(self):
+        service_model = self.env["shipit.service.option"]
+        all_options = service_model.search([])
+
+        for wizard in self:
+            carrier_codes = wizard.picking_id.carrier_id._shipit_get_service_codes()
+            if carrier_codes:
+                wizard.available_service_option_ids = service_model.search(
+                    [("code", "in", carrier_codes)]
+                )
+            else:
+                wizard.available_service_option_ids = all_options
 
     def _get_action(self):
         self.ensure_one()
@@ -99,10 +129,10 @@ class ShipitPickupPointWizard(models.TransientModel):
         try:
             points = shipit_request.search_service_points(
                 postcode=self.postcode,
-                country_code=self.country_code,
-                service_ids=self.service_ids,
+                country_code=PICKUP_POINT_COUNTRY_CODE,
+                service_ids=self.service_option_ids.mapped("code"),
                 point_type=self.point_type,
-                limit=self.limit,
+                limit=PICKUP_POINT_LIMIT,
             )
         except ShipitAPIError as error:
             raise UserError(
@@ -113,24 +143,45 @@ class ShipitPickupPointWizard(models.TransientModel):
                 }
             ) from error
 
-        lines = [
-            (
-                0,
-                0,
-                {
-                    "point_id": str(point.get("id") or ""),
-                    "name": point.get("name") or "",
-                    "address": point.get("address") or "",
-                    "zipcode": point.get("zipcode") or "",
-                    "city": point.get("city") or "",
-                    "country_code": point.get("country_code") or "",
-                    "service_id": point.get("service_id") or "",
-                    "carrier_name": point.get("carrier") or "",
-                    "distance_kilometers": point.get("distance_kilometers") or 0.0,
-                },
-            )
+        service_ids = {
+            str(point.get("service_id") or "").strip()
             for point in points
-        ]
+            if point.get("service_id")
+        }
+        service_name_by_code = {}
+        if service_ids:
+            service_options = self.env["shipit.service.option"].search(
+                [("code", "in", list(service_ids))]
+            )
+            service_name_by_code = {
+                service_option.code: service_option.name
+                for service_option in service_options
+                if service_option.code
+            }
+
+        lines = []
+        for point in points:
+            service_id = str(point.get("service_id") or "").strip()
+            lines.append(
+                (
+                    0,
+                    0,
+                    {
+                        "point_id": str(point.get("id") or ""),
+                        "name": point.get("name") or "",
+                        "address": point.get("address") or "",
+                        "zipcode": point.get("zipcode") or "",
+                        "city": point.get("city") or "",
+                        "country_code": point.get("country_code") or "",
+                        "service_id": service_id,
+                        "service_name": service_name_by_code.get(service_id)
+                        or point.get("carrier")
+                        or service_id,
+                        "carrier_name": point.get("carrier") or "",
+                        "distance_kilometers": point.get("distance_kilometers") or 0.0,
+                    },
+                )
+            )
 
         self.write(
             {
@@ -186,7 +237,12 @@ class ShipitPickupPointWizardLine(models.TransientModel):
     zipcode = fields.Char()
     city = fields.Char()
     country_code = fields.Char()
-    service_id = fields.Char()
+    service_id = fields.Char(
+        string="Service ID",
+    )
+    service_name = fields.Char(
+        string="Service",
+    )
     carrier_name = fields.Char()
     distance_kilometers = fields.Float()
 

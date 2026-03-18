@@ -17,10 +17,12 @@
                     class="btn-secondary"
                     invisible="not shipit_is_carrier or state in ('done', 'cancel')"
                 />
-                <field
-                    name="shipit_shipment_id"
-                    readonly="state == 'done'"
-                    invisible="not shipit_is_carrier"
+                <button
+                    name="action_clear_shipit_pickup_point"
+                    string="Tyhjennä noutopiste"
+                    type="object"
+                    class="btn-secondary"
+                    invisible="not shipit_is_carrier or not shipit_pickup_point_id or state in ('done', 'cancel')"
                 />
                 <field
                     name="shipit_pickup_point_id"
@@ -88,6 +90,9 @@
                     readonly="1"
                     invisible="not shipit_is_carrier"
                 />
+            </field>
+            <field name="picking_properties" position="attributes">
+                <attribute name="invisible">shipit_is_carrier</attribute>
             </field>
         </field>
     </record>

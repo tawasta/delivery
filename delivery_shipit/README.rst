@@ -50,27 +50,34 @@ This version implements a first ShipIT happy path:
 6. Store request/response debug payloads to picking fields
 7. Download label document from ``freightDoc`` URL when available
 8. Optional fallback to separate label endpoint if configured
-9. Only trigger API calls automatically for outgoing pickings
+9. Search pickup points via ShipIT ``POST /agents`` and save selected point
+10. Optional carrier-level pickup point requirement before shipment create
+11. Only trigger API calls automatically for outgoing pickings
 
 Manual test checklist
 =====================
 
 1. Create/verify a ShipIT carrier with API key, reseller ID and service ID.
 2. Create a delivery order with ShipIT as carrier.
-3. Run ``Validate`` on the delivery.
-4. Verify:
+3. Optional pickup test:
+
+   * click ``Hae noutopiste`` on picking
+   * search points and select one
+   * verify pickup fields are stored on picking
+
+4. Run ``Validate`` on the delivery.
+5. Verify:
 
    * ``shipit_shipment_id`` is set
    * ``shipit_tracking_codes`` is set
    * label attachment exists on the picking
 
-5. Negative test: remove recipient phone/email and validate that user-facing
+6. Negative test: remove recipient phone/email and validate that user-facing
    validation error is shown before API call.
 
 Known issues / Roadmap
 ======================
 
-* Add pickup point support
 * Add multi-package support
 
 Credits
