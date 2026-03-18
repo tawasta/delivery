@@ -208,6 +208,8 @@ class DeliveryCarrier(models.Model):
 
         if not self.shipit_api_key:
             missing_fields.append(_("Carrier ShipIT API key"))
+        if not self.shipit_reseller_id:
+            missing_fields.append(_("Carrier ShipIT reseller ID"))
         if not self.shipit_service_code:
             missing_fields.append(_("Carrier ShipIT service ID"))
 
@@ -279,11 +281,15 @@ class DeliveryCarrier(models.Model):
         }
 
         reseller_id = (self.shipit_reseller_id or "").strip()
-        if reseller_id:
-            try:
-                payload["resellerId"] = int(reseller_id)
-            except ValueError:
-                payload["resellerId"] = reseller_id
+        try:
+            payload["resellerId"] = int(reseller_id)
+        except ValueError:
+            payload["resellerId"] = reseller_id
+
+        if picking.shipit_pickup_point_id:
+            payload["pickupId"] = picking.shipit_pickup_point_id
+            if picking.shipit_pickup_point_service_id:
+                payload["serviceId"] = picking.shipit_pickup_point_service_id
 
         return payload
 

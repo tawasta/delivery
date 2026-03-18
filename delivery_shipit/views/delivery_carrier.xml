@@ -20,7 +20,10 @@
                             required="delivery_type == 'shipit'"
                         />
                         <field name="shipit_auth_mode" />
-                        <field name="shipit_reseller_id" />
+                        <field
+                            name="shipit_reseller_id"
+                            required="delivery_type == 'shipit'"
+                        />
                         <field
                             name="shipit_service_code"
                             required="delivery_type == 'shipit'"

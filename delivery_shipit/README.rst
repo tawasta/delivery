@@ -55,7 +55,7 @@ This version implements a first ShipIT happy path:
 Manual test checklist
 =====================
 
-1. Create/verify a ShipIT carrier with API key and service ID (reseller ID optional).
+1. Create/verify a ShipIT carrier with API key, reseller ID and service ID.
 2. Create a delivery order with ShipIT as carrier.
 3. Run ``Validate`` on the delivery.
 4. Verify:
