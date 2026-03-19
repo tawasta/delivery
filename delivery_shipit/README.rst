@@ -6,7 +6,7 @@
 ShipIT Shipping
 ===============
 
-ShipIT delivery carrier skeleton for Odoo 17.
+ShipIT shipping integration for Odoo 17.
 
 Configuration
 =============
@@ -14,9 +14,8 @@ Configuration
 1. Go to Inventory -> Configuration -> Delivery -> Shipping Methods
 2. Create or open a carrier
 3. Set Provider to ``ShipIT``
-4. Fill in ShipIT configuration fields
-5. Optionally adjust advanced API settings (base URL, endpoints, auth mode, timeout)
-6. Enable ``Store ShipIT debug payloads`` if you want request/response payloads
+4. Fill in ShipIT configuration fields (API key, reseller ID, service IDs)
+5. Enable ``Store ShipIT debug payloads`` if you want request/response payloads
    persisted to picking fields for troubleshooting
 
 The module also installs a default delivery product and a ``ShipIT Default`` carrier
@@ -40,7 +39,7 @@ and delivery addon paths. Example:
 Usage
 =====
 
-This version implements a first ShipIT happy path:
+This module implements the ShipIT integration flow:
 
 1. Validate required sender/recipient/carrier fields
 2. Build shipment payload from picking data
