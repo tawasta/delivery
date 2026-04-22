@@ -13,7 +13,11 @@ class ShipitServiceOption(models.Model):
     sequence = fields.Integer(default=10)
 
     _sql_constraints = [
-        ("shipit_service_option_code_uniq", "unique(code)", "Service code must be unique."),
+        (
+            "shipit_service_option_code_uniq",
+            "unique(code)",
+            "Service code must be unique.",
+        ),
     ]
 
     def name_get(self):

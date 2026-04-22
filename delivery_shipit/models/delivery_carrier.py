@@ -142,7 +142,8 @@ class DeliveryCarrier(models.Model):
     def write(self, values):
         result = super().write(values)
         if "delivery_type" in values or any(
-            field_name in values for field_name in self._shipit_get_fixed_config_values()
+            field_name in values
+            for field_name in self._shipit_get_fixed_config_values()
         ):
             self._shipit_enforce_fixed_config_values()
         return result
@@ -217,7 +218,9 @@ class DeliveryCarrier(models.Model):
                 [("code", "in", service_codes)]
             )
             existing_codes = set(service_options.mapped("code"))
-            missing_codes = [code for code in service_codes if code not in existing_codes]
+            missing_codes = [
+                code for code in service_codes if code not in existing_codes
+            ]
             if missing_codes:
                 missing_options = service_option_model.sudo().create(
                     [{"name": code, "code": code} for code in missing_codes]
@@ -255,7 +258,9 @@ class DeliveryCarrier(models.Model):
             return {"total": 0, "created": 0, "updated": 0}
 
         service_option_model = self.env["shipit.service.option"].sudo()
-        service_ids = [method["service_id"] for method in methods if method.get("service_id")]
+        service_ids = [
+            method["service_id"] for method in methods if method.get("service_id")
+        ]
         existing = service_option_model.search([("code", "in", service_ids)])
         existing_by_code = {option.code: option for option in existing}
 
@@ -676,7 +681,9 @@ class DeliveryCarrier(models.Model):
             {"receipt", "receiptUrl", "receiptURL", "receipt_document_url"},
         )
         receipt_url = self._shipit_extract_first_url(receipt_url)
-        return self._shipit_extract_exact_price_from_receipt(receipt_url, shipit_request)
+        return self._shipit_extract_exact_price_from_receipt(
+            receipt_url, shipit_request
+        )
 
     def _shipit_get_latest_known_exact_price(self):
         self.ensure_one()
@@ -702,7 +709,9 @@ class DeliveryCarrier(models.Model):
                 response_bundle = json.loads(picking.shipit_response)
             except Exception:
                 continue
-            exact_price = self._shipit_extract_exact_price(response_bundle, shipit_request)
+            exact_price = self._shipit_extract_exact_price(
+                response_bundle, shipit_request
+            )
             if exact_price not in [False, None]:
                 return exact_price
 
@@ -876,7 +885,9 @@ class DeliveryCarrier(models.Model):
                         str(error),
                     )
 
-            exact_price = self._shipit_extract_exact_price(response_bundle, shipit_request)
+            exact_price = self._shipit_extract_exact_price(
+                response_bundle, shipit_request
+            )
             if exact_price not in [False, None]:
                 values["exact_price"] = exact_price
 
