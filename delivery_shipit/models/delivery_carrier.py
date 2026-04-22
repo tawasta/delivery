@@ -75,11 +75,6 @@ class DeliveryCarrier(models.Model):
         string="ShipIT timeout (seconds)",
         default=FIXED_SHIPIT_TIMEOUT_SECONDS,
     )
-    shipit_store_debug_payloads = fields.Boolean(
-        string="Store ShipIT debug payloads",
-        help="Store request/response payloads to picking debug fields.",
-        default=False,
-    )
     shipit_reseller_id = fields.Char(string="ShipIT reseller ID")
     shipit_service_code = fields.Char(
         string="ShipIT service ID",
@@ -445,11 +440,11 @@ class DeliveryCarrier(models.Model):
 
         required_sender_fields = {
             _("Sender name"): sender.get("name"),
-            _("Sender email"): sender.get("email"),
             _("Sender street"): sender.get("address"),
             _("Sender postal code"): sender.get("postcode"),
             _("Sender city"): sender.get("city"),
             _("Sender country code"): sender.get("country"),
+            _("Sender email"): sender.get("email"),
         }
         for label, value in required_sender_fields.items():
             if not value:
@@ -822,12 +817,12 @@ class DeliveryCarrier(models.Model):
                 "tracking_number": False,
             }
             picking.shipit_last_error = False
-            if self.shipit_store_debug_payloads:
+            if self.debug_logging:
                 picking.shipit_payload = False
                 picking.shipit_response = False
 
             payload = self._shipit_build_payload(picking)
-            if self.shipit_store_debug_payloads:
+            if self.debug_logging:
                 picking.shipit_payload = json.dumps(payload, indent=2)
 
             try:
@@ -892,7 +887,7 @@ class DeliveryCarrier(models.Model):
             if exact_price not in [False, None]:
                 values["exact_price"] = exact_price
 
-            if self.shipit_store_debug_payloads:
+            if self.debug_logging:
                 if isinstance(response_bundle, dict | list):
                     picking.shipit_response = json.dumps(response_bundle, indent=2)
                 else:

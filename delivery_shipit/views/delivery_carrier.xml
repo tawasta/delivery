@@ -13,7 +13,6 @@
                     invisible="delivery_type != 'shipit'"
                 >
                     <group name="shipit">
-                        <field name="prod_environment" />
                         <field
                             name="shipit_api_key"
                             password="1"
@@ -38,7 +37,6 @@
                         <field name="shipit_default_height_cm" />
                     </group>
                     <group name="shipit_advanced_api" string="Advanced API settings">
-                        <field name="shipit_store_debug_payloads" />
                     </group>
                 </page>
             </xpath>
