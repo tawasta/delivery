@@ -115,6 +115,8 @@ class ShipitPickupPointWizard(models.TransientModel):
             "res_id": self.id,
         }
 
+    # TODO: Could we use onchange for usability?
+    # @api.onchange("postcode", "service_option_ids", "point_type")
     def action_search_points(self):
         self.ensure_one()
 

@@ -25,75 +25,42 @@
                     invisible="not shipit_is_carrier or not shipit_pickup_point_id or state in ('done', 'cancel')"
                 />
                 <field
-                    name="shipit_pickup_point_id"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
                     name="shipit_pickup_point_name"
+                    string="Pickup point"
                     readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_pickup_point_address"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_pickup_point_zipcode"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_pickup_point_city"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_pickup_point_country_code"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_pickup_point_service_id"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_tracking_codes"
-                    readonly="state == 'done'"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_tracking_url"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_label_attachment_id"
-                    readonly="1"
-                    options="{'no_create': True}"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_last_error"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_payload"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
-                />
-                <field
-                    name="shipit_response"
-                    readonly="1"
-                    invisible="not shipit_is_carrier"
+                    invisible="not shipit_pickup_point_name"
                 />
             </field>
             <field name="picking_properties" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
             </field>
+
+            <page name="extra" position="after">
+                <page name="shipit" string="ShipIT" invisible="not shipit_is_carrier">
+                    <group>
+                        <field name="shipit_pickup_point_id" readonly="1" />
+
+                        <field name="shipit_pickup_point_address" readonly="1" />
+                        <field name="shipit_pickup_point_zipcode" readonly="1" />
+                        <field name="shipit_pickup_point_city" readonly="1" />
+                        <field name="shipit_pickup_point_country_code" readonly="1" />
+                        <field name="shipit_pickup_point_service_id" readonly="1" />
+                        <field
+                            name="shipit_tracking_codes"
+                            readonly="state == 'done'"
+                        />
+                        <field name="shipit_tracking_url" readonly="1" />
+                        <field
+                            name="shipit_label_attachment_id"
+                            readonly="1"
+                            options="{'no_create': True}"
+                        />
+                        <field name="shipit_last_error" readonly="1" />
+                        <field name="shipit_payload" readonly="1" />
+                        <field name="shipit_response" readonly="1" />
+                    </group>
+                </page>
+            </page>
         </field>
     </record>
 </odoo>
