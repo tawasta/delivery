@@ -445,6 +445,7 @@ class DeliveryCarrier(models.Model):
 
         required_sender_fields = {
             _("Sender name"): sender.get("name"),
+            _("Sender email"): sender.get("email"),
             _("Sender street"): sender.get("address"),
             _("Sender postal code"): sender.get("postcode"),
             _("Sender city"): sender.get("city"),
