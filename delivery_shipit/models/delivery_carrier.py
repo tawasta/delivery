@@ -16,17 +16,6 @@ except Exception:  # pragma: no cover - optional dependency in runtime image
 
 _logger = logging.getLogger(__name__)
 
-DEFAULT_LENGTH_CM = 15.0
-DEFAULT_WIDTH_CM = 11.0
-DEFAULT_HEIGHT_CM = 3.0
-FIXED_SHIPIT_AUTH_MODE = "x_shipit_key"
-FIXED_SHIPIT_LABEL_FORMAT = "PDF_A4"
-FIXED_SHIPIT_API_BASE_URL = ""
-FIXED_SHIPIT_CREATE_ENDPOINTS = "shipment"
-FIXED_SHIPIT_CANCEL_ENDPOINT_TEMPLATE = "shipments/{shipment_id}"
-FIXED_SHIPIT_LABEL_ENDPOINT_TEMPLATE = "shipments/{shipment_id}/label"
-FIXED_SHIPIT_TIMEOUT_SECONDS = 30
-
 
 class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
@@ -43,37 +32,40 @@ class DeliveryCarrier(models.Model):
     shipit_api_base_url = fields.Char(
         string="ShipIT API base URL",
         help="Optional override for ShipIT API base URL.",
-        default=FIXED_SHIPIT_API_BASE_URL,
+        default="",
     )
     shipit_auth_mode = fields.Selection(
         string="ShipIT auth mode",
         selection=[
             ("x_shipit_key", "X-SHIPIT-KEY"),
-            ("both", "X-SHIPIT-KEY + Bearer + X-API-Key"),
-            ("bearer", "Bearer (legacy)"),
-            ("x_api_key", "X-API-Key (legacy)"),
+            # "x_shipit_key" was forced as auth mode.
+            # If it's the only supported auth method,
+            # no reason to allow using other methods
+            # ("both", "X-SHIPIT-KEY + Bearer + X-API-Key"),
+            # ("bearer", "Bearer (legacy)"),
+            # ("x_api_key", "X-API-Key (legacy)"),
         ],
-        default=FIXED_SHIPIT_AUTH_MODE,
+        default="x_shipit_key",
         required=True,
     )
     shipit_create_endpoints = fields.Char(
         string="ShipIT create endpoints",
-        default=FIXED_SHIPIT_CREATE_ENDPOINTS,
+        default="shipment",
         help="Comma-separated endpoint paths used for create shipment PUT call.",
     )
     shipit_cancel_endpoint_template = fields.Char(
         string="ShipIT cancel endpoint template",
-        default=FIXED_SHIPIT_CANCEL_ENDPOINT_TEMPLATE,
+        default="shipments/{shipment_id}",
         help="Optional endpoint template for cancellation call.",
     )
     shipit_label_endpoint_template = fields.Char(
         string="ShipIT label endpoint template",
-        default=FIXED_SHIPIT_LABEL_ENDPOINT_TEMPLATE,
+        default="shipments/{shipment_id}/label",
         help="Optional endpoint template for legacy label fetch fallback.",
     )
     shipit_timeout_seconds = fields.Integer(
         string="ShipIT timeout (seconds)",
-        default=FIXED_SHIPIT_TIMEOUT_SECONDS,
+        default=30,
     )
     shipit_reseller_id = fields.Char(string="ShipIT reseller ID")
     shipit_service_code = fields.Char(
@@ -98,7 +90,7 @@ class DeliveryCarrier(models.Model):
             ("PDF_A6", "PDF A6"),
             ("ZPL", "ZPL"),
         ],
-        default=FIXED_SHIPIT_LABEL_FORMAT,
+        default="PDF_A4",
         required=True,
     )
     shipit_default_length_cm = fields.Float(string="Default package length (cm)")
@@ -110,62 +102,16 @@ class DeliveryCarrier(models.Model):
         default=False,
     )
 
-    @api.model
-    def _shipit_get_fixed_config_values(self):
-        return {
-            "shipit_auth_mode": FIXED_SHIPIT_AUTH_MODE,
-            "shipit_label_format": FIXED_SHIPIT_LABEL_FORMAT,
-            "shipit_api_base_url": FIXED_SHIPIT_API_BASE_URL,
-            "shipit_create_endpoints": FIXED_SHIPIT_CREATE_ENDPOINTS,
-            "shipit_cancel_endpoint_template": FIXED_SHIPIT_CANCEL_ENDPOINT_TEMPLATE,
-            "shipit_label_endpoint_template": FIXED_SHIPIT_LABEL_ENDPOINT_TEMPLATE,
-            "shipit_timeout_seconds": FIXED_SHIPIT_TIMEOUT_SECONDS,
-        }
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        fixed = self._shipit_get_fixed_config_values()
-        normalized_vals = []
-        for vals in vals_list:
-            vals = dict(vals)
-            if vals.get("delivery_type") == "shipit":
-                vals.update(fixed)
-            normalized_vals.append(vals)
-        records = super().create(normalized_vals)
-        records._shipit_enforce_fixed_config_values()
-        return records
-
-    def write(self, values):
-        result = super().write(values)
-        if "delivery_type" in values or any(
-            field_name in values
-            for field_name in self._shipit_get_fixed_config_values()
-        ):
-            self._shipit_enforce_fixed_config_values()
-        return result
-
-    def _shipit_enforce_fixed_config_values(self):
-        fixed = self._shipit_get_fixed_config_values()
-        for carrier in self.filtered(lambda c: c.delivery_type == "shipit"):
-            updates = {
-                field_name: expected_value
-                for field_name, expected_value in fixed.items()
-                if carrier[field_name] != expected_value
-            }
-            if updates:
-                super(DeliveryCarrier, carrier).write(updates)
-
     def _get_shipit_config(self):
-        fixed = self._shipit_get_fixed_config_values()
         return {
             "api_key": self.shipit_api_key,
             "prod": self.prod_environment,
-            "base_url": (fixed["shipit_api_base_url"] or "").strip() or None,
-            "auth_mode": fixed["shipit_auth_mode"],
-            "create_endpoints": fixed["shipit_create_endpoints"],
-            "cancel_endpoint_template": fixed["shipit_cancel_endpoint_template"],
-            "label_endpoint_template": fixed["shipit_label_endpoint_template"],
-            "timeout": max(1, fixed["shipit_timeout_seconds"] or 30),
+            "base_url": self.shipit_api_base_url,
+            "auth_mode": self.shipit_auth_mode,
+            "create_endpoints": self.shipit_create_endpoints,
+            "cancel_endpoint_template": self.shipit_cancel_endpoint_template,
+            "label_endpoint_template": self.shipit_label_endpoint_template,
+            "timeout": max(1, self.shipit_timeout_seconds or 30),
         }
 
     @api.model
@@ -410,9 +356,9 @@ class DeliveryCarrier(models.Model):
 
     def _shipit_get_package_dimensions(self, picking):
         values = {
-            "length": self.shipit_default_length_cm or DEFAULT_LENGTH_CM,
-            "width": self.shipit_default_width_cm or DEFAULT_WIDTH_CM,
-            "height": self.shipit_default_height_cm or DEFAULT_HEIGHT_CM,
+            "length": self.shipit_default_length_cm,
+            "width": self.shipit_default_width_cm,
+            "height": self.shipit_default_height_cm,
         }
 
         for package in picking.package_ids:
@@ -785,8 +731,7 @@ class DeliveryCarrier(models.Model):
         if not normalized_data:
             return False
 
-        fixed = self._shipit_get_fixed_config_values()
-        extension = "zpl" if fixed["shipit_label_format"] == "ZPL" else "pdf"
+        extension = "zpl" if self.shipit_label_format == "ZPL" else "pdf"
         file_ref = tracking_code or picking.name
         filename = f"{picking.name}_{file_ref}.{extension}"
 
