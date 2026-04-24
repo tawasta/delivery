@@ -8,28 +8,37 @@
             ref="stock_delivery.view_picking_withcarrier_out_form"
         />
         <field name="arch" type="xml">
-            <field name="origin" position="after">
+            <field name="location_id" position="after">
                 <field name="shipit_is_carrier" invisible="1" />
-                <button
-                    name="action_open_shipit_pickup_point_wizard"
-                    string="Hae noutopiste"
-                    type="object"
-                    class="btn-secondary"
-                    invisible="not shipit_is_carrier or state in ('done', 'cancel')"
-                />
-                <button
-                    name="action_clear_shipit_pickup_point"
-                    string="Tyhjennä noutopiste"
-                    type="object"
-                    class="btn-secondary"
-                    invisible="not shipit_is_carrier or not shipit_pickup_point_id or state in ('done', 'cancel')"
-                />
                 <field
                     name="shipit_pickup_point_name"
                     string="Pickup point"
                     readonly="1"
                     invisible="not shipit_pickup_point_name"
                 />
+                <label for="shipit_pickup_point_name" string="Pickup point" invisible="not shipit_is_carrier or state in ('done', 'cancel')" />
+                <div
+                    class="o_row"
+                    invisible="not shipit_is_carrier or state in ('done', 'cancel')"
+                >
+                    <button
+                        name="action_open_shipit_pickup_point_wizard"
+                        string="Select"
+                        help="Select pickup point"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-truck"
+                    />
+                    <button
+                        name="action_clear_shipit_pickup_point"
+                        string="Clear"
+                        help="Clear pickup point"
+                        type="object"
+                        class="btn-warning"
+                        icon="fa-trash"
+                        invisible="not shipit_pickup_point_id"
+                    />
+                </div>
             </field>
             <field name="picking_properties" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
@@ -38,26 +47,42 @@
             <page name="extra" position="after">
                 <page name="shipit" string="ShipIT" invisible="not shipit_is_carrier">
                     <group>
-                        <field name="shipit_pickup_point_id" readonly="1" />
+                        <group name="shipit_shipment" string="Shipment info">
+                            <field name="shipit_pickup_point_id" readonly="1" />
 
-                        <field name="shipit_pickup_point_address" readonly="1" />
-                        <field name="shipit_pickup_point_zipcode" readonly="1" />
-                        <field name="shipit_pickup_point_city" readonly="1" />
-                        <field name="shipit_pickup_point_country_code" readonly="1" />
-                        <field name="shipit_pickup_point_service_id" readonly="1" />
-                        <field
-                            name="shipit_tracking_codes"
-                            readonly="state == 'done'"
-                        />
-                        <field name="shipit_tracking_url" readonly="1" />
-                        <field
-                            name="shipit_label_attachment_id"
-                            readonly="1"
-                            options="{'no_create': True}"
-                        />
-                        <field name="shipit_last_error" readonly="1" />
-                        <field name="shipit_payload" readonly="1" />
-                        <field name="shipit_response" readonly="1" />
+                            <field name="shipit_pickup_point_address" readonly="1" />
+                            <field name="shipit_pickup_point_zipcode" readonly="1" />
+                            <field name="shipit_pickup_point_city" readonly="1" />
+                            <field
+                                name="shipit_pickup_point_country_code"
+                                readonly="1"
+                            />
+                        </group>
+                        <group name="shipit_shipment" string="Shipment details">
+                            <field name="shipit_pickup_point_service_id" readonly="1" />
+                            <field name="shipit_tracking_codes" readonly="1" />
+                            <field name="shipit_tracking_url" readonly="1" />
+                            <field
+                                name="shipit_label_attachment_id"
+                                readonly="1"
+                                options="{'no_create': True}"
+                            />
+                            <field
+                                name="shipit_last_error"
+                                readonly="1"
+                                group="base.no_one"
+                            />
+                            <field
+                                name="shipit_payload"
+                                readonly="1"
+                                group="base.no_one"
+                            />
+                            <field
+                                name="shipit_response"
+                                readonly="1"
+                                group="base.no_one"
+                            />
+                        </group>
                     </group>
                 </page>
             </page>

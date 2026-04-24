@@ -6,7 +6,7 @@
 ShipIT Shipping
 ===============
 
-ShipIT shipping integration for Odoo 17.
+ShipIT shipping integration for Odoo.
 
 Configuration
 =============
@@ -60,8 +60,8 @@ Manual test checklist
 2. Create a delivery order with ShipIT as carrier.
 3. Optional pickup test:
 
-   * click ``Hae noutopiste`` on picking
-   * search points and select one
+   * click ``Select`` on picking ``Pickup point``
+   * search pickup points and select one
    * verify pickup fields are stored on picking
 
 4. Run ``Validate`` on the delivery.
