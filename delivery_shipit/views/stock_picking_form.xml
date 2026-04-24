@@ -16,7 +16,11 @@
                     readonly="1"
                     invisible="not shipit_pickup_point_name"
                 />
-                <label for="shipit_pickup_point_name" string="Pickup point" invisible="not shipit_is_carrier or state in ('done', 'cancel')" />
+                <label
+                    for="shipit_pickup_point_name"
+                    string="Pickup point"
+                    invisible="not shipit_is_carrier or state in ('done', 'cancel')"
+                />
                 <div
                     class="o_row"
                     invisible="not shipit_is_carrier or state in ('done', 'cancel')"
