@@ -18,7 +18,7 @@ Configuration
 5. Enable ``Store ShipIT debug payloads`` if you want request/response payloads
    persisted to picking fields for troubleshooting
 
-The module also installs a default delivery product and a ``ShipIT Default`` carrier
+The module also installs a default delivery product and a ``ShipIT`` carrier
 template that can be used as a starting point.
 
 Local setup notes

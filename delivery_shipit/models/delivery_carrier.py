@@ -88,7 +88,8 @@ class DeliveryCarrier(models.Model):
         string="ShipIT service IDs",
         compute="_compute_shipit_service_option_ids",
         inverse="_inverse_shipit_service_option_ids",
-        help="Select ShipIT service IDs. First selected service is used as default serviceId for shipments.",
+        help="Select ShipIT service IDs. "
+        "First selected service is used as default serviceId for shipments.",
     )
     shipit_label_format = fields.Selection(
         string="ShipIT label format",
@@ -304,7 +305,8 @@ class DeliveryCarrier(models.Model):
                 "type": "success",
                 "title": _("ShipIT services updated"),
                 "message": _(
-                    "Loaded %(total)s services (%(created)s created, %(updated)s updated)."
+                    "Loaded %(total)s services "
+                    "(%(created)s created, %(updated)s updated)."
                 )
                 % {
                     "total": sync_result["total"],
@@ -806,103 +808,104 @@ class DeliveryCarrier(models.Model):
 
     def shipit_send_shipping(self, pickings):
         self.ensure_one()
-        shipit_request = ShipitRequest(**self._get_shipit_config())
         result = []
 
         _logger.info("ShipIT send_shipping for %s pickings", len(pickings))
 
         for picking in pickings:
-            values = {
-                "exact_price": 0,
-                "tracking_number": False,
-            }
-            picking.shipit_last_error = False
-            if self.debug_logging:
-                picking.shipit_payload = False
-                picking.shipit_response = False
-
-            payload = self._shipit_build_payload(picking)
-            if self.debug_logging:
-                picking.shipit_payload = json.dumps(payload, indent=2)
-
-            try:
-                response = shipit_request.create_shipment(payload)
-            except ShipitAPIError as error:
-                picking.shipit_last_error = str(error)
-                raise UserError(
-                    _("ShipIT API error for %(name)s:\n%(message)s")
-                    % {
-                        "name": picking.name,
-                        "message": str(error),
-                    }
-                ) from error
-
-            response_bundle = {"create_shipment": response}
-            parsed = self._shipit_parse_response(response)
-            tracking_codes = parsed["tracking_codes"]
-            label_data = parsed["label_data"]
-            if parsed["receipt_url"]:
-                response_bundle["receipt_document_url"] = parsed["receipt_url"]
-
-            if parsed["shipment_id"]:
-                picking.shipit_shipment_id = str(parsed["shipment_id"])
-            if tracking_codes:
-                picking.shipit_tracking_codes = tracking_codes
-                values["tracking_number"] = tracking_codes.split(",")[0]
-            if parsed["tracking_url"]:
-                picking.shipit_tracking_url = parsed["tracking_url"]
-
-            if not label_data and parsed["label_url"]:
-                try:
-                    label_data = shipit_request.download_document(parsed["label_url"])
-                    response_bundle["label_document_url"] = parsed["label_url"]
-                except ShipitAPIError as error:
-                    _logger.info(
-                        "ShipIT label document download skipped for %s: %s",
-                        picking.name,
-                        str(error),
-                    )
-
-            if (
-                not label_data
-                and parsed["shipment_id"]
-                and self._shipit_get_fixed_config_values()[
-                    "shipit_label_endpoint_template"
-                ]
-            ):
-                try:
-                    label_response = shipit_request.get_label(parsed["shipment_id"])
-                    response_bundle["label"] = label_response
-                    label_data = self._shipit_extract_label_data(label_response)
-                except ShipitAPIError as error:
-                    _logger.info(
-                        "ShipIT label fetch fallback skipped for %s: %s",
-                        picking.name,
-                        str(error),
-                    )
-
-            exact_price = self._shipit_extract_exact_price(
-                response_bundle, shipit_request
-            )
-            if exact_price not in [False, None]:
-                values["exact_price"] = exact_price
-
-            if self.debug_logging:
-                if isinstance(response_bundle, dict | list):
-                    picking.shipit_response = json.dumps(response_bundle, indent=2)
-                else:
-                    picking.shipit_response = str(response_bundle)
-
-            if label_data:
-                self._shipit_create_label_attachment(
-                    picking=picking,
-                    label_data=label_data,
-                    tracking_code=values["tracking_number"],
-                )
-
+            values = self.shipit_send_picking(picking)
             result.append(values)
 
         return result
+
+    def shipit_send_picking(self, picking):
+        shipit_request = ShipitRequest(**self._get_shipit_config())
+
+        values = {
+            "exact_price": 0,
+            "tracking_number": False,
+        }
+        picking.shipit_last_error = False
+        if self.debug_logging:
+            picking.shipit_payload = False
+            picking.shipit_response = False
+
+        payload = self._shipit_build_payload(picking)
+        if self.debug_logging:
+            picking.shipit_payload = json.dumps(payload, indent=2)
+
+        try:
+            response = shipit_request.create_shipment(payload)
+        except ShipitAPIError as error:
+            picking.shipit_last_error = str(error)
+            raise UserError(
+                _("ShipIT API error for %(name)s:\n%(message)s")
+                % {
+                    "name": picking.name,
+                    "message": str(error),
+                }
+            ) from error
+
+        response_bundle = {"create_shipment": response}
+        parsed = self._shipit_parse_response(response)
+        tracking_codes = parsed["tracking_codes"]
+        label_data = parsed["label_data"]
+        if parsed["receipt_url"]:
+            response_bundle["receipt_document_url"] = parsed["receipt_url"]
+
+        if parsed["shipment_id"]:
+            picking.shipit_shipment_id = str(parsed["shipment_id"])
+        if tracking_codes:
+            picking.shipit_tracking_codes = tracking_codes
+            values["tracking_number"] = tracking_codes.split(",")[0]
+        if parsed["tracking_url"]:
+            picking.shipit_tracking_url = parsed["tracking_url"]
+
+        if not label_data and parsed["label_url"]:
+            try:
+                label_data = shipit_request.download_document(parsed["label_url"])
+                response_bundle["label_document_url"] = parsed["label_url"]
+            except ShipitAPIError as error:
+                _logger.info(
+                    "ShipIT label document download skipped for %s: %s",
+                    picking.name,
+                    str(error),
+                )
+
+        if (
+            not label_data
+            and parsed["shipment_id"]
+            and self._shipit_get_fixed_config_values()["shipit_label_endpoint_template"]
+        ):
+            try:
+                label_response = shipit_request.get_label(parsed["shipment_id"])
+                response_bundle["label"] = label_response
+                label_data = self._shipit_extract_label_data(label_response)
+            except ShipitAPIError as error:
+                _logger.info(
+                    "ShipIT label fetch fallback skipped for %s: %s",
+                    picking.name,
+                    str(error),
+                )
+
+        exact_price = self._shipit_extract_exact_price(response_bundle, shipit_request)
+        if exact_price not in [False, None]:
+            values["exact_price"] = exact_price
+
+        if self.debug_logging:
+            if isinstance(response_bundle, dict | list):
+                picking.shipit_response = json.dumps(response_bundle, indent=2)
+            else:
+                picking.shipit_response = str(response_bundle)
+
+        if label_data:
+            self._shipit_create_label_attachment(
+                picking=picking,
+                label_data=label_data,
+                tracking_code=values["tracking_number"],
+            )
+
+        return values
 
     def shipit_rate_shipment(self, order):
         self.ensure_one()

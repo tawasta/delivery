@@ -13,7 +13,7 @@
     </record>
 
     <record id="delivery_carrier_shipit_default" model="delivery.carrier">
-        <field name="name">ShipIT Default</field>
+        <field name="name">ShipIT</field>
         <field name="sequence">995</field>
         <field name="delivery_type">shipit</field>
         <field
