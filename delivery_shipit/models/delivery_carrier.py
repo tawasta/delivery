@@ -67,7 +67,10 @@ class DeliveryCarrier(models.Model):
         string="ShipIT timeout (seconds)",
         default=30,
     )
-    shipit_reseller_id = fields.Char(string="ShipIT reseller ID")
+    # Reseller ID is half hardcoded to prefer Futural reseller ID "57".
+    # We urge users to use this reseller ID
+    # to support the continued development of the integration.
+    shipit_reseller_id = fields.Integer(string="ShipIT reseller ID", default=57)
     shipit_service_code = fields.Char(
         string="ShipIT service ID",
         help="ShipIT v1 serviceId, e.g. posti.po2103",
@@ -381,8 +384,6 @@ class DeliveryCarrier(models.Model):
 
         if not self.shipit_api_key:
             missing_fields.append(_("Carrier ShipIT API key"))
-        if not self.shipit_reseller_id:
-            missing_fields.append(_("Carrier ShipIT reseller ID"))
         if not self._shipit_get_default_service_code():
             missing_fields.append(_("Carrier ShipIT service ID"))
 
@@ -465,11 +466,7 @@ class DeliveryCarrier(models.Model):
             "sendOrderConfirmationEmail": False,
         }
 
-        reseller_id = (self.shipit_reseller_id or "").strip()
-        try:
-            payload["resellerId"] = int(reseller_id)
-        except ValueError:
-            payload["resellerId"] = reseller_id
+        payload["resellerId"] = self.shipit_reseller_id
 
         if picking.shipit_pickup_point_id:
             payload["pickupId"] = picking.shipit_pickup_point_id
