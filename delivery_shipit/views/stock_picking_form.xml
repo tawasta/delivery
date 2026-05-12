@@ -74,17 +74,17 @@
                             <field
                                 name="shipit_last_error"
                                 readonly="1"
-                                group="base.no_one"
+                                groups="base.no_one"
                             />
                             <field
                                 name="shipit_payload"
                                 readonly="1"
-                                group="base.no_one"
+                                groups="base.no_one"
                             />
                             <field
                                 name="shipit_response"
                                 readonly="1"
-                                group="base.no_one"
+                                groups="base.no_one"
                             />
                         </group>
                     </group>

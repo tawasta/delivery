@@ -1,5 +1,5 @@
-Odoo connector for integrating with the Fennoa accounting platform.
+ShipIT shipping integration for Odoo.
 
-This module synchronizes customer data, exports sales invoices (including
-credit notes) and synchronized payment data
-
+With this module you can fetch Shipit pickup points for SO or picking,
+and create a ShipIT delivery by confirming a stock picking in Odoo.
+You will get a PDF label from ShipIT to Odoo, for easy printing.

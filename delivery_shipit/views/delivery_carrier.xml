@@ -32,10 +32,23 @@
                         <field name="shipit_service_code" invisible="1" />
                         <field name="shipit_require_pickup_point" />
                     </group>
-                    <group name="shipit_default_dimensions" string="Default dimensions">
-                        <field name="shipit_default_length_cm" />
-                        <field name="shipit_default_width_cm" />
-                        <field name="shipit_default_height_cm" />
+                    <group name="shipit_dimensions" string="Default dimensions">
+                        <field
+                            name="shipit_use_default_dimensions"
+                            widget="boolean_toggle"
+                        />
+                        <field
+                            name="shipit_default_length_cm"
+                            invisible="not shipit_use_default_dimensions"
+                        />
+                        <field
+                            name="shipit_default_width_cm"
+                            invisible="not shipit_use_default_dimensions"
+                        />
+                        <field
+                            name="shipit_default_height_cm"
+                            invisible="not shipit_use_default_dimensions"
+                        />
                     </group>
                     <!-- Not currently used, but keep for future use
                     <group name="shipit_advanced_api" string="Advanced API settings">

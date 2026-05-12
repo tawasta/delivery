@@ -96,6 +96,11 @@ class DeliveryCarrier(models.Model):
         default="PDF_A4",
         required=True,
     )
+    shipit_use_default_dimensions = fields.Boolean(
+        string="Use default dimensions",
+        default=False,
+        help="Use default shipment dimensions, if packages are not used",
+    )
     shipit_default_length_cm = fields.Float(string="Default package length (cm)")
     shipit_default_width_cm = fields.Float(string="Default package width (cm)")
     shipit_default_height_cm = fields.Float(string="Default package height (cm)")
@@ -346,40 +351,59 @@ class DeliveryCarrier(models.Model):
             "eoriNumber": "",
         }
 
-    def _shipit_get_picking_weight(self, picking):
-        weight = picking.shipping_weight or picking.weight or 0.0
+    def _shipit_get_parcels(self, picking):
+        parcels = []
 
-        if not weight:
-            weight = sum(
-                (move.product_uom_qty or 0.0) * (move.product_id.weight or 0.0)
-                for move in picking.move_ids_without_package
-            )
+        if picking.package_ids:
+            for package in picking.package_ids:
+                # We have packages, use them
+                # TODO: Whan if all lines are not packaged?
 
-        return float(weight or 0.0)
+                package_type = package.package_type_id
+                # TODO: Dimension conversion?
+                # Package dimensions are mm by default, but are they always?
+                # ShipIT expects cm
 
-    def _shipit_get_package_dimensions(self, picking):
-        values = {
-            "length": self.shipit_default_length_cm,
-            "width": self.shipit_default_width_cm,
-            "height": self.shipit_default_height_cm,
-        }
+                length_mm = package_type.packaging_length
+                width_mm = package_type.width
+                height_mm = package_type.height
 
-        for package in picking.package_ids:
-            packaging = package.packaging_id
-            if not packaging:
-                continue
+                parcels.append(
+                    {
+                        # TODO: Configurable package type
+                        "type": "PACKAGE",
+                        "weight": package.shipping_weight or package.weight,
+                        "length": length_mm / 10 if length_mm else 0,
+                        "width": width_mm / 10 if width_mm else 0,
+                        "height": height_mm / 10 if height_mm else 0,
+                        "copies": 1,
+                    }
+                )
+        else:
+            # No packages. We'll just create a single parcel
+            # with the total weight and optional default dimensions.
 
-            if packaging.packaging_length:
-                values["length"] = packaging.packaging_length
-            if packaging.width:
-                values["width"] = packaging.width
-            if packaging.height:
-                values["height"] = packaging.height
-            break
+            # TODO: picking-spesific manual dimensions
+            parcel_vals = {
+                "type": "PACKAGE",
+                "weight": picking.shipping_weight or picking.weight,
+                "copies": 1,
+            }
 
-        return values
+            if self.shipit_use_default_dimensions:
+                parcel_vals.update(
+                    {
+                        "length": self.shipit_default_length_cm,
+                        "width": self.shipit_default_width_cm,
+                        "height": self.shipit_default_height_cm,
+                    }
+                )
 
-    def _shipit_validate_required_fields(self, picking, sender, receiver, weight):
+            parcels.append(parcel_vals)
+
+        return parcels
+
+    def _shipit_validate_required_fields(self, picking, sender, receiver):
         missing_fields = []
 
         if not self.shipit_api_key:
@@ -412,7 +436,7 @@ class DeliveryCarrier(models.Model):
             if not value:
                 missing_fields.append(label)
 
-        if weight <= 0:
+        if picking.shipping_weight <= 0 and picking.weight <= 0:
             missing_fields.append(_("Shipment weight"))
 
         if self.shipit_require_pickup_point and not picking.shipit_pickup_point_id:
@@ -442,25 +466,16 @@ class DeliveryCarrier(models.Model):
 
         sender = self._shipit_map_address(sender_partner)
         receiver = self._shipit_map_address(recipient_partner)
-        weight = self._shipit_get_picking_weight(picking)
-        dimensions = self._shipit_get_package_dimensions(picking)
 
-        self._shipit_validate_required_fields(picking, sender, receiver, weight)
+        self._shipit_validate_required_fields(picking, sender, receiver)
+
+        parcels = self._shipit_get_parcels(picking)
 
         payload = {
             "reference": picking.origin or picking.name,
             "sender": sender,
             "receiver": receiver,
-            "parcels": [
-                {
-                    "type": "PACKAGE",
-                    "weight": weight,
-                    "length": dimensions["length"],
-                    "width": dimensions["width"],
-                    "height": dimensions["height"],
-                    "copies": 1,
-                }
-            ],
+            "parcels": parcels,
             "serviceId": self._shipit_get_default_service_code(),
             "externalId": picking.name,
             "sendOrderConfirmationEmail": False,
