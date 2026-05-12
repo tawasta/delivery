@@ -21,6 +21,7 @@
                         <field
                             name="shipit_reseller_id"
                             required="delivery_type == 'shipit'"
+                            invisible="1"
                         />
                         <field
                             name="shipit_service_option_ids"
@@ -36,8 +37,10 @@
                         <field name="shipit_default_width_cm" />
                         <field name="shipit_default_height_cm" />
                     </group>
+                    <!-- Not currently used, but keep for future use
                     <group name="shipit_advanced_api" string="Advanced API settings">
                     </group>
+                    -->
                 </page>
             </xpath>
         </field>

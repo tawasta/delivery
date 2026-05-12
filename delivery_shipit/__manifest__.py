@@ -26,8 +26,9 @@
     "website": "https://github.com/tawasta/delivery",
     "author": "Futural",
     "license": "AGPL-3",
-    "application": False,
+    "application": True,
     "installable": True,
+    "images": ["static/description/banner.png"],
     "depends": [
         "delivery",
         "stock_delivery",

@@ -1,0 +1,3 @@
+- Multi-package support
+- Wizardless carrier picking
+- Support for e-commerce
