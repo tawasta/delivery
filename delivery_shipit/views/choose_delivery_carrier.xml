@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_choose_delivery_carrier_form_shipit" model="ir.ui.view">
+        <field name="name">choose.delivery.carrier.form.shipit.auto.rate</field>
+        <field name="model">choose.delivery.carrier</field>
+        <field
+            name="inherit_id"
+            ref="stock_delivery.choose_delivery_carrier_view_form"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='update_price']" position="attributes">
+                <attribute
+                    name="invisible"
+                >delivery_type in ('fixed', 'base_on_rule', 'shipit')</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

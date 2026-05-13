@@ -1,0 +1,6 @@
+- Configurable package dimensions for picking
+- Parcel type
+- Dangerous goods
+- Wizardless carrier picking
+- Support for e-commerce
+- Tests for everything!

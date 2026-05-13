@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="shipit_service_option_posti_po2103" model="shipit.service.option">
+        <field name="name">Posti</field>
+        <field name="code">posti.po2103</field>
+        <field name="carrier_name">Posti</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="shipit_service_option_mh_mh80" model="shipit.service.option">
+        <field name="name">Matkahuolto</field>
+        <field name="code">mh.mh80</field>
+        <field name="carrier_name">Matkahuolto</field>
+        <field name="sequence">20</field>
+    </record>
+</odoo>
