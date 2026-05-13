@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_shipit_pickup_point_wizard,access.shipit.pickup.point.wizard,model_shipit_pickup_point_wizard,stock.group_stock_user,1,1,1,1
+access_shipit_pickup_point_wizard_line,access.shipit.pickup.point.wizard.line,model_shipit_pickup_point_wizard_line,stock.group_stock_user,1,1,1,1
+access_shipit_service_option_user,access.shipit.service.option.user,model_shipit_service_option,stock.group_stock_user,1,0,0,0
