@@ -8,7 +8,7 @@
             ref="stock_delivery.view_picking_withcarrier_out_form"
         />
         <field name="arch" type="xml">
-            <field name="location_id" position="after">
+            <field name="carrier_id" position="after">
                 <field name="shipit_is_carrier" invisible="1" />
                 <field
                     name="shipit_pickup_point_name"
@@ -43,6 +43,8 @@
                         invisible="not shipit_pickup_point_id"
                     />
                 </div>
+                <field name="shipit_allow_fragile" invisible="1" />
+                <field name="shipit_fragile" invisible="not shipit_allow_fragile" />
             </field>
             <field name="picking_properties" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>

@@ -5,6 +5,11 @@ from odoo.exceptions import UserError
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    shipit_allow_fragile = fields.Boolean(
+        related="carrier_id.shipit_allow_fragile",
+    )
+    shipit_fragile = fields.Boolean(string="Fragile", default=False)
+
     shipit_is_carrier = fields.Boolean(
         compute="_compute_shipit_is_carrier",
     )
