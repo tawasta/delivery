@@ -1,32 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="res_config_settings_view_form" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.shipit</field>
         <field name="model">res.config.settings</field>
-        <field name="priority" eval="99"/>
+        <field name="priority" eval="99" />
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="ShipIT" string="ShipIT" name="delivery_shipit" groups="stock.group_stock_manager">
+                <app
+                    data-string="ShipIT"
+                    string="ShipIT"
+                    name="delivery_shipit"
+                    groups="stock.group_stock_manager"
+                >
                     <block title="ShipIT Settings" id="shipit_settings">
-                        <setting id="shipit_api_key" help="Set the API key to connect to ShipIT">
-                            <field name="shipit_api_key" password="True"/>
+                        <setting
+                            id="shipit_api_key"
+                            help="Set the API key to connect to ShipIT"
+                        >
+                            <field name="shipit_api_key" password="True" />
                         </setting>
 
-                        <setting id="shipit_generate_shipping_methods"
-                        invisible="not bool(shipit_api_key)"
-                        help="Generate ShipIT services via API.
+                        <setting
+                            id="shipit_generate_shipping_methods"
+                            invisible="not bool(shipit_api_key)"
+                            help="Generate ShipIT services via API.
                         This will create a shipping method for each service offered by ShipIT.
-                        This should be done after setting the API key and whenever new services are added in ShipIT.">
-                            <button name="action_shipit_sync_shipping_methods" type="object" string="Sync ShipIT services"/>
+                        This should be done after setting the API key and whenever new services are added in ShipIT."
+                        >
+                            <button
+                                name="action_shipit_sync_shipping_methods"
+                                type="object"
+                                string="Sync ShipIT services"
+                            />
                         </setting>
-                        
+
                         <setting id="shipit_environment">
-                            <field name="shipit_environment"/>
+                            <field name="shipit_environment" />
                         </setting>
-                        
-                        <setting id="shipit_timeout_seconds" help="Optional override for ShipIT API timeout (seconds)">
-                            <field name="shipit_timeout_seconds"/>
+
+                        <setting
+                            id="shipit_timeout_seconds"
+                            help="Optional override for ShipIT API timeout (seconds)"
+                        >
+                            <field name="shipit_timeout_seconds" />
                         </setting>
                     </block>
                 </app>

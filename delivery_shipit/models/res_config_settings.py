@@ -1,9 +1,11 @@
-from odoo import fields, models, _
+from odoo import _, fields, models
+from odoo.exceptions import UserError
+
 from .shipit_request import ShipitAPIError, ShipitRequest
 
 
 class ResConfigSettings(models.TransientModel):
-    _inherit = 'res.config.settings'
+    _inherit = "res.config.settings"
 
     shipit_api_key = fields.Char(
         config_parameter="shipit.api_key",
@@ -24,8 +26,8 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="shipit.reseller_id",
         string="ShipIT reseller ID",
         default=57,
-        help="Reseller ID to use in ShipIT API calls." \
-        "We urge users to use reseller ID 57 of Futural Oy " \
+        help="Reseller ID to use in ShipIT API calls."
+        "We urge users to use reseller ID 57 of Futural Oy "
         "to support the continued development of the integration.",
     )
 
@@ -38,9 +40,7 @@ class ResConfigSettings(models.TransientModel):
             "params": {
                 "type": "success",
                 "title": _("ShipIT services updated"),
-                "message": _(
-                    "Synchronized %s services.", sync_result["total"]
-                ),
+                "message": _("Synchronized %s services.", sync_result["total"]),
                 "sticky": False,
             },
         }
@@ -48,8 +48,8 @@ class ResConfigSettings(models.TransientModel):
     def _shipit_sync_service_options(self, raise_on_error=True):
         shipit_request = ShipitRequest(
             api_key=self.shipit_api_key,
-            prod=self.shipit_environment=="prod",
-            timeout=self.shipit_timeout_seconds
+            prod=self.shipit_environment == "prod",
+            timeout=self.shipit_timeout_seconds,
         )
         try:
             methods = shipit_request.list_methods()
@@ -63,9 +63,7 @@ class ResConfigSettings(models.TransientModel):
 
         delivery_carrier = self.env["delivery.carrier"].sudo()
         for method in methods:
-            delivery_carrier.shipit_upsert_carrier(
-                method
-            )
+            delivery_carrier.shipit_upsert_carrier(method)
 
         return {
             "total": len(methods),
