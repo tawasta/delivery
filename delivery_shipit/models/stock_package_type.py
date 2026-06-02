@@ -27,6 +27,7 @@ class StockPackageType(models.Model):
             ("smartposti", "SmartPosti"),
             ("unisend", "Unisend"),
             ("ups", "UPS"),
+            ("venipak", "Venipak"),
             ("wolt", "Wolt"),
         ],
         ondelete={
@@ -51,6 +52,7 @@ class StockPackageType(models.Model):
             "smartposti": "set default",
             "unisend": "set default",
             "ups": "set default",
+            "venipak": "set default",
             "wolt": "set default",
         },
     )
