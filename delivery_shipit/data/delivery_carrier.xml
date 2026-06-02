@@ -12,15 +12,4 @@
         <field name="invoice_policy">order</field>
     </record>
 
-    <record id="delivery_carrier_shipit_default" model="delivery.carrier">
-        <field name="name">ShipIT</field>
-        <field name="sequence">995</field>
-        <field name="delivery_type">shipit</field>
-        <field
-            name="product_id"
-            ref="delivery_shipit.product_product_delivery_shipit"
-        />
-        <field name="shipit_label_format">PDF_A4</field>
-    </record>
-
 </odoo>

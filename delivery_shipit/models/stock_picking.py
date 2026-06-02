@@ -5,6 +5,20 @@ from odoo.exceptions import UserError
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    shipit_additional_service_ids = fields.Many2many(
+        string="ShipIT Additional Services",
+        comodel_name="shipit.additional.service",
+        compute="_compute_shipit_additional_service_ids",
+        store=True,
+        readonly=False,
+        relation="stock_picking_shipit_additional_service_rel",
+    )
+    shipit_allowed_additional_service_ids = fields.Many2many(
+        comodel_name="shipit.additional.service",
+        related="carrier_id.shipit_allowed_additional_service_ids",
+        relation="stock_picking_shipit_allowed_additional_service_rel",
+    )
+
     shipit_is_carrier = fields.Boolean(
         compute="_compute_shipit_is_carrier",
     )
@@ -71,13 +85,22 @@ class StockPicking(models.Model):
     )
 
     @api.depends("carrier_id")
+    def _compute_shipit_additional_service_ids(self):
+        for picking in self:
+            picking.shipit_additional_service_ids = (
+                picking.carrier_id.shipit_default_additional_service_ids
+            )
+
+    @api.depends("carrier_id")
     def _compute_shipit_is_carrier(self):
         for picking in self:
-            picking.shipit_is_carrier = picking.carrier_id.delivery_type == "shipit"
+            picking.shipit_is_carrier = (
+                picking.carrier_id.shipit_service_code is not False
+            )
 
     def action_shipit_send_shipping(self):
         shipit_pickings = self.filtered(
-            lambda p: p.carrier_id.delivery_type == "shipit"
+            lambda p: p.carrier_id.shipit_service_code is not False
             and p.picking_type_code == "outgoing"
             and not p.shipit_delivery_done
             and not p.shipit_shipment_id
@@ -100,7 +123,7 @@ class StockPicking(models.Model):
     def action_open_shipit_pickup_point_wizard(self):
         self.ensure_one()
 
-        if self.carrier_id.delivery_type != "shipit":
+        if not self.carrier_id.shipit_service_code:
             raise UserError(
                 _("ShipIT pickup point search is available only for ShipIT carrier.")
             )

@@ -121,7 +121,7 @@ class ShipitPickupPointWizard(models.TransientModel):
         self.ensure_one()
 
         carrier = self.picking_id.carrier_id
-        if carrier.delivery_type != "shipit":
+        if carrier.shipit_service_code is False:
             raise UserError(
                 _("ShipIT pickup point search is only available for ShipIT carrier.")
             )

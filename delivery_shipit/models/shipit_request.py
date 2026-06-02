@@ -25,62 +25,31 @@ class ShipitRequest:
         api_key=None,
         prod=False,
         timeout=30,
-        base_url=None,
-        auth_mode="x_shipit_key",
-        create_endpoints=None,
-        cancel_endpoint_template=None,
-        label_endpoint_template=None,
     ):
         api_env = "prod" if prod else "test"
         self.api_key = api_key or ""
-        self.base_url = (base_url or SHIPIT_API_BASE_URL[api_env]).rstrip("/")
-        self.auth_mode = auth_mode or "x_shipit_key"
-        self.create_endpoints = self._parse_create_endpoints(create_endpoints)
-        self.cancel_endpoint_template = (
-            cancel_endpoint_template.strip() if cancel_endpoint_template else ""
-        )
-        self.label_endpoint_template = (
-            label_endpoint_template.strip() if label_endpoint_template else ""
-        )
+        self.base_url = SHIPIT_API_BASE_URL[api_env]
+        self.auth_mode = "x_shipit_key"
+        self.create_endpoints = ["shipment"]
+        self.cancel_endpoint_template = "shipments/{shipment_id}"
+        self.label_endpoint_template = "shipments/{shipment_id}/label"
         self.timeout = timeout
-
-    def _parse_create_endpoints(self, create_endpoints):
-        if not create_endpoints:
-            return ["shipment"]
-
-        if isinstance(create_endpoints, str):
-            values = [endpoint.strip() for endpoint in create_endpoints.split(",")]
-            endpoints = [endpoint.lstrip("/") for endpoint in values if endpoint]
-        elif isinstance(create_endpoints, list | tuple):
-            endpoints = [
-                str(endpoint).strip().lstrip("/")
-                for endpoint in create_endpoints
-                if endpoint
-            ]
-        else:
-            endpoints = ["shipment"]
-
-        if "shipment" not in endpoints:
-            endpoints.append("shipment")
-
-        return endpoints
 
     def _get_endpoint_url(self, endpoint):
         endpoint = endpoint.lstrip("/")
         return f"{self.base_url}/{endpoint}"
 
     def _get_headers(self):
-        mode = (self.auth_mode or "x_shipit_key").strip()
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "X-SHIPIT-KEY": self.api_key,
         }
 
-        if mode in ["both", "x_api_key"]:
+        if self.auth_mode == "x_api_key":
             headers["X-API-Key"] = self.api_key
 
-        if mode in ["both", "bearer"]:
+        if self.auth_mode == "bearer":
             headers["Authorization"] = f"Bearer {self.api_key}"
 
         return headers
@@ -337,36 +306,23 @@ class ShipitRequest:
             "raw": point,
         }
 
-    @staticmethod
-    def _normalize_list_method(method):
-        if not isinstance(method, dict):
-            return {}
-
-        service_id = str(method.get("serviceId") or "").strip()
-        if not service_id:
-            return {}
-
-        return {
-            "service_id": service_id,
-            "name": str(method.get("name") or service_id).strip(),
-            "carrier": str(
-                method.get("carrier") or method.get("carrierId") or ""
-            ).strip(),
-            "raw": method,
-        }
-
     def list_methods(self):
+        """
+        List all available shipping methods
+        """
         endpoint = self._get_endpoint_url("list-methods")
         content = self._get(endpoint)
 
-        if not isinstance(content, list):
-            return []
+        return content
 
-        return [
-            method
-            for method in (self._normalize_list_method(item) for item in content)
-            if method
-        ]
+    def carrier_contracts(self):
+        """
+        List all available carrier contracts
+        """
+        endpoint = self._get_endpoint_url("carrier-contracts")
+        content = self._get(endpoint)
+
+        return content
 
     def search_service_points(
         self,

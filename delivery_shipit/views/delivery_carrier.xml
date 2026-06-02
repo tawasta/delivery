@@ -10,27 +10,20 @@
                 <page
                     string="ShipIT"
                     name="shipit_configuration"
-                    invisible="delivery_type != 'shipit'"
+                    invisible="shipit_service_code == False"
                 >
                     <group name="shipit">
-                        <field
-                            name="shipit_api_key"
-                            password="1"
-                            required="delivery_type == 'shipit'"
-                        />
-                        <field
-                            name="shipit_reseller_id"
-                            required="delivery_type == 'shipit'"
-                            invisible="1"
-                        />
-                        <field
-                            name="shipit_service_option_ids"
-                            widget="many2many_tags"
-                            options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
-                            required="delivery_type == 'shipit'"
-                        />
-                        <field name="shipit_service_code" invisible="1" />
+                        <field name="shipit_service_code" />
                         <field name="shipit_require_pickup_point" />
+                        <field
+                            name="shipit_allowed_additional_service_ids"
+                            widget="many2many_tags"
+                        />
+                        <field
+                            name="shipit_default_additional_service_ids"
+                            domain="[('id', 'in', shipit_allowed_additional_service_ids)]"
+                            widget="many2many_tags"
+                        />
                     </group>
                     <group name="shipit_dimensions" string="Default dimensions">
                         <field

@@ -25,66 +25,59 @@ class DeliveryCarrier(models.Model):
     }
 
     delivery_type = fields.Selection(
-        selection_add=[("shipit", "ShipIT")],
-        ondelete={"shipit": "set default"},
-    )
-    shipit_api_key = fields.Char(string="ShipIT API key")
-    shipit_api_base_url = fields.Char(
-        string="ShipIT API base URL",
-        help="Optional override for ShipIT API base URL.",
-        default="",
-    )
-    shipit_auth_mode = fields.Selection(
-        string="ShipIT auth mode",
-        selection=[
-            ("x_shipit_key", "X-SHIPIT-KEY"),
-            # "x_shipit_key" was forced as auth mode.
-            # If it's the only supported auth method,
-            # no reason to allow using other methods
-            # ("both", "X-SHIPIT-KEY + Bearer + X-API-Key"),
-            # ("bearer", "Bearer (legacy)"),
-            # ("x_api_key", "X-API-Key (legacy)"),
+        selection_add=[
+            ("a2b", "A2B"),
+            ("asendia", "Asendia"),
+            ("bring", "Bring"),
+            ("budbee", "Budbee"),
+            ("dhl_freight", "DHL Freight"),
+            ("dpd", "DPD"),
+            ("dsv", "DSV"),
+            ("fetch", "Fetch"),
+            ("gls", "GLS"),
+            ("instabox", "Instabox"),
+            ("itella_logistiikka", "Itella Logistiikka"),
+            ("jakeluyhtio_suomi", "Jakeluyhtiö Suomi"),
+            ("kaukokiito", "Kaukokiito"),
+            ("db_schenker_system", "DB Schenker System"),
+            ("matkahuolto", "Matkahuolto"),
+            ("postnord", "Postnord"),
+            ("posti", "Posti"),
+            ("db_schenker_suomi", "DB Schenker Finland"),
+            ("smartposti", "SmartPosti"),
+            ("unisend", "Unisend"),
+            ("ups", "UPS"),
+            ("wolt", "Wolt"),
         ],
-        default="x_shipit_key",
-        required=True,
+        ondelete={
+            "a2b": "set default",
+            "asendia": "set default",
+            "bring": "set default",
+            "budbee": "set default",
+            "dhl_freight": "set default",
+            "dpd": "set default",
+            "dsv": "set default",
+            "fetch": "set default",
+            "gls": "set default",
+            "instabox": "set default",
+            "itella_logistiikka": "set default",
+            "jakeluyhtio_suomi": "set default",
+            "kaukokiito": "set default",
+            "db_schenker_system": "set default",
+            "matkahuolto": "set default",
+            "postnord": "set default",
+            "posti": "set default",
+            "db_schenker_suomi": "set default",
+            "smartposti": "set default",
+            "unisend": "set default",
+            "ups": "set default",
+            "wolt": "set default",
+        },
     )
-    shipit_create_endpoints = fields.Char(
-        string="ShipIT create endpoints",
-        default="shipment",
-        help="Comma-separated endpoint paths used for create shipment PUT call.",
-    )
-    shipit_cancel_endpoint_template = fields.Char(
-        string="ShipIT cancel endpoint template",
-        default="shipments/{shipment_id}",
-        help="Optional endpoint template for cancellation call.",
-    )
-    shipit_label_endpoint_template = fields.Char(
-        string="ShipIT label endpoint template",
-        default="shipments/{shipment_id}/label",
-        help="Optional endpoint template for legacy label fetch fallback.",
-    )
-    shipit_timeout_seconds = fields.Integer(
-        string="ShipIT timeout (seconds)",
-        default=30,
-    )
-    # Reseller ID is half hardcoded to prefer Futural reseller ID "57".
-    # We urge users to use this reseller ID
-    # to support the continued development of the integration.
-    shipit_reseller_id = fields.Integer(string="ShipIT reseller ID", default=57)
+
     shipit_service_code = fields.Char(
         string="ShipIT service ID",
         help="ShipIT v1 serviceId, e.g. posti.po2103",
-    )
-    shipit_service_option_ids = fields.Many2many(
-        comodel_name="shipit.service.option",
-        relation="delivery_carrier_shipit_service_option_rel",
-        column1="carrier_id",
-        column2="service_option_id",
-        string="ShipIT service IDs",
-        compute="_compute_shipit_service_option_ids",
-        inverse="_inverse_shipit_service_option_ids",
-        help="Select ShipIT service IDs. "
-        "First selected service is used as default serviceId for shipments.",
     )
     shipit_label_format = fields.Selection(
         string="ShipIT label format",
@@ -110,16 +103,26 @@ class DeliveryCarrier(models.Model):
         default=False,
     )
 
+    shipit_allowed_additional_service_ids = fields.Many2many(
+        comodel_name="shipit.additional.service",
+        string="ShipIT Allowed Additional Services",
+        help="Allowed additional services to include in shipments.",
+        readonly=True,
+        relation="delivery_carrier_allowed_shipit_additional_service_rel",
+    )
+    shipit_default_additional_service_ids = fields.Many2many(
+        comodel_name="shipit.additional.service",
+        string="ShipIT Default Additional Services",
+        help="Default additional services to include in shipments.",
+        relation="delivery_carrier_default_shipit_additional_service_rel",
+    )
+
     def _get_shipit_config(self):
+        config = self.env["ir.config_parameter"].sudo()
         return {
-            "api_key": self.shipit_api_key,
             "prod": self.prod_environment,
-            "base_url": self.shipit_api_base_url,
-            "auth_mode": self.shipit_auth_mode,
-            "create_endpoints": self.shipit_create_endpoints,
-            "cancel_endpoint_template": self.shipit_cancel_endpoint_template,
-            "label_endpoint_template": self.shipit_label_endpoint_template,
-            "timeout": max(1, self.shipit_timeout_seconds or 30),
+            "api_key": config.get_param("shipit.api_key"),
+            "timeout": int(config.get_param("shipit.timeout_seconds", 30)),
         }
 
     @api.model
@@ -148,128 +151,6 @@ class DeliveryCarrier(models.Model):
     def _shipit_get_service_codes(self):
         self.ensure_one()
         return self._shipit_normalize_service_ids(self.shipit_service_code)
-
-    def _shipit_get_default_service_code(self):
-        self.ensure_one()
-        service_codes = self._shipit_get_service_codes()
-        return service_codes[0] if service_codes else ""
-
-    def _compute_shipit_service_option_ids(self):
-        service_option_model = self.env["shipit.service.option"]
-        for carrier in self:
-            if carrier.delivery_type == "shipit" and carrier.shipit_api_key:
-                carrier._shipit_sync_service_options(raise_on_error=False)
-
-            service_codes = carrier._shipit_get_service_codes()
-            if not service_codes:
-                carrier.shipit_service_option_ids = False
-                continue
-            service_options = service_option_model.search(
-                [("code", "in", service_codes)]
-            )
-            existing_codes = set(service_options.mapped("code"))
-            missing_codes = [
-                code for code in service_codes if code not in existing_codes
-            ]
-            if missing_codes:
-                missing_options = service_option_model.sudo().create(
-                    [{"name": code, "code": code} for code in missing_codes]
-                )
-                service_options |= missing_options
-            carrier.shipit_service_option_ids = service_options
-
-    def _inverse_shipit_service_option_ids(self):
-        for carrier in self:
-            service_codes = carrier.shipit_service_option_ids.sorted(
-                key=lambda option: (option.sequence, option.id)
-            ).mapped("code")
-            carrier.shipit_service_code = ",".join(service_codes)
-
-    def _shipit_sync_service_options(self, raise_on_error=True):
-        self.ensure_one()
-        if self.delivery_type != "shipit":
-            return {"total": 0, "created": 0, "updated": 0}
-
-        shipit_request = ShipitRequest(**self._get_shipit_config())
-        try:
-            methods = shipit_request.list_methods()
-        except ShipitAPIError as error:
-            if raise_on_error:
-                raise UserError(
-                    _("Fetching ShipIT services failed:\n%(message)s")
-                    % {"message": str(error)}
-                ) from error
-            _logger.warning(
-                "ShipIT service sync failed for carrier %s (%s): %s",
-                self.id,
-                self.name,
-                error,
-            )
-            return {"total": 0, "created": 0, "updated": 0}
-
-        service_option_model = self.env["shipit.service.option"].sudo()
-        service_ids = [
-            method["service_id"] for method in methods if method.get("service_id")
-        ]
-        existing = service_option_model.search([("code", "in", service_ids)])
-        existing_by_code = {option.code: option for option in existing}
-
-        to_create = []
-        updated_count = 0
-        for method in methods:
-            service_id = method.get("service_id")
-            if not service_id:
-                continue
-
-            values = {
-                "name": method.get("name") or service_id,
-                "carrier_name": method.get("carrier") or "",
-            }
-            existing_option = existing_by_code.get(service_id)
-            if existing_option:
-                write_values = {
-                    field_name: value
-                    for field_name, value in values.items()
-                    if existing_option[field_name] != value
-                }
-                if write_values:
-                    existing_option.write(write_values)
-                    updated_count += 1
-            else:
-                to_create.append({"code": service_id, **values})
-
-        created_count = 0
-        if to_create:
-            service_option_model.create(to_create)
-            created_count = len(to_create)
-
-        return {
-            "total": len(service_ids),
-            "created": created_count,
-            "updated": updated_count,
-        }
-
-    def action_shipit_sync_service_options(self):
-        self.ensure_one()
-        sync_result = self._shipit_sync_service_options(raise_on_error=True)
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "type": "success",
-                "title": _("ShipIT services updated"),
-                "message": _(
-                    "Loaded %(total)s services "
-                    "(%(created)s created, %(updated)s updated)."
-                )
-                % {
-                    "total": sync_result["total"],
-                    "created": sync_result["created"],
-                    "updated": sync_result["updated"],
-                },
-                "sticky": False,
-            },
-        }
 
     def _shipit_get_sender_partner(self, picking):
         warehouse_partner = picking.picking_type_id.warehouse_id.partner_id
@@ -351,6 +232,21 @@ class DeliveryCarrier(models.Model):
             "eoriNumber": "",
         }
 
+    def _shipit_get_supported_package_codes(self):
+        # TODO: Carrier-spesific supported codes
+        supported_codes = [
+            "PACKAGE",
+            "PALLET[EUR-PALLET]",
+            "PALLET[TEHOLAVA]",
+            "PALLET-NON-STACKABLE",
+            "PALLET",
+            "PALLET[FIN-LAVA]",
+            "TROLLEY",
+            "TIRES",
+            "DOCUMENT",
+        ]
+        return supported_codes
+
     def _shipit_get_parcels(self, picking):
         parcels = []
 
@@ -368,10 +264,22 @@ class DeliveryCarrier(models.Model):
                 width_mm = package_type.width
                 height_mm = package_type.height
 
+                package_code = package_type.shipper_package_code or "PACKAGE"
+                supported_codes = self._shipit_get_supported_package_codes()
+
+                if package_code not in supported_codes:
+                    raise ValidationError(
+                        _(
+                            "Unsupported package code: %(package_code)s."
+                            " Supported codes are: %(supported_codes)s",
+                            package_code=package_code,
+                            supported_codes=", ".join(supported_codes),
+                        )
+                    )
+
                 parcels.append(
                     {
-                        # TODO: Configurable package type
-                        "type": "PACKAGE",
+                        "type": package_code,
                         "weight": package.shipping_weight or package.weight,
                         "length": length_mm / 10 if length_mm else 0,
                         "width": width_mm / 10 if width_mm else 0,
@@ -383,7 +291,7 @@ class DeliveryCarrier(models.Model):
             # No packages. We'll just create a single parcel
             # with the total weight and optional default dimensions.
 
-            # TODO: picking-spesific manual dimensions
+            # TODO: picking-specific manual dimensions
             parcel_vals = {
                 "type": "PACKAGE",
                 "weight": picking.shipping_weight or picking.weight,
@@ -403,12 +311,18 @@ class DeliveryCarrier(models.Model):
 
         return parcels
 
+    def _shipit_get_additional_services(self, picking):
+        services = {}
+        for service in picking.shipit_additional_service_ids:
+            if service.code in ["dng", "dangerousGoods", "lq", "limitedQuantities"]:
+                raise ValidationError(_("Sending dangerous goods is not implemented"))
+
+            services[service.code] = True
+        return services
+
     def _shipit_validate_required_fields(self, picking, sender, receiver):
         missing_fields = []
-
-        if not self.shipit_api_key:
-            missing_fields.append(_("Carrier ShipIT API key"))
-        if not self._shipit_get_default_service_code():
+        if not self.shipit_service_code:
             missing_fields.append(_("Carrier ShipIT service ID"))
 
         required_sender_fields = {
@@ -470,18 +384,21 @@ class DeliveryCarrier(models.Model):
         self._shipit_validate_required_fields(picking, sender, receiver)
 
         parcels = self._shipit_get_parcels(picking)
+        additional_services = self._shipit_get_additional_services(picking)
 
         payload = {
             "reference": picking.origin or picking.name,
             "sender": sender,
             "receiver": receiver,
             "parcels": parcels,
-            "serviceId": self._shipit_get_default_service_code(),
+            "serviceId": self.shipit_service_code,
             "externalId": picking.name,
             "sendOrderConfirmationEmail": False,
+            "additionalServices": additional_services,
         }
 
-        payload["resellerId"] = self.shipit_reseller_id
+        config = self.env["ir.config_parameter"].sudo()
+        payload["resellerId"] = int(config.get_param("shipit.reseller_id"))
 
         if picking.shipit_pickup_point_id:
             payload["pickupId"] = picking.shipit_pickup_point_id
