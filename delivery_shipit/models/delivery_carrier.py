@@ -63,11 +63,11 @@ class DeliveryCarrier(models.Model):
     )
 
     def _get_shipit_config(self):
-        config_parameters = self.env["ir.config_parameter"].sudo()
+        config = self.env["ir.config_parameter"].sudo()
         return {
             "prod": self.prod_environment,
-            "api_key": config_parameters.get_param("shipit.api_key"),
-            "timeout": int(config_parameters.get_param("shipit.timeout_seconds", 30)),
+            "api_key": config.get_param("shipit.api_key"),
+            "timeout": int(config.get_param("shipit.timeout_seconds", 30)),
         }
 
     def shipit_upsert_carrier(self, service_vals):
@@ -77,7 +77,7 @@ class DeliveryCarrier(models.Model):
         # service_logo = service_vals.get("raw", {}).get("logo")
         raw = service_vals.get("raw", {})
 
-        carrier = self.search(
+        carrier = self.with_context(active_test=False).search(
             [
                 ("shipit_service_code", "=", service_code),
                 ("delivery_type", "=", "shipit"),
@@ -85,16 +85,15 @@ class DeliveryCarrier(models.Model):
             limit=1,
         )
 
-        environment = (
-            self.env["ir.config_parameter"].sudo().get_param("shipit.environment")
-        )
+        config = self.env["ir.config_parameter"].sudo()
+        prod_environment = config.get_param("shipit.shipit_environment") == "prod"
 
         vals = {
             "name": service_name,
             "product_id": self.env.ref(
                 "delivery_shipit.product_product_delivery_shipit"
             ).id,
-            "prod_environment": environment,
+            "prod_environment": prod_environment,
         }
 
         if raw.get("supportedCountries"):
@@ -362,8 +361,8 @@ class DeliveryCarrier(models.Model):
             "additionalServices": additional_services,
         }
 
-        config_parameters = self.env["ir.config_parameter"].sudo()
-        payload["resellerId"] = int(config_parameters.get_param("shipit.reseller_id"))
+        config = self.env["ir.config_parameter"].sudo()
+        payload["resellerId"] = int(config.get_param("shipit.reseller_id"))
 
         if picking.shipit_pickup_point_id:
             payload["pickupId"] = picking.shipit_pickup_point_id

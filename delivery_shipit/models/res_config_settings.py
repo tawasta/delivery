@@ -8,23 +8,26 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     shipit_api_key = fields.Char(
+        string="ShipIT API key",
         config_parameter="shipit.api_key",
         help="Set the API key to connect to ShipIT",
     )
     shipit_environment = fields.Selection(
         [("prod", "Production"), ("test", "Test")],
-        config_parameter="shipit.environment",
+        string="ShipIT environment",
+        config_parameter="shipit.prod_environment",
         default="prod",
         help="Environment to use for ShipIT API calls.",
     )
     shipit_timeout_seconds = fields.Integer(
+        string="ShipIT API timeout",
         config_parameter="shipit.timeout_seconds",
         default=30,
-        help="How long to wait for ShipIT API responses before timing out.",
+        help="How long to wait for responses before timing out.",
     )
     shipit_reseller_id = fields.Integer(
-        config_parameter="shipit.reseller_id",
         string="ShipIT reseller ID",
+        config_parameter="shipit.reseller_id",
         default=57,
         help="Reseller ID to use in ShipIT API calls."
         "We urge users to use reseller ID 57 of Futural Oy "
