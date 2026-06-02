@@ -25,9 +25,56 @@ class DeliveryCarrier(models.Model):
     }
 
     delivery_type = fields.Selection(
-        selection_add=[("shipit", "ShipIT")],
-        ondelete={"shipit": "set default"},
+        selection_add=[
+            ("a2b", "A2B"),
+            ("asendia", "Asendia"),
+            ("bring", "Bring"),
+            ("budbee", "Budbee"),
+            ("dhl_freight", "DHL Freight"),
+            ("dpd", "DPD"),
+            ("dsv", "DSV"),
+            ("fetch", "Fetch"),
+            ("gls", "GLS"),
+            ("instabox", "Instabox"),
+            ("itella_logistiikka", "Itella Logistiikka"),
+            ("jakeluyhtio_suomi", "Jakeluyhtiö Suomi"),
+            ("kaukokiito", "Kaukokiito"),
+            ("db_schenker_system", "DB Schenker System"),
+            ("matkahuolto", "Matkahuolto"),
+            ("postnord", "Postnord"),
+            ("posti", "Posti"),
+            ("db_schenker_suomi", "DB Schenker Finland"),
+            ("smartposti", "SmartPosti"),
+            ("unisend", "Unisend"),
+            ("ups", "UPS"),
+            ("wolt", "Wolt"),
+        ],
+        ondelete={
+            "a2b": "set default",
+            "asendia": "set default",
+            "bring": "set default",
+            "budbee": "set default",
+            "dhl_freight": "set default",
+            "dpd": "set default",
+            "dsv": "set default",
+            "fetch": "set default",
+            "gls": "set default",
+            "instabox": "set default",
+            "itella_logistiikka": "set default",
+            "jakeluyhtio_suomi": "set default",
+            "kaukokiito": "set default",
+            "db_schenker_system": "set default",
+            "matkahuolto": "set default",
+            "postnord": "set default",
+            "posti": "set default",
+            "db_schenker_suomi": "set default",
+            "smartposti": "set default",
+            "unisend": "set default",
+            "ups": "set default",
+            "wolt": "set default",
+        },
     )
+
     shipit_service_code = fields.Char(
         string="ShipIT service ID",
         help="ShipIT v1 serviceId, e.g. posti.po2103",
@@ -56,10 +103,18 @@ class DeliveryCarrier(models.Model):
         default=False,
     )
 
-    shipit_allow_fragile = fields.Boolean(
-        string="Allow fragile",
-        help="If shipments can be marked as fragile",
-        default=False,
+    shipit_allowed_additional_service_ids = fields.Many2many(
+        comodel_name="shipit.additional.service",
+        string="ShipIT Allowed Additional Services",
+        help="Allowed additional services to include in shipments.",
+        readonly=True,
+        relation="delivery_carrier_allowed_shipit_additional_service_rel",
+    )
+    shipit_default_additional_service_ids = fields.Many2many(
+        comodel_name="shipit.additional.service",
+        string="ShipIT Default Additional Services",
+        help="Default additional services to include in shipments.",
+        relation="delivery_carrier_default_shipit_additional_service_rel",
     )
 
     def _get_shipit_config(self):
@@ -69,55 +124,6 @@ class DeliveryCarrier(models.Model):
             "api_key": config.get_param("shipit.api_key"),
             "timeout": int(config.get_param("shipit.timeout_seconds", 30)),
         }
-
-    def shipit_upsert_carrier(self, service_vals):
-        service_name = service_vals.get("name")
-        service_code = service_vals.get("service_id")
-        # TODO: Logos might be interesting to use for website
-        # service_logo = service_vals.get("raw", {}).get("logo")
-        raw = service_vals.get("raw", {})
-
-        carrier = self.with_context(active_test=False).search(
-            [
-                ("shipit_service_code", "=", service_code),
-                ("delivery_type", "=", "shipit"),
-            ],
-            limit=1,
-        )
-
-        config = self.env["ir.config_parameter"].sudo()
-        prod_environment = config.get_param("shipit.shipit_environment") == "prod"
-
-        vals = {
-            "name": service_name,
-            "product_id": self.env.ref(
-                "delivery_shipit.product_product_delivery_shipit"
-            ).id,
-            "prod_environment": prod_environment,
-        }
-
-        if raw.get("supportedCountries"):
-            countries = self.env["res.country"].search(
-                [("code", "in", raw["supportedCountries"])]
-            )
-            if countries:
-                vals["country_ids"] = [(6, 0, countries.ids)]
-
-        if raw.get("fragile"):
-            vals["shipit_allow_fragile"] = True
-
-        if not carrier:
-            vals.update(
-                {
-                    "delivery_type": "shipit",
-                    "shipit_service_code": service_code,
-                }
-            )
-            carrier = self.create(vals)
-        else:
-            carrier.write(vals)
-
-        return carrier
 
     @api.model
     def _shipit_normalize_service_ids(self, service_ids):
@@ -226,6 +232,21 @@ class DeliveryCarrier(models.Model):
             "eoriNumber": "",
         }
 
+    def _shipit_get_supported_package_codes(self):
+        # TODO: Carrier-spesific supported codes
+        supported_codes = [
+            "PACKAGE",
+            "PALLET[EUR-PALLET]",
+            "PALLET[TEHOLAVA]",
+            "PALLET-NON-STACKABLE",
+            "PALLET",
+            "PALLET[FIN-LAVA]",
+            "TROLLEY",
+            "TIRES",
+            "DOCUMENT",
+        ]
+        return supported_codes
+
     def _shipit_get_parcels(self, picking):
         parcels = []
 
@@ -243,10 +264,22 @@ class DeliveryCarrier(models.Model):
                 width_mm = package_type.width
                 height_mm = package_type.height
 
+                package_code = package_type.shipper_package_code or "PACKAGE"
+                supported_codes = self._shipit_get_supported_package_codes()
+
+                if package_code not in supported_codes:
+                    raise ValidationError(
+                        _(
+                            "Unsupported package code: %(package_code)s."
+                            " Supported codes are: %(supported_codes)s",
+                            package_code=package_code,
+                            supported_codes=", ".join(supported_codes),
+                        )
+                    )
+
                 parcels.append(
                     {
-                        # TODO: Configurable package type
-                        "type": "PACKAGE",
+                        "type": package_code,
                         "weight": package.shipping_weight or package.weight,
                         "length": length_mm / 10 if length_mm else 0,
                         "width": width_mm / 10 if width_mm else 0,
@@ -258,7 +291,7 @@ class DeliveryCarrier(models.Model):
             # No packages. We'll just create a single parcel
             # with the total weight and optional default dimensions.
 
-            # TODO: picking-spesific manual dimensions
+            # TODO: picking-specific manual dimensions
             parcel_vals = {
                 "type": "PACKAGE",
                 "weight": picking.shipping_weight or picking.weight,
@@ -280,8 +313,11 @@ class DeliveryCarrier(models.Model):
 
     def _shipit_get_additional_services(self, picking):
         services = {}
-        if picking.shipit_fragile:
-            services["fragile"] = True
+        for service in picking.shipit_additional_service_ids:
+            if service.code in ["dng", "dangerousGoods", "lq", "limitedQuantities"]:
+                raise ValidationError(_("Sending dangerous goods is not implemented"))
+
+            services[service.code] = True
         return services
 
     def _shipit_validate_required_fields(self, picking, sender, receiver):

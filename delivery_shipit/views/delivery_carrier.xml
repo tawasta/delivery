@@ -10,12 +10,20 @@
                 <page
                     string="ShipIT"
                     name="shipit_configuration"
-                    invisible="delivery_type != 'shipit'"
+                    invisible="shipit_service_code == False"
                 >
                     <group name="shipit">
                         <field name="shipit_service_code" />
                         <field name="shipit_require_pickup_point" />
-                        <field name="shipit_allow_fragile" />
+                        <field
+                            name="shipit_allowed_additional_service_ids"
+                            widget="many2many_tags"
+                        />
+                        <field
+                            name="shipit_default_additional_service_ids"
+                            domain="[('id', 'in', shipit_allowed_additional_service_ids)]"
+                            widget="many2many_tags"
+                        />
                     </group>
                     <group name="shipit_dimensions" string="Default dimensions">
                         <field

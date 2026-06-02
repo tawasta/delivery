@@ -43,8 +43,17 @@
                         invisible="not shipit_pickup_point_id"
                     />
                 </div>
-                <field name="shipit_allow_fragile" invisible="1" />
-                <field name="shipit_fragile" invisible="not shipit_allow_fragile" />
+                <field
+                    name="shipit_allowed_additional_service_ids"
+                    widget="many2many_tags"
+                    invisible="1"
+                />
+                <field
+                    name="shipit_additional_service_ids"
+                    invisible="not shipit_is_carrier"
+                    domain="[('id', 'in', shipit_allowed_additional_service_ids)]"
+                    widget="many2many_tags"
+                />
             </field>
             <field name="picking_properties" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
@@ -76,17 +85,17 @@
                             <field
                                 name="shipit_last_error"
                                 readonly="1"
-                                groups="base.no_one"
+                                groups="base.group_no_one"
                             />
                             <field
                                 name="shipit_payload"
                                 readonly="1"
-                                groups="base.no_one"
+                                groups="base.group_no_one"
                             />
                             <field
                                 name="shipit_response"
                                 readonly="1"
-                                groups="base.no_one"
+                                groups="base.group_no_one"
                             />
                         </group>
                     </group>
