@@ -13,24 +13,9 @@
                     invisible="delivery_type != 'shipit'"
                 >
                     <group name="shipit">
-                        <field
-                            name="shipit_api_key"
-                            password="1"
-                            required="delivery_type == 'shipit'"
-                        />
-                        <field
-                            name="shipit_reseller_id"
-                            required="delivery_type == 'shipit'"
-                            invisible="1"
-                        />
-                        <field
-                            name="shipit_service_option_ids"
-                            widget="many2many_tags"
-                            options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
-                            required="delivery_type == 'shipit'"
-                        />
-                        <field name="shipit_service_code" invisible="1" />
+                        <field name="shipit_service_code" />
                         <field name="shipit_require_pickup_point" />
+                        <field name="shipit_allow_fragile" />
                     </group>
                     <group name="shipit_dimensions" string="Default dimensions">
                         <field
