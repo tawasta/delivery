@@ -5,6 +5,26 @@ from odoo.exceptions import UserError
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    freight_payer_partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Freight payer",
+    )
+    freight_payer_customer_number = fields.Char(
+        string="Payer customer number",
+        related="freight_payer_partner_id.shipit_customer_number",
+        readonly=False,
+    )
+    freight_payer_type = fields.Selection(
+        string="Payment type",
+        related="freight_payer_partner_id.shipit_payer_type",
+        store=True,
+        copy=False,
+        readonly=False,
+    )
+    shipit_freight_payer_supported = fields.Boolean(
+        related="carrier_id.shipit_freight_payer_supported",
+    )
+
     shipit_additional_service_ids = fields.Many2many(
         string="ShipIT Additional Services",
         comodel_name="shipit.additional.service",

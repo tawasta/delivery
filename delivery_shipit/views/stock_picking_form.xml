@@ -8,6 +8,26 @@
             ref="stock_delivery.view_picking_withcarrier_out_form"
         />
         <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="shipit_freight_payer_supported" invisible="1" />
+                <field
+                    name="freight_payer_partner_id"
+                    invisible="not shipit_freight_payer_supported"
+                    readonly="state in ['cancel', 'done']"
+                />
+                <field
+                    name="freight_payer_customer_number"
+                    invisible="not freight_payer_partner_id"
+                    readonly="state in ['cancel', 'done']"
+                />
+                <field
+                    name="freight_payer_type"
+                    required="freight_payer_partner_id"
+                    invisible="not freight_payer_partner_id"
+                    readonly="state in ['cancel', 'done']"
+                />
+            </field>
+
             <field name="carrier_id" position="after">
                 <field name="shipit_is_carrier" invisible="1" />
                 <field
