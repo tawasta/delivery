@@ -138,7 +138,22 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         self.action_shipit_send_shipping()
-        return super().button_validate()
+        res = super().button_validate()
+
+        if len(self) == 1 and self.shipit_label_attachment_id:
+            attachment = self.shipit_label_attachment_id
+            url = f"/web/content/{attachment.id}?download=true"
+
+            attachment = self.shipit_label_attachment_id
+
+            return {
+                "type": "ir.actions.act_url",
+                "url": url,
+                "name": attachment.name,
+                "target": "new",
+            }
+
+        return res
 
     def action_open_shipit_pickup_point_wizard(self):
         self.ensure_one()

@@ -8,6 +8,16 @@
             ref="stock_delivery.view_picking_withcarrier_out_form"
         />
         <field name="arch" type="xml">
+            <!-- Hide the default print buttons if using ShipIT -->
+            <button name="action_open_label_type" position="attributes">
+                <attribute name="invisible">shipit_is_carrier</attribute>
+            </button>
+            <!-- TODO: hide "Print"-button. It's a hard one to reference... -->
+
+            <button name="action_open_label_type" position="attributes">
+                <attribute name="invisible">shipit_is_carrier</attribute>
+            </button>
+
             <field name="partner_id" position="after">
                 <field name="shipit_freight_payer_supported" invisible="1" />
                 <field
