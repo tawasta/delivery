@@ -47,6 +47,7 @@ class DeliveryCarrier(models.Model):
             ("smartposti", "SmartPosti"),
             ("unisend", "Unisend"),
             ("ups", "UPS"),
+            ("venipak", "Venipak"),
             ("wolt", "Wolt"),
         ],
         ondelete={
@@ -71,6 +72,7 @@ class DeliveryCarrier(models.Model):
             "smartposti": "set default",
             "unisend": "set default",
             "ups": "set default",
+            "venipak": "set default",
             "wolt": "set default",
         },
     )
@@ -116,6 +118,37 @@ class DeliveryCarrier(models.Model):
         help="Default additional services to include in shipments.",
         relation="delivery_carrier_default_shipit_additional_service_rel",
     )
+
+    shipit_freight_payer_supported = fields.Boolean(
+        string="Freight payer supported",
+        help="Does the service support a different freight payer for shipments.",
+        compute="_compute_shipit_freight_payer_supported",
+    )
+
+    def _compute_shipit_freight_payer_supported(self):
+        """
+        Compute if the carrier/service supports a different freight payer for shipments.
+        Freight payer is only accepted for these serviceId prefixes:
+        posti.*
+        itellalog.*
+        kaukokiito.*
+        kl.*
+        sbtlfi.*
+        sbtlfiexp.sbtlfiexp (exact match)
+        """
+        for record in self:
+            service_code = record.shipit_service_code or ""
+            supported_prefixes = [
+                "posti.",
+                "itellalog.",
+                "kaukokiito.",
+                "kl.",
+                "sbtlfi.",
+            ]
+            record.shipit_freight_payer_supported = (
+                any(service_code.startswith(prefix) for prefix in supported_prefixes)
+                or service_code == "sbtlfiexp.sbtlfiexp"
+            )
 
     def _get_shipit_config(self):
         config = self.env["ir.config_parameter"].sudo()
@@ -184,6 +217,7 @@ class DeliveryCarrier(models.Model):
 
     def _shipit_map_address(self, partner):
         if not partner:
+            # Why do we need to return empty values?
             return {
                 "name": "",
                 "email": "",
@@ -198,6 +232,7 @@ class DeliveryCarrier(models.Model):
                 "contactPerson": "",
                 "vatNumber": "",
                 "eoriNumber": "",
+                "customer_number": "",
             }
 
         commercial_partner = partner.commercial_partner_id
@@ -230,6 +265,7 @@ class DeliveryCarrier(models.Model):
             "contactPerson": partner.name or commercial_partner.name or "",
             "vatNumber": partner.vat or commercial_partner.vat or "",
             "eoriNumber": "",
+            "customer_number": partner.shipit_customer_number or "",
         }
 
     def _shipit_get_supported_package_codes(self):
@@ -396,6 +432,13 @@ class DeliveryCarrier(models.Model):
             "sendOrderConfirmationEmail": False,
             "additionalServices": additional_services,
         }
+
+        if picking.freight_payer_partner_id:
+            payer = self._shipit_map_address(picking.freight_payer_partner_id)
+            payer["type"] = (
+                picking.freight_payer_partner_id.shipit_payer_type or "consignor"
+            )
+            payload["freightPayer"] = payer
 
         config = self.env["ir.config_parameter"].sudo()
         payload["resellerId"] = int(config.get_param("shipit.reseller_id"))

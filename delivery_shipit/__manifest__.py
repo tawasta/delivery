@@ -21,7 +21,7 @@
 {
     "name": "ShipIT Shipping",
     "summary": "ShipIT shipping integration for Odoo delivery workflows",
-    "version": "17.0.2.0.0",
+    "version": "17.0.2.2.0",
     "category": "Connector",
     "website": "https://github.com/tawasta/delivery",
     "author": "Futural",
@@ -39,6 +39,7 @@
         "views/choose_delivery_carrier.xml",
         "views/delivery_carrier.xml",
         "views/res_config_settings.xml",
+        "views/res_partner_form.xml",
         "views/stock_picking_form.xml",
         "views/stock_picking_tree.xml",
         "wizards/shipit_pickup_point_wizard.xml",
