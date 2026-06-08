@@ -9,11 +9,6 @@ class StockPicking(models.Model):
         comodel_name="res.partner",
         string="Freight payer",
     )
-    freight_payer_customer_number = fields.Char(
-        string="Payer customer number",
-        related="freight_payer_partner_id.shipit_customer_number",
-        readonly=False,
-    )
     freight_payer_type = fields.Selection(
         string="Payment type",
         related="freight_payer_partner_id.shipit_payer_type",
