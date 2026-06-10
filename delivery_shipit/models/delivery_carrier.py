@@ -232,7 +232,6 @@ class DeliveryCarrier(models.Model):
                 "contactPerson": "",
                 "vatNumber": "",
                 "eoriNumber": "",
-                "customer_number": "",
             }
 
         commercial_partner = partner.commercial_partner_id
@@ -299,7 +298,7 @@ class DeliveryCarrier(models.Model):
 
             raise ValidationError(msg)
 
-        payer["customer_number"] = customer_number
+        payer["customerNumber"] = customer_number
 
         return payer
 
