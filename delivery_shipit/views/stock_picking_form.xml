@@ -12,7 +12,7 @@
             <button name="action_open_label_type" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
             </button>
-            <!-- TODO: hide "Print"-button. It's a hard one to reference... -->
+            <!-- TODO: hide the default "Print"-button. It's a hard one to reference... -->
 
             <button name="action_open_label_type" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
@@ -23,11 +23,6 @@
                 <field
                     name="freight_payer_partner_id"
                     invisible="not shipit_freight_payer_supported"
-                    readonly="state in ['cancel', 'done']"
-                />
-                <field
-                    name="freight_payer_customer_number"
-                    invisible="not freight_payer_partner_id"
                     readonly="state in ['cancel', 'done']"
                 />
                 <field

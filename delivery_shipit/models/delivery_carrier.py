@@ -232,7 +232,6 @@ class DeliveryCarrier(models.Model):
                 "contactPerson": "",
                 "vatNumber": "",
                 "eoriNumber": "",
-                "customer_number": "",
             }
 
         commercial_partner = partner.commercial_partner_id
@@ -265,8 +264,43 @@ class DeliveryCarrier(models.Model):
             "contactPerson": partner.name or commercial_partner.name or "",
             "vatNumber": partner.vat or commercial_partner.vat or "",
             "eoriNumber": "",
-            "customer_number": partner.shipit_customer_number or "",
         }
+
+    def _shipit_map_freight_payer(self, picking):
+        partner = picking.freight_payer_partner_id
+        payer = self._shipit_map_address(partner)
+        payer["type"] = picking.freight_payer_type or "consignor"
+
+        carrier = picking.carrier_id
+        service_code = carrier.shipit_service_code
+        customer_number = False
+        if service_code.startswith("posti."):
+            customer_number = partner.shipit_customer_number_posti
+        elif service_code.startswith("itellalog."):
+            customer_number = partner.shipit_customer_number_itellalog
+        elif service_code.startswith("kaukokiito."):
+            customer_number = partner.shipit_customer_number_kaukokiito
+        elif service_code.startswith("kl."):
+            customer_number = partner.shipit_customer_number_kl
+        elif service_code.startswith("sbtlfi."):
+            customer_number = partner.shipit_customer_number_sbtlfi
+        elif service_code == "sbtlfiexp.sbtlfiexp":
+            customer_number = partner.shipit_customer_number_sbtlfiexp
+
+        if not customer_number:
+            msg = _(
+                "Freight payer customer number is required when using Freight Payer.\n"
+                "\nPlease go to Freight payer contact card 'ShipIT'-tab\n"
+                "and fill in the customer number for the relevant carrier/service.\n"
+                "\nCarrier service: '%(service)s'",
+                service=service_code,
+            )
+
+            raise ValidationError(msg)
+
+        payer["customerNumber"] = customer_number
+
+        return payer
 
     def _shipit_get_supported_package_codes(self):
         # TODO: Carrier-spesific supported codes
@@ -434,10 +468,7 @@ class DeliveryCarrier(models.Model):
         }
 
         if picking.freight_payer_partner_id:
-            payer = self._shipit_map_address(picking.freight_payer_partner_id)
-            payer["type"] = (
-                picking.freight_payer_partner_id.shipit_payer_type or "consignor"
-            )
+            payer = self._shipit_map_freight_payer(picking)
             payload["freightPayer"] = payer
 
         config = self.env["ir.config_parameter"].sudo()
