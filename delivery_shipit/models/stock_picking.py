@@ -109,9 +109,7 @@ class StockPicking(models.Model):
     @api.depends("carrier_id")
     def _compute_shipit_is_carrier(self):
         for picking in self:
-            picking.shipit_is_carrier = (
-                picking.carrier_id.shipit_service_code is not False
-            )
+            picking.shipit_is_carrier = picking.carrier_id._shipit_is_carrier()
 
     def action_shipit_send_shipping(self):
         shipit_pickings = self.filtered(
@@ -132,7 +130,6 @@ class StockPicking(models.Model):
             picking.shipit_delivery_done = True
 
     def button_validate(self):
-        self.action_shipit_send_shipping()
         res = super().button_validate()
 
         if len(self) == 1 and self.shipit_label_attachment_id:

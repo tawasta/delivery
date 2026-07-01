@@ -225,19 +225,11 @@ class ShipitRequest:
         raise ShipitAPIError(_("Unable to create shipment."))
 
     def cancel_shipment(self, shipment_id):
-        if not self.cancel_endpoint_template:
-            raise ShipitAPIError(_("ShipIT cancel endpoint is not configured."))
+        _logger.warning(
+            "ShipIT cancel is not implemented. Shipment ID: %s", shipment_id
+        )
 
-        try:
-            endpoint = self.cancel_endpoint_template.format(shipment_id=shipment_id)
-        except Exception as error:
-            raise ShipitAPIError(
-                _("Invalid ShipIT cancel endpoint template: %(message)s")
-                % {"message": str(error)}
-            ) from error
-
-        endpoint = self._get_endpoint_url(endpoint)
-        return self._delete(endpoint)
+        return
 
     def get_label(self, shipment_id):
         if not self.label_endpoint_template:
