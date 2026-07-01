@@ -132,7 +132,6 @@ class StockPicking(models.Model):
             picking.shipit_delivery_done = True
 
     def button_validate(self):
-        self.action_shipit_send_shipping()
         res = super().button_validate()
 
         if len(self) == 1 and self.shipit_label_attachment_id:
