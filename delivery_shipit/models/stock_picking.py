@@ -109,7 +109,10 @@ class StockPicking(models.Model):
     @api.depends("carrier_id")
     def _compute_shipit_is_carrier(self):
         for picking in self:
-            picking.shipit_is_carrier = picking.carrier_id._shipit_is_carrier()
+            if picking.carrier_id:
+                picking.shipit_is_carrier = picking.carrier_id._shipit_is_carrier()
+            else:
+                picking.shipit_is_carrier = False
 
     def action_shipit_send_shipping(self):
         shipit_pickings = self.filtered(
