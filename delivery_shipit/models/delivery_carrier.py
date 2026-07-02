@@ -17,6 +17,33 @@ except Exception:  # pragma: no cover - optional dependency in runtime image
 _logger = logging.getLogger(__name__)
 
 
+SHIPIT_CARRIERS = [
+    ("a2b", "A2B"),
+    ("asendia", "Asendia"),
+    ("bring", "Bring"),
+    ("budbee", "Budbee"),
+    ("dhl_freight", "DHL Freight"),
+    ("dpd", "DPD"),
+    ("dsv", "DSV"),
+    ("fetch", "Fetch"),
+    ("gls", "GLS"),
+    ("instabox", "Instabox"),
+    ("itella_logistiikka", "Itella Logistiikka"),
+    ("jakeluyhtio_suomi", "Jakeluyhtiö Suomi"),
+    ("kaukokiito", "Kaukokiito"),
+    ("db_schenker_system", "DB Schenker System"),
+    ("matkahuolto", "Matkahuolto"),
+    ("postnord", "Postnord"),
+    ("posti", "Posti"),
+    ("db_schenker_suomi", "DB Schenker Finland"),
+    ("smartposti", "SmartPosti"),
+    ("unisend", "Unisend"),
+    ("ups", "UPS"),
+    ("venipak", "Venipak"),
+    ("wolt", "Wolt"),
+]
+
+
 class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
     _shipit_service_code_aliases = {
@@ -25,56 +52,8 @@ class DeliveryCarrier(models.Model):
     }
 
     delivery_type = fields.Selection(
-        selection_add=[
-            ("a2b", "A2B"),
-            ("asendia", "Asendia"),
-            ("bring", "Bring"),
-            ("budbee", "Budbee"),
-            ("dhl_freight", "DHL Freight"),
-            ("dpd", "DPD"),
-            ("dsv", "DSV"),
-            ("fetch", "Fetch"),
-            ("gls", "GLS"),
-            ("instabox", "Instabox"),
-            ("itella_logistiikka", "Itella Logistiikka"),
-            ("jakeluyhtio_suomi", "Jakeluyhtiö Suomi"),
-            ("kaukokiito", "Kaukokiito"),
-            ("db_schenker_system", "DB Schenker System"),
-            ("matkahuolto", "Matkahuolto"),
-            ("postnord", "Postnord"),
-            ("posti", "Posti"),
-            ("db_schenker_suomi", "DB Schenker Finland"),
-            ("smartposti", "SmartPosti"),
-            ("unisend", "Unisend"),
-            ("ups", "UPS"),
-            ("venipak", "Venipak"),
-            ("wolt", "Wolt"),
-        ],
-        ondelete={
-            "a2b": "set default",
-            "asendia": "set default",
-            "bring": "set default",
-            "budbee": "set default",
-            "dhl_freight": "set default",
-            "dpd": "set default",
-            "dsv": "set default",
-            "fetch": "set default",
-            "gls": "set default",
-            "instabox": "set default",
-            "itella_logistiikka": "set default",
-            "jakeluyhtio_suomi": "set default",
-            "kaukokiito": "set default",
-            "db_schenker_system": "set default",
-            "matkahuolto": "set default",
-            "postnord": "set default",
-            "posti": "set default",
-            "db_schenker_suomi": "set default",
-            "smartposti": "set default",
-            "unisend": "set default",
-            "ups": "set default",
-            "venipak": "set default",
-            "wolt": "set default",
-        },
+        selection_add=SHIPIT_CARRIERS,
+        ondelete={carrier[0]: "set default" for carrier in SHIPIT_CARRIERS},
     )
 
     shipit_service_code = fields.Char(
@@ -754,6 +733,44 @@ class DeliveryCarrier(models.Model):
         picking.shipit_label_attachment_id = attachment.id
         return attachment
 
+    # region Calls for delivery.carrier methods
+    def send_shipping(self, pickings):
+        """
+        Override send_shipping to use shipit methods for all its carriers.
+        """
+        res = super().send_shipping(pickings)
+
+        if not res and self._shipit_is_carrier():
+            return self.shipit_send_shipping(pickings)
+
+        return res
+
+    def get_tracking_link(self, picking):
+        """
+        Override get_tracking_link to use shipit methods for all its carriers.
+        """
+        res = super().get_tracking_link(picking)
+
+        if not res and self._shipit_is_carrier():
+            return self.shipit_get_tracking_link(picking)
+
+        return res
+
+    def cancel_shipment(self, picking):
+        """
+        Override cancel_shipment to use shipit methods for all its carriers.
+        """
+        res = super().cancel_shipment(picking)
+
+        if not res and self._shipit_is_carrier():
+            return self.shipit_cancel_shipment(picking)
+
+        return res
+
+    def _shipit_is_carrier(self):
+        self.ensure_one()
+        return self.delivery_type in [carrier[0] for carrier in SHIPIT_CARRIERS]
+
     def shipit_send_shipping(self, pickings):
         self.ensure_one()
         result = []
@@ -877,20 +894,11 @@ class DeliveryCarrier(models.Model):
 
     def shipit_cancel_shipment(self, pickings):
         self.ensure_one()
-        shipit_request = ShipitRequest(**self._get_shipit_config())
-
         for picking in pickings:
-            if not picking.shipit_shipment_id:
-                continue
-            try:
-                shipit_request.cancel_shipment(picking.shipit_shipment_id)
-            except ShipitAPIError as error:
-                raise UserError(
-                    _("ShipIT cancel failed for %(name)s:\n%(message)s")
-                    % {
-                        "name": picking.name,
-                        "message": str(error),
-                    }
-                ) from error
+            picking.message_post(
+                body=_(
+                    "PLEASE NOTE: " "Shipment is not cancelled automatically in ShipIT."
+                )
+            )
 
         return True
