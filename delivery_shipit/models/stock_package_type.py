@@ -1,58 +1,42 @@
-from odoo import fields, models
+from odoo import api, fields, models
+
+from .delivery_carrier import SHIPIT_CARRIERS
 
 
 class StockPackageType(models.Model):
     _inherit = "stock.package.type"
 
-    package_carrier_type = fields.Selection(
-        selection_add=[
-            ("a2b", "A2B"),
-            ("asendia", "Asendia"),
-            ("bring", "Bring"),
-            ("budbee", "Budbee"),
-            ("dhl_freight", "DHL Freight"),
-            ("dpd", "DPD"),
-            ("dsv", "DSV"),
-            ("fetch", "Fetch"),
-            ("gls", "GLS"),
-            ("instabox", "Instabox"),
-            ("itella_logistiikka", "Itella Logistiikka"),
-            ("jakeluyhtio_suomi", "Jakeluyhtiö Suomi"),
-            ("kaukokiito", "Kaukokiito"),
-            ("db_schenker_system", "DB Schenker System"),
-            ("matkahuolto", "Matkahuolto"),
-            ("postnord", "Postnord"),
-            ("posti", "Posti"),
-            ("db_schenker_suomi", "DB Schenker Finland"),
-            ("smartposti", "SmartPosti"),
-            ("unisend", "Unisend"),
-            ("ups", "UPS"),
-            ("venipak", "Venipak"),
-            ("wolt", "Wolt"),
+    shipit_package_type = fields.Selection(
+        selection=[
+            ("PACKAGE", "Package"),
+            ("PALLET[EUR-PALLET]", "EUR-pallet"),
+            ("PALLET[TEHOLAVA]", "Pallet (80x60)"),
+            ("PALLET-NON-STACKABLE", "Pallet (non-stackable)"),
+            ("PALLET", "Pallet"),
+            ("PALLET[FIN-LAVA]", "Pallet (120x100)"),
+            ("TROLLEY", "Trolley"),
+            ("TIRES", "Tyres"),
+            ("DOCUMENT", "Document"),
         ],
-        ondelete={
-            "a2b": "set default",
-            "asendia": "set default",
-            "bring": "set default",
-            "budbee": "set default",
-            "dhl_freight": "set default",
-            "dpd": "set default",
-            "dsv": "set default",
-            "fetch": "set default",
-            "gls": "set default",
-            "instabox": "set default",
-            "itella_logistiikka": "set default",
-            "jakeluyhtio_suomi": "set default",
-            "kaukokiito": "set default",
-            "db_schenker_system": "set default",
-            "matkahuolto": "set default",
-            "postnord": "set default",
-            "posti": "set default",
-            "db_schenker_suomi": "set default",
-            "smartposti": "set default",
-            "unisend": "set default",
-            "ups": "set default",
-            "venipak": "set default",
-            "wolt": "set default",
-        },
     )
+
+    shipit_is_carrier = fields.Boolean(
+        compute="_compute_shipit_is_carrier",
+    )
+
+    package_carrier_type = fields.Selection(
+        selection_add=SHIPIT_CARRIERS,
+        ondelete={carrier[0]: "set default" for carrier in SHIPIT_CARRIERS},
+    )
+
+    @api.depends("package_carrier_type")
+    def _compute_shipit_is_carrier(self):
+        carriers = [carrier[0] for carrier in SHIPIT_CARRIERS]
+        for record in self:
+            carrier_type = record.package_carrier_type
+            record.shipit_is_carrier = carrier_type and carrier_type in carriers
+
+    @api.onchange("shipit_package_type")
+    def _onchange_shipit_package_type(self):
+        for record in self:
+            record.shipper_package_code = record.shipit_package_type
