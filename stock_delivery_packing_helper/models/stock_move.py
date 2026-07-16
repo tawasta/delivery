@@ -57,13 +57,9 @@ class StockMove(models.Model):
     def _check_helper_package_count(self):
         for rec in self:
             if rec.helper_package_count < 1:
-                raise UserError(
-                    _("Package count must be greater than or equal to 1.")
-                )
+                raise UserError(_("Package count must be greater than or equal to 1."))
             if rec.helper_package_count > rec.product_uom_qty:
-                raise UserError(
-                    _("Can't have more packages than items to pack.")
-                )
+                raise UserError(_("Can't have more packages than items to pack."))
 
     @api.depends("helper_package_type_id", "move_line_ids")
     def _compute_helper_product_count(self):
@@ -72,45 +68,56 @@ class StockMove(models.Model):
             packed_qty = sum(packed_lines.mapped("quantity"))
             rec.helper_product_count = rec.product_uom_qty - packed_qty
 
-    @api.depends('helper_package_count', 'helper_package_type_id')
+    @api.depends("helper_package_count", "helper_package_type_id")
     def _compute_helper_package_base_weight(self):
         for rec in self:
             # Package type weight (not including items)
-            rec.helper_package_base_weight = rec.helper_package_type_id.base_weight or 0.0
-            rec.helper_package_weight_uom_name = rec.helper_package_type_id.weight_uom_name
+            rec.helper_package_base_weight = (
+                rec.helper_package_type_id.base_weight or 0.0
+            )
+            rec.helper_package_weight_uom_name = (
+                rec.helper_package_type_id.weight_uom_name
+            )
 
-    @api.depends('helper_package_count', 'helper_package_type_id')
+    @api.depends("helper_package_count", "helper_package_type_id")
     def _compute_helper_package_shipping_weight(self):
         for rec in self:
             total_weight = rec.weight or 0.0
             package_count = rec.helper_package_count or 1
             item_weight = total_weight / package_count
             # Items weight
-            rec.helper_package_shipping_weight = rec.helper_package_base_weight + item_weight
+            rec.helper_package_shipping_weight = (
+                rec.helper_package_base_weight + item_weight
+            )
 
-    @api.depends("helper_package_count", 
-                 "helper_product_count", 
-                 "helper_package_type_id", 
-                 "helper_package_shipping_weight")
+    @api.depends(
+        "helper_package_count",
+        "helper_product_count",
+        "helper_package_type_id",
+        "helper_package_shipping_weight",
+    )
     def _compute_helper_package_help_text(self):
         for rec in self:
             help_text = _(
-                "Packing <b>%(product_count)s</b> item(s) into <b>%(package_count)s</b> package(s).<br/> " \
-                "Using <b>%(package_type)s</b> as the package type.<br/> " \
-                "Total item weight is <b>%(total_weight)s</b> <b>%(weight_uom)s</b>.<br/> " \
-                "Using a shipping weight of <b>%(shipping_weight)s</b> <b>%(weight_uom)s</b> per package.") % {
-                'product_count': rec.helper_product_count,
-                'package_count': rec.helper_package_count,
-                'package_type': rec.helper_package_type_id.name or _("Unknown"),
-                'total_weight': rec.weight,
-                'weight_uom': rec.helper_package_weight_uom_name or "",
-                'shipping_weight': round(rec.helper_package_shipping_weight, 2),
+                "Packing <b>%(product_count)s</b> item(s) "
+                "into <b>%(package_count)s</b> package(s).<br/> "
+                "Using <b>%(package_type)s</b> as the package type.<br/> "
+                "Total item weight is "
+                "<b>%(total_weight)s</b> <b>%(weight_uom)s</b>.<br/> "
+                "Using a shipping weight of "
+                "<b>%(shipping_weight)s</b> <b>%(weight_uom)s</b> per package."
+            ) % {
+                "product_count": rec.helper_product_count,
+                "package_count": rec.helper_package_count,
+                "package_type": rec.helper_package_type_id.name or _("Unknown"),
+                "total_weight": rec.weight,
+                "weight_uom": rec.helper_package_weight_uom_name or "",
+                "shipping_weight": round(rec.helper_package_shipping_weight, 2),
             }
             rec.helper_package_help_text = help_text
 
     def action_auto_create_packages(self):
-
-        QuantPackage = self.env['stock.quant.package']
+        QuantPackage = self.env["stock.quant.package"]
 
         for move in self:
             # Make a desired amount of packages.
@@ -121,9 +128,12 @@ class StockMove(models.Model):
 
             # Remove the existing move line without a package
             if move.move_line_ids:
-                move.move_line_ids.filtered(lambda ml: not ml.result_package_id).unlink()
+                move.move_line_ids.filtered(
+                    lambda ml: not ml.result_package_id
+                ).unlink()
 
-            # As the qty is simplified to an integer, we might have some items left over.
+            # As the qty is simplified to an integer,
+            # we might have some items left over.
             # Add them to the last package.
             items_packed = 0
             for i in range(move.helper_package_count):
@@ -132,17 +142,20 @@ class StockMove(models.Model):
                 if i == move.helper_package_count - 1:
                     item_qty += product_count - items_packed
 
-                package = QuantPackage.create({
-                    "package_type_id": move.helper_package_type_id.id,
-                    "shipping_weight": move.helper_package_shipping_weight,
-                })                
-                move.move_line_ids.create({
-                    "result_package_id": package.id,
-                    "product_id": move.product_id.id,
-                    "quantity": item_qty,
-                    "product_uom_id": move.product_uom.id,
-                })
+                package = QuantPackage.create(
+                    {
+                        "package_type_id": move.helper_package_type_id.id,
+                        "shipping_weight": move.helper_package_shipping_weight,
+                    }
+                )
+                move.move_line_ids.create(
+                    {
+                        "result_package_id": package.id,
+                        "product_id": move.product_id.id,
+                        "quantity": item_qty,
+                        "product_uom_id": move.product_uom.id,
+                    }
+                )
 
             move._compute_helper_product_count()
             move.helper_package_count = 1
-            

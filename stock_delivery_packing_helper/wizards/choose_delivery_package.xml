@@ -10,19 +10,32 @@
         />
         <field name="arch" type="xml">
             <field name="delivery_package_type_id" position="after">
-                <label for="total_weight"/>
+                <label for="total_weight" />
                 <div class="o_row" name="total_weight">
-                    <field name="total_weight" decoration-danger="total_weight &lt;= 0" />
-                    <field name="weight_uom_name"/>
+                    <field
+                        name="total_weight"
+                        decoration-danger="total_weight &lt;= 0"
+                    />
+                    <field name="weight_uom_name" />
                 </div>
 
-                <label for="package_base_weight" invisible="not delivery_package_type_id"/>
-                <div class="o_row" invisible="not delivery_package_type_id" name="package_base_weight">
-                    <field name="package_base_weight" decoration-danger="package_base_weight &lt;= 0" />
-                    <field name="package_weight_uom_name"/>
+                <label
+                    for="package_base_weight"
+                    invisible="not delivery_package_type_id"
+                />
+                <div
+                    class="o_row"
+                    invisible="not delivery_package_type_id"
+                    name="package_base_weight"
+                >
+                    <field
+                        name="package_base_weight"
+                        decoration-danger="package_base_weight &lt;= 0"
+                    />
+                    <field name="package_weight_uom_name" />
                 </div>
                 <!-- TODO: show this after implementing the logic -->
-                <field name="package_count" invisible="1"/>
+                <field name="package_count" invisible="1" />
             </field>
 
             <field name="shipping_weight" position="attributes">
@@ -30,11 +43,16 @@
             </field>
 
             <field name="shipping_weight" position="after">
-                <field name="package_shipping_weight" invisible="package_count == 1"/>
+                <field name="package_shipping_weight" invisible="package_count == 1" />
             </field>
 
             <div name="package_weight" position="after">
-                <field name="package_help_text" invisible="package_count == 1" nolabel="1" colspan="2"/>
+                <field
+                    name="package_help_text"
+                    invisible="package_count == 1"
+                    nolabel="1"
+                    colspan="2"
+                />
             </div>
         </field>
     </record>
