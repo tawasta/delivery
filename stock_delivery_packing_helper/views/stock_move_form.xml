@@ -34,33 +34,22 @@
                             />
                             <field name="helper_package_weight_uom_name" />
                         </div>
-
-                        <label
-                            for="helper_package_shipping_weight"
+                        <field
+                            name="helper_items_per_package"
                             invisible="not helper_package_type_id"
                         />
-                        <div
-                            class="o_row"
-                            invisible="not helper_package_type_id"
-                            name="helper_package_shipping_weight"
-                        >
-                            <field
-                                name="helper_package_shipping_weight"
-                                decoration-danger="helper_package_shipping_weight &lt;= 0"
-                            />
-                            <field name="helper_package_weight_uom_name" />
-                        </div>
-
                         <field
                             name="helper_package_count"
                             invisible="not helper_package_type_id"
                         />
                         <field
-                            name="helper_product_count"
-                            invisible="not helper_package_type_id"
+                            name="allowed_package_ids"
+                            widget="many2many_tags"
+                            invisible="1"
                         />
                     </group>
                     <group name="package_helper_right">
+                        <field name="helper_allow_auto_packaging" invisible="1" />
                         <field
                             name="helper_package_help_text"
                             nolabel="1"
@@ -70,9 +59,11 @@
                         <button
                             name="action_auto_create_packages"
                             type="object"
-                            string="Create Packages"
+                            colspan="2"
+                            string="Pack items"
                             class="btn-primary"
-                            invisible="not helper_package_type_id"
+                            invisible="not helper_package_type_id or not helper_allow_auto_packaging"
+                            help="Automatically create packages and assign items to them based on the selected package type and the number of items per package."
                         />
                     </group>
                 </group>
