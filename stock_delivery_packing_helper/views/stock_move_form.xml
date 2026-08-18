@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_stock_move_operations" model="ir.ui.view">
+        <field name="name">stock.move.operations.form.packing.helper</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_stock_move_operations" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']/../.." position="attributes">
+                <attribute name="string">Move info</attribute>
+            </xpath>
+
+            <field name="quantity" position="after">
+                <group name="package_helper" colspan="4" string="Package Helper">
+                    <field name="delivery_type" invisible="1" />
+                    <group name="package_helper_left">
+                        <field
+                            name="helper_package_type_id"
+                            domain="[('package_carrier_type', '=', delivery_type)]"
+                        />
+
+                        <label
+                            for="helper_package_base_weight"
+                            invisible="not helper_package_type_id"
+                        />
+                        <div
+                            class="o_row"
+                            invisible="not helper_package_type_id"
+                            name="helper_package_base_weight"
+                        >
+                            <field
+                                name="helper_package_base_weight"
+                                decoration-danger="helper_package_base_weight &lt;= 0"
+                            />
+                            <field name="helper_package_weight_uom_name" />
+                        </div>
+                        <field
+                            name="helper_items_per_package"
+                            invisible="not helper_package_type_id"
+                        />
+                        <field
+                            name="helper_package_count"
+                            invisible="not helper_package_type_id"
+                        />
+                        <field
+                            name="allowed_package_ids"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                    </group>
+                    <group name="package_helper_right">
+                        <field name="helper_allow_auto_packaging" invisible="1" />
+                        <field
+                            name="helper_package_help_text"
+                            nolabel="1"
+                            colspan="2"
+                            invisible="not helper_package_type_id"
+                        />
+                        <button
+                            name="action_auto_create_packages"
+                            type="object"
+                            colspan="2"
+                            string="Pack items"
+                            class="btn-primary"
+                            invisible="not helper_package_type_id or not helper_allow_auto_packaging"
+                            help="Automatically create packages and assign items to them based on the selected package type and the number of items per package."
+                        />
+                    </group>
+                </group>
+            </field>
+        </field>
+    </record>
+
+</odoo>

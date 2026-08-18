@@ -98,6 +98,13 @@ class DeliveryCarrier(models.Model):
         relation="delivery_carrier_default_shipit_additional_service_rel",
     )
 
+    shipit_allowed_package_type_ids = fields.Many2many(
+        comodel_name="stock.package.type",
+        string="ShipIT Allowed Package Types",
+        help="Allowed package types to use in shipments."
+        "If left empty, all available package types are allowed.",
+    )
+
     shipit_freight_payer_supported = fields.Boolean(
         string="Freight payer supported",
         help="Does the service support a different freight payer for shipments.",

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="choose_delivery_package_view_form" model="ir.ui.view">
+        <field name="name">choose.delivery.package.form.packing.helper</field>
+        <field name="model">choose.delivery.package</field>
+        <field
+            name="inherit_id"
+            ref="stock_delivery.choose_delivery_package_view_form"
+        />
+        <field name="arch" type="xml">
+            <field name="delivery_package_type_id" position="after">
+                <label for="total_weight" />
+                <div class="o_row" name="total_weight">
+                    <field
+                        name="total_weight"
+                        decoration-danger="total_weight &lt;= 0"
+                    />
+                    <field name="weight_uom_name" />
+                </div>
+
+                <label
+                    for="package_base_weight"
+                    invisible="not delivery_package_type_id"
+                />
+                <div
+                    class="o_row"
+                    invisible="not delivery_package_type_id"
+                    name="package_base_weight"
+                >
+                    <field
+                        name="package_base_weight"
+                        decoration-danger="package_base_weight &lt;= 0"
+                    />
+                    <field name="package_weight_uom_name" />
+                </div>
+                <!-- TODO: show this after implementing the logic -->
+                <field name="package_count" invisible="1" />
+            </field>
+
+            <field name="shipping_weight" position="attributes">
+                <attribute name="invisible">package_count > 1</attribute>
+            </field>
+
+            <field name="shipping_weight" position="after">
+                <field name="package_shipping_weight" invisible="package_count == 1" />
+            </field>
+
+            <div name="package_weight" position="after">
+                <field
+                    name="package_help_text"
+                    invisible="package_count == 1"
+                    nolabel="1"
+                    colspan="2"
+                />
+            </div>
+        </field>
+    </record>
+
+</odoo>

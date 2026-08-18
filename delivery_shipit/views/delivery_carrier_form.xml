@@ -16,6 +16,11 @@
                         <field name="shipit_service_code" />
                         <field name="shipit_require_pickup_point" />
                         <field
+                            name="shipit_allowed_package_type_ids"
+                            domain="[('package_carrier_type', '=', delivery_type)]"
+                            widget="many2many_tags"
+                        />
+                        <field
                             name="shipit_allowed_additional_service_ids"
                             widget="many2many_tags"
                         />

@@ -1,7 +1,7 @@
 ##############################################################################
 #
-#    Author: Futural Oy.
-#    Copyright 2026 Futural Oy. (https://futural.fi)
+#    Author: Futural Oy
+#    Copyright 2026 Futural Oy (https://futural.fi)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,33 +19,21 @@
 ##############################################################################
 
 {
-    "name": "ShipIT Shipping",
-    "summary": "ShipIT shipping integration for Odoo delivery workflows",
-    "version": "17.0.2.5.0",
-    "category": "Connector",
+    "name": "Delivery packing helper",
+    "summary": "Makes it easier to pack deliveries with multiple packages",
+    "version": "17.0.1.1.0",
+    "category": "Delivery",
     "website": "https://github.com/tawasta/delivery",
     "author": "Futural",
     "license": "AGPL-3",
-    "application": True,
+    "application": False,
     "installable": True,
-    "images": ["static/description/banner.png"],
     "depends": [
-        "delivery",
         "stock_delivery",
     ],
     "data": [
-        "data/delivery_carrier.xml",
-        "security/ir.model.access.csv",
-        "views/choose_delivery_carrier.xml",
-        "views/delivery_carrier_form.xml",
-        "views/delivery_carrier_search.xml",
-        "views/delivery_carrier_tree.xml",
-        "views/res_config_settings.xml",
-        "views/res_partner_form.xml",
-        "views/stock_package_type_form.xml",
-        "views/stock_picking_form.xml",
-        "views/stock_picking_tree.xml",
+        "views/stock_move_form.xml",
+        "views/stock_move_line_form.xml",
         "wizards/choose_delivery_package.xml",
-        "wizards/shipit_pickup_point_wizard.xml",
     ],
 }
