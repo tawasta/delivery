@@ -58,14 +58,6 @@ class StockMove(models.Model):
         related="picking_id.allowed_package_ids",
     )
 
-    @api.constrains("helper_items_per_package")
-    def _check_helper_items_per_package(self):
-        for rec in self:
-            if rec.helper_items_per_package < 1:
-                raise ValidationError(
-                    _("Items per package must be greater than or equal to 1.")
-                )
-
     @api.depends("helper_package_count", "helper_package_type_id")
     def _compute_helper_package_base_weight(self):
         for rec in self:
@@ -137,6 +129,11 @@ class StockMove(models.Model):
 
     def action_auto_create_packages(self):
         self.ensure_one()
+
+        if self.helper_items_per_package < 1:
+            raise ValidationError(
+                _("Items per package must be greater than or equal to 1.")
+            )
         # Create the first package
         current_package = self._helper_create_package()
 
