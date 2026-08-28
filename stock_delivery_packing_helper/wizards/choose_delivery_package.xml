@@ -34,8 +34,7 @@
                     />
                     <field name="package_weight_uom_name" />
                 </div>
-                <!-- TODO: show this after implementing the logic -->
-                <field name="package_count" invisible="1" />
+                <field name="package_count" invisible="not delivery_package_type_id" />
             </field>
 
             <field name="shipping_weight" position="attributes">

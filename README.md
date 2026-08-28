@@ -16,6 +16,6 @@ addon | version | maintainers | summary
 [delivery_gls_finland_delivery_email](delivery_gls_finland_delivery_email/) | 17.0.1.0.0 |  | Set a delivery email for a partner
 [delivery_gls_finland_print_gls_document](delivery_gls_finland_print_gls_document/) | 17.0.1.1.0 |  | Print GLS attachments after transfer validation
 [delivery_shipit](delivery_shipit/) | 17.0.2.5.0 |  | ShipIT shipping integration for Odoo delivery workflows
-[stock_delivery_packing_helper](stock_delivery_packing_helper/) | 17.0.1.1.1 |  | Makes it easier to pack deliveries with multiple packages
+[stock_delivery_packing_helper](stock_delivery_packing_helper/) | 17.0.1.2.0 |  | Makes it easier to pack deliveries with multiple packages
 
 [//]: # (end addons)
