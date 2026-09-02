@@ -1,3 +1,5 @@
+from math import ceil
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -64,7 +66,9 @@ class ChooseDeliveryPackage(models.TransientModel):
     def _compute_package_shipping_weight(self):
         for rec in self:
             item_weight = rec.total_weight / rec.package_count
-            rec.package_shipping_weight = rec.package_base_weight + item_weight
+            rec.package_shipping_weight = round(
+                rec.package_base_weight + item_weight, 2
+            )
 
     @api.depends(
         "delivery_package_type_id",
@@ -77,8 +81,8 @@ class ChooseDeliveryPackage(models.TransientModel):
         for rec in self:
             help_text = _(
                 "Making <b>%(count)s</b> package(s) using <b>%(package_type)s</b> "
-                "with a total weight of <b>%(total_weight)s</b> <b>%(uom)s</b>. "
-                "This will result in a package shipping weight of "
+                "with a total weight of <b>%(total_weight)s</b> <b>%(uom)s</b>.<br/>"
+                "Using shipping weight of "
                 "<b>%(shipping_weight)s</b> <b>%(uom)s</b> per package."
             ) % {
                 "count": rec.package_count,
@@ -90,8 +94,22 @@ class ChooseDeliveryPackage(models.TransientModel):
             rec.package_help_text = help_text
 
     def action_put_in_pack(self):
-        if self.package_count > 1:
+        if self.package_count == 1:
+            return super().action_put_in_pack()
+
+        # Share move lines into packages
+        move_lines = self.picking_id.move_line_ids_without_package
+        if not move_lines:
             raise ValidationError(
-                _("Creating multiple packages at once not implemented yet")
+                _("There are no move lines to pack. Please check the picking.")
             )
-        return super().action_put_in_pack()
+
+        total_qty = sum(move_lines.mapped("quantity"))
+        items_per_package = ceil(total_qty / self.package_count)
+
+        self.picking_id._helper_distribute_items_into_packages(
+            move_lines=move_lines,
+            package_type_id=self.delivery_package_type_id,
+            items_per_package=items_per_package,
+            shipping_weight=self.package_shipping_weight,
+        )

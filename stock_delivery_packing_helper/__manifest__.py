@@ -21,7 +21,7 @@
 {
     "name": "Delivery packing helper",
     "summary": "Makes it easier to pack deliveries with multiple packages",
-    "version": "17.0.1.1.1",
+    "version": "17.0.1.2.1",
     "category": "Delivery",
     "website": "https://github.com/tawasta/delivery",
     "author": "Futural",
