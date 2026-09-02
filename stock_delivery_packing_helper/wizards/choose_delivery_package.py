@@ -1,3 +1,5 @@
+from math import ceil
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -23,7 +25,7 @@ class ChooseDeliveryPackage(models.TransientModel):
         help="Shipping weight of one package",
         compute="_compute_package_shipping_weight",
         store=True,
-        readonly=True,
+        readonly=False,
     )
     package_help_text = fields.Html(
         help="Help text for the package weight",
@@ -79,8 +81,8 @@ class ChooseDeliveryPackage(models.TransientModel):
         for rec in self:
             help_text = _(
                 "Making <b>%(count)s</b> package(s) using <b>%(package_type)s</b> "
-                "with a total weight of <b>%(total_weight)s</b> <b>%(uom)s</b>. "
-                "This will result in a package shipping weight of approximately "
+                "with a total weight of <b>%(total_weight)s</b> <b>%(uom)s</b>.<br/>"
+                "Using shipping weight of "
                 "<b>%(shipping_weight)s</b> <b>%(uom)s</b> per package."
             ) % {
                 "count": rec.package_count,
@@ -103,10 +105,11 @@ class ChooseDeliveryPackage(models.TransientModel):
             )
 
         total_qty = sum(move_lines.mapped("quantity"))
-        items_per_package = total_qty / self.package_count
+        items_per_package = ceil(total_qty / self.package_count)
 
         self.picking_id._helper_distribute_items_into_packages(
             move_lines=move_lines,
             package_type_id=self.delivery_package_type_id,
             items_per_package=items_per_package,
+            shipping_weight=self.package_shipping_weight,
         )

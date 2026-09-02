@@ -22,6 +22,12 @@ class StockPicking(models.Model):
         Create a new package with the given package type and return it.
         """
         self.ensure_one()
+        _logger.debug(
+            f"Creating a new package "
+            f"with package_type_id={package_type_id.id} "
+            f"and shipping_weight={shipping_weight}"
+        )
+
         QuantPackage = self.env["stock.quant.package"]
         # Default package values
         package_vals = {
@@ -46,10 +52,17 @@ class StockPicking(models.Model):
         return package
 
     def _helper_distribute_items_into_packages(
-        self, move_lines, package_type_id, items_per_package
+        self,
+        move_lines,
+        package_type_id,
+        items_per_package,
+        shipping_weight=None,
     ):
         # Create the first package
-        current_package = self._helper_create_package(package_type_id=package_type_id)
+        current_package = self._helper_create_package(
+            package_type_id=package_type_id,
+            shipping_weight=shipping_weight,
+        )
 
         # Initialize the current package room
         current_package_room = items_per_package
@@ -86,7 +99,8 @@ class StockPicking(models.Model):
                 _logger.debug("Creating new package for remaining items")
                 self._helper_finalize_package(current_package)
                 current_package = self._helper_create_package(
-                    package_type_id=package_type_id
+                    package_type_id=package_type_id,
+                    shipping_weight=shipping_weight,
                 )
                 current_package_room = items_per_package
                 line = new_line
@@ -104,7 +118,8 @@ class StockPicking(models.Model):
                 _logger.debug("Current package is full, creating a new package")
                 self._helper_finalize_package(current_package)
                 current_package = self._helper_create_package(
-                    package_type_id=package_type_id
+                    package_type_id=package_type_id,
+                    shipping_weight=shipping_weight,
                 )
                 current_package_room = items_per_package
 

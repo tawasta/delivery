@@ -42,7 +42,11 @@
             </field>
 
             <field name="shipping_weight" position="after">
-                <field name="package_shipping_weight" invisible="package_count == 1" />
+                <field
+                    name="package_shipping_weight"
+                    invisible="package_count == 1"
+                    readonly="0"
+                />
             </field>
 
             <div name="package_weight" position="after">
