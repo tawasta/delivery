@@ -65,6 +65,7 @@
                         type="object"
                         class="btn-warning"
                         icon="fa-trash"
+                        confirm="Clear the pickup point?"
                         invisible="not shipit_pickup_point_id"
                     />
                 </div>
@@ -77,6 +78,7 @@
                     name="shipit_additional_service_ids"
                     invisible="not shipit_is_carrier"
                     domain="[('id', 'in', shipit_allowed_additional_service_ids)]"
+                    readonly="state == 'done'"
                     widget="many2many_tags"
                 />
             </field>

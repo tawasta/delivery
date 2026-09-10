@@ -1,16 +1,34 @@
-Usage
-=====
+## Basic usage
 
-This module implements the ShipIT integration flow:
+1. **Select** any ShipIT **shipment method** on Sale order (or Delivery order)
+2. **Confirm** the **Sale order**
+3. **Confirm** the **Delivery order**
 
-1. Validate required sender/recipient/carrier fields
-2. Build shipment payload from picking data
-3. Create shipment via ShipIT v1 API (``PUT /v1/shipment`` with ``X-SHIPIT-KEY``)
-4. Store shipment id, tracking data and label attachment to picking
-5. Trigger shipment creation from delivery ``Validate`` action for ShipIT carriers
-6. Store request/response debug payloads to picking fields
-7. Download label document from ``freightDoc`` URL when available
-8. Optional fallback to separate label endpoint if configured
-9. Search pickup points via ShipIT ``POST /agents`` and save selected point
-10. Optional carrier-level pickup point requirement before shipment create
-11. Only trigger API calls automatically for outgoing pickings
+You will get a `Tracking reference` and a PDF label from ShipIT.
+**Done!**
+
+Clicking the `Tracking`-button will take you to the tracking link.
+In `Additional info`-tab, you will have the basic shipment info.
+
+   ![ShipIT done delivery](../static/description/shipit_delivery_done.png)
+
+
+## Advanced usage
+
+On an unconfirmed `Delivery order`, you can select more additional services and a `Pickup point` (for some shipment methods)
+
+   ![ShipIT draft delivery](../static/description/shipit_delivery_draft.png)
+
+If you click **Select** next to `Pickup point`, a popup will open.
+Select your post code, services and pickup point type and click `Search`.
+
+After that you can just select and use the pickup point.
+
+   ![ShipIT pickup point search](../static/description/shipit_pickup_search.png)
+
+## Packing
+
+If no packing is used, the package type will default to a generic `Package`. 
+You can, however, use the packaging functionality that Odoo provides. 
+
+If you pack the products before confirming the Delivery order, the shipment is sent to ShipIT as a multi-package delivery. Each package having it's own dimensions and weight.

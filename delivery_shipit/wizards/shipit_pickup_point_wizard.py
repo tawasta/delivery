@@ -1,7 +1,11 @@
+import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from ..models.shipit_request import ShipitAPIError, ShipitRequest
+
+_logger = logging.getLogger(__name__)
 
 PICKUP_POINT_COUNTRY_CODE = "FI"
 PICKUP_POINT_LIMIT = 10
@@ -23,10 +27,11 @@ class ShipitPickupPointWizard(models.TransientModel):
         required=True,
         readonly=True,
     )
+
+    # TODO: Remove service options?
     service_option_ids = fields.Many2many(
         comodel_name="shipit.service.option",
         string="Service IDs",
-        required=True,
         help="ShipIT serviceId values used for pickup point search.",
     )
     available_service_option_ids = fields.Many2many(
@@ -95,6 +100,7 @@ class ShipitPickupPointWizard(models.TransientModel):
 
         for wizard in self:
             carrier_codes = wizard.picking_id.carrier_id._shipit_get_service_codes()
+            _logger.debug(carrier_codes)
             if carrier_codes:
                 wizard.available_service_option_ids = service_model.search(
                     [("code", "in", carrier_codes)]
@@ -132,7 +138,7 @@ class ShipitPickupPointWizard(models.TransientModel):
             points = shipit_request.search_service_points(
                 postcode=self.postcode,
                 country_code=PICKUP_POINT_COUNTRY_CODE,
-                service_ids=self.service_option_ids.mapped("code"),
+                service_ids=[self.picking_id.carrier_id.shipit_service_code],
                 point_type=self.point_type,
                 limit=PICKUP_POINT_LIMIT,
             )
