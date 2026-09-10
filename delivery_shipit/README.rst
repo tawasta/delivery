@@ -24,9 +24,10 @@ ShipIT Shipping
 
 ShipIT shipping integration for Odoo.
 
-With this module you can fetch Shipit pickup points for SO or picking,
-and create a ShipIT delivery by confirming a stock picking in Odoo. You
-will get a PDF label from ShipIT to Odoo, for easy printing.
+With this module you use ShipIT delivery methods for deliveries. The
+delivery will be automatically created to ShipIT when confirming the
+delivery, and you will get a PDF label straight to Odoo for effortless
+printing
 
 **Table of contents**
 
@@ -37,10 +38,10 @@ Use Cases / Context
 ===================
 
 When delivering physical products, you will need carrier or carriers.
-With Shipit you will have multiple possible carriers with just one
+With ShipIT you will have multiple possible carriers with just one
 integration.
 
-Shipit is an easy and flexible service for sending parcels and freight.
+ShipIT is an easy and flexible service for sending parcels and freight.
 You can send packages domestically and worldwide as a business customer,
 online retailer, or private individual.
 
@@ -52,96 +53,120 @@ Install the module from Apps
 Configuration
 =============
 
-Configuration
-=============
+ShipIT configuration
+--------------------
 
-1. Go to Inventory -> Configuration -> Delivery -> Shipping Methods
-2. Create or open a carrier
-3. Set Provider to ``ShipIT``
-4. Fill in ShipIT configuration fields (API key, reseller ID, service
-   IDs)
-5. Enable ``Store ShipIT debug payloads`` if you want request/response
-   payloads persisted to picking fields for troubleshooting
+1. After installing, go to ``Settings > ShipIT``
 
-The module also installs a default delivery product and a ``ShipIT``
-carrier template that can be used as a starting point.
+2. Fill in your ``API key`` and save settings
 
-Local setup notes
-=================
+3. Go back to ``Settings > ShipIT`` and click ``Sync ShipIT services``
 
-To use this addon in the current local workspace, Odoo must include both
-project and delivery addon paths. Example:
+   |ShipIT settings|
 
-- ``docker-compose.yml``:
+Shipping methods
+----------------
 
-  - ``./project:/mnt/extra-addons``
-  - ``./delivery:/mnt/delivery-addons``
+This will fetch the available services and create them in
+``Shipping methods``. You can go to
+``Inventory > Configuration > Delivery > Shipping Methods`` and see
+what's available and configure them further.
 
-- ``config/odoo.conf``:
+``ShipIT Allowed Additional Services`` are updated automatically when
+you sync ShipIT services ``ShipIT Allowed Package Types`` need to be
+applied manually at the moment ``ShipIT Default Additional Services``
+can be set to always suggest certain service on new deliveries using
+this shipping method
 
-  - ``addons_path = /mnt/extra-addons,/mnt/delivery-addons``
+|ShipIT shipping method|
 
-Manual test checklist
-=====================
+Package types
+-------------
 
-1. Create/verify a ShipIT carrier with API key, reseller ID and service
-   ID.
+If you use packaging, you can configure different package types to use.
+Go to ``Inventory > Configuration > Package Types``
 
-2. Create a delivery order with ShipIT as carrier.
+You can create carrier-spesific package types here. Regarding ShipIT,
+the important part is ``ShipIT Package Type``. Available package types
+are listed there, and you should pick one.
 
-3. Optional pickup test:
+|ShipIT package type|
 
-   - click ``Select`` on picking ``Pickup point``
-   - search pickup points and select one
-   - verify pickup fields are stored on picking
+After that you can use that package type with the carrier. You can also
+limit the available package types in ``Shipping methods`` (see previous
+step).
 
-4. Run ``Validate`` on the delivery.
-
-5. Verify:
-
-   - ``shipit_shipment_id`` is set
-   - ``shipit_tracking_codes`` is set
-   - label attachment exists on the picking
-
-6. Negative test: remove recipient phone/email and validate that
-   user-facing validation error is shown before API call.
+.. |ShipIT settings| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_settings.png
+.. |ShipIT shipping method| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_shipping_method.png
+.. |ShipIT package type| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_package_type.png
 
 Usage
 =====
 
-Usage
-=====
+Basic usage
+-----------
 
-This module implements the ShipIT integration flow:
+1. **Select** any ShipIT **shipment method** on Sale order (or Delivery
+   order)
+2. **Confirm** the **Sale order**
+3. **Confirm** the **Delivery order**
 
-1.  Validate required sender/recipient/carrier fields
-2.  Build shipment payload from picking data
-3.  Create shipment via ShipIT v1 API (``PUT /v1/shipment`` with
-    ``X-SHIPIT-KEY``)
-4.  Store shipment id, tracking data and label attachment to picking
-5.  Trigger shipment creation from delivery ``Validate`` action for
-    ShipIT carriers
-6.  Store request/response debug payloads to picking fields
-7.  Download label document from ``freightDoc`` URL when available
-8.  Optional fallback to separate label endpoint if configured
-9.  Search pickup points via ShipIT ``POST /agents`` and save selected
-    point
-10. Optional carrier-level pickup point requirement before shipment
-    create
-11. Only trigger API calls automatically for outgoing pickings
+You will get a ``Tracking reference`` and a PDF label from ShipIT.
+**Done!**
+
+Clicking the ``Tracking``-button will take you to the tracking link. In
+``Additional info``-tab, you will have the basic shipment info.
+
+|ShipIT done delivery|
+
+Advanced usage
+--------------
+
+On an unconfirmed ``Delivery order``, you can select more additional
+services and a ``Pickup point`` (for some shipment methods)
+
+|ShipIT draft delivery|
+
+If you click **Select** next to ``Pickup point``, a popup will open.
+Select your post code, services and pickup point type and click
+``Search``.
+
+After that you can just select and use the pickup point.
+
+|ShipIT pickup point search|
+
+Packing
+-------
+
+If no packing is used, the package type will default to a generic
+``Package``. You can, however, use the packaging functionality that Odoo
+provides.
+
+If you pack the products before confirming the Delivery order, the
+shipment is sent to ShipIT as a multi-package delivery. Each package
+having it's own dimensions and weight.
+
+.. |ShipIT done delivery| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_delivery_done.png
+.. |ShipIT draft delivery| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_delivery_draft.png
+.. |ShipIT pickup point search| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_pickup_search.png
 
 Known issues / Roadmap
 ======================
 
-- Configurable package dimensions for picking
-- Parcel type
-- Dangerous goods
-- Wizardless carrier picking
+- Get delivery method-spesific allowed package types automatically
+- Support for dangerous goods
+- Wizardless pickup point selection
 - Support for e-commerce
+- Clean up the unnecessarily complicated structure
+- Clean up unused/unnecessary code
 - Tests for everything!
 
 Changelog
 =========
+
+17.0.2.5.0 (2026-09-10)
+
+Release version
 
 17.0.1.1.0 (2026-03-19)
 

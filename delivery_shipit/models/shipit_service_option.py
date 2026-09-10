@@ -2,6 +2,11 @@ from odoo import fields, models
 
 
 class ShipitServiceOption(models.Model):
+    # TODO: What's the point of this model?
+    # Can it be completely removed?
+    # It was used in shipit.pickup.point.wizard,
+    # but it seems redundant with shipit_service_code
+
     _name = "shipit.service.option"
     _description = "ShipIT service option"
     _order = "sequence asc, id asc"
