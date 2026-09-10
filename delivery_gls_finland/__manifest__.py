@@ -34,7 +34,6 @@
         "mail",
         "sale_stock",
         "stock_delivery",
-        "stock_picking_comment",
     ],
     "data": [
         "data/delivery_carrier.xml",
