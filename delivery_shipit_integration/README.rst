@@ -16,9 +16,9 @@ Shipit Shipping Integration
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge3| image:: https://img.shields.io/badge/github-Futural%2Fdelivery-lightgray.png?logo=github
-    :target: https://github.com/Futural/delivery/tree/17.0/delivery_shipit_integration
-    :alt: Futural/delivery
+.. |badge3| image:: https://img.shields.io/badge/github-tawasta%2Fdelivery-lightgray.png?logo=github
+    :target: https://github.com/tawasta/delivery/tree/17.0/delivery_shipit_integration
+    :alt: tawasta/delivery
 
 |badge1| |badge2| |badge3|
 
@@ -97,9 +97,9 @@ After that you can use that package type with the carrier. You can also
 limit the available package types in ``Shipping methods`` (see previous
 step).
 
-.. |Shipit settings| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit_integration/static/description/shipit_settings.png
-.. |Shipit shipping method| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit_integration/static/description/shipit_shipping_method.png
-.. |Shipit package type| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit_integration/static/description/shipit_package_type.png
+.. |Shipit settings| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_settings.png
+.. |Shipit shipping method| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_shipping_method.png
+.. |Shipit package type| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_package_type.png
 
 Usage
 =====
@@ -147,9 +147,9 @@ If you pack the products before confirming the Delivery order, the
 shipment is sent to Shipit as a multi-package delivery. Each package
 having it's own dimensions and weight.
 
-.. |Shipit done delivery| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_done.png
-.. |Shipit draft delivery| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_draft.png
-.. |Shipit pickup point search| image:: https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit_integration/static/description/shipit_pickup_search.png
+.. |Shipit done delivery| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_done.png
+.. |Shipit draft delivery| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_draft.png
+.. |Shipit pickup point search| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_pickup_search.png
 
 Known issues / Roadmap
 ======================
@@ -176,10 +176,10 @@ Initial version
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues <https://github.com/Futural/delivery/issues>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/tawasta/delivery/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/Futural/delivery/issues/new?body=module:%20delivery_shipit_integration%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/tawasta/delivery/issues/new?body=module:%20delivery_shipit_integration%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -208,6 +208,6 @@ The development of this module has been financially supported by:
 Maintainers
 -----------
 
-This module is part of the `Futural/delivery <https://github.com/Futural/delivery/tree/17.0/delivery_shipit_integration>`_ project on GitHub.
+This module is part of the `tawasta/delivery <https://github.com/tawasta/delivery/tree/17.0/delivery_shipit_integration>`_ project on GitHub.
 
 You are welcome to contribute.
