@@ -58,14 +58,6 @@ class StockMove(models.Model):
         related="picking_id.allowed_package_ids",
     )
 
-    @api.constrains("helper_items_per_package")
-    def _check_helper_items_per_package(self):
-        for rec in self:
-            if rec.helper_items_per_package < 1:
-                raise ValidationError(
-                    _("Items per package must be greater than or equal to 1.")
-                )
-
     @api.depends("helper_package_count", "helper_package_type_id")
     def _compute_helper_package_base_weight(self):
         for rec in self:
@@ -137,80 +129,16 @@ class StockMove(models.Model):
 
     def action_auto_create_packages(self):
         self.ensure_one()
-        # Create the first package
-        current_package = self._helper_create_package()
 
-        # Initialize the current package room
-        current_package_room = self.helper_items_per_package
-
-        # If there are existing move lines, put them into packages
-        for line in self.move_line_ids:
-            _logger.debug("Current package: %s", current_package.name)
-            if line.result_package_id:
-                # Already packed, skip this line
-                _logger.debug(
-                    "Line already packed in package %s, skipping",
-                    line.result_package_id.name,
-                )
-                continue
-
-            while line.quantity > current_package_room:
-                _logger.debug(
-                    "Quantity %s exceeds current package room %s. Splitting line",
-                    line.quantity,
-                    current_package_room,
-                )
-                # If the line is too big for the current package, split it
-                new_line = line.copy()
-                new_line.quantity = line.quantity - current_package_room
-                line.quantity = current_package_room
-                _logger.debug("New line quantity %s", new_line.quantity)
-                _logger.debug("Original line quantity %s", line.quantity)
-
-                # Fill the current package
-                if current_package_room > 0:
-                    line.result_package_id = current_package
-
-                # Create a new package for the remaining items
-                _logger.debug("Creating new package for remaining items")
-                self._helper_finalize_package(current_package)
-                current_package = self._helper_create_package()
-                current_package_room = self.helper_items_per_package
-                line = new_line
-
-            # Put this line into the current package
-            _logger.debug(
-                "Putting line quantity %s into package %s",
-                line.quantity,
-                current_package.name,
+        if self.helper_items_per_package < 1:
+            raise ValidationError(
+                _("Items per package must be greater than or equal to 1.")
             )
-            line.result_package_id = current_package
-            current_package_room -= line.quantity
-            if current_package_room <= 0:
-                # If the current package is full, create a new one
-                _logger.debug("Current package is full, creating a new package")
-                self._helper_finalize_package(current_package)
-                current_package = self._helper_create_package()
-                current_package_room = self.helper_items_per_package
 
-        self._helper_finalize_package(current_package)
+        self.picking_id._helper_distribute_items_into_packages(
+            self.move_line_ids,
+            self.helper_package_type_id,
+            self.helper_items_per_package,
+        )
+
         self.write({"helper_package_type_id": False})
-
-    def _helper_create_package(self):
-        QuantPackage = self.env["stock.quant.package"]
-        # Default package values
-        package_vals = {
-            "package_type_id": self.helper_package_type_id.id,
-        }
-        package = QuantPackage.create(package_vals)
-        _logger.debug("Created a new package: %s", package.name)
-        return package
-
-    def _helper_finalize_package(self, package):
-        # Finalize the package
-        _logger.debug("Finalizing package %s", package.name)
-        # TODO: allow overwriting shipping weight
-        # package.write({"shipping_weight": })
-        self.picking_id.allowed_package_ids = [(4, package.id)]
-
-        return package

@@ -316,6 +316,10 @@ class DeliveryCarrier(models.Model):
                 # Package dimensions are mm by default, but are they always?
                 # ShipIT expects cm
 
+                # TODO: How about pallets etc.?
+                # When using pallets, the pallet dimensions are not
+                # equal to the actual delivery
+
                 length_mm = package_type.packaging_length
                 width_mm = package_type.width
                 height_mm = package_type.height

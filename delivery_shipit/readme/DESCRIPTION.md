@@ -1,5 +1,4 @@
 ShipIT shipping integration for Odoo.
 
-With this module you can fetch Shipit pickup points for SO or picking,
-and create a ShipIT delivery by confirming a stock picking in Odoo.
-You will get a PDF label from ShipIT to Odoo, for easy printing.
+With this module you use ShipIT delivery methods for deliveries.
+The delivery will be automatically created to ShipIT when confirming the delivery, and you will get a PDF label straight to Odoo for effortless printing

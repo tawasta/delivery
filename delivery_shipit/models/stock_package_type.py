@@ -7,6 +7,7 @@ class StockPackageType(models.Model):
     _inherit = "stock.package.type"
 
     shipit_package_type = fields.Selection(
+        string="ShipIT Package Type",
         selection=[
             ("PACKAGE", "Package"),
             ("PALLET[EUR-PALLET]", "EUR-pallet"),

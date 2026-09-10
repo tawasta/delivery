@@ -1,48 +1,34 @@
-Configuration
-=============
+## ShipIT configuration
 
-1. Go to Inventory -> Configuration -> Delivery -> Shipping Methods
-2. Create or open a carrier
-3. Set Provider to ``ShipIT``
-4. Fill in ShipIT configuration fields (API key, reseller ID, service IDs)
-5. Enable ``Store ShipIT debug payloads`` if you want request/response payloads
-   persisted to picking fields for troubleshooting
+1. After installing, go to `Settings > ShipIT`
+2. Fill in your `API key` and save settings
+3. Go back to `Settings > ShipIT` and click `Sync ShipIT services`
 
-The module also installs a default delivery product and a ``ShipIT`` carrier
-template that can be used as a starting point.
+   ![ShipIT settings](../static/description/shipit_settings.png)
 
-Local setup notes
-=================
 
-To use this addon in the current local workspace, Odoo must include both project
-and delivery addon paths. Example:
+## Shipping methods
 
-* ``docker-compose.yml``:
+This will fetch the available services and create them in `Shipping methods`.
+You can go to `Inventory > Configuration > Delivery > Shipping Methods` and see what's available and configure them further.
 
-  * ``./project:/mnt/extra-addons``
-  * ``./delivery:/mnt/delivery-addons``
+`ShipIT Allowed Additional Services` are updated automatically when you sync ShipIT services
+`ShipIT Allowed Package Types` need to be applied manually at the moment
+`ShipIT Default Additional Services` can be set to always suggest certain service on new deliveries using this shipping method
 
-* ``config/odoo.conf``:
+   ![ShipIT shipping method](../static/description/shipit_shipping_method.png)
 
-  * ``addons_path = /mnt/extra-addons,/mnt/delivery-addons``
 
-Manual test checklist
-=====================
+## Package types
 
-1. Create/verify a ShipIT carrier with API key, reseller ID and service ID.
-2. Create a delivery order with ShipIT as carrier.
-3. Optional pickup test:
+If you use packaging, you can configure different package types to use.
+Go to `Inventory > Configuration > Package Types`
 
-   * click ``Select`` on picking ``Pickup point``
-   * search pickup points and select one
-   * verify pickup fields are stored on picking
+You can create carrier-spesific package types here.
+Regarding ShipIT, the important part is `ShipIT Package Type`.
+Available package types are listed there, and you should pick one.
 
-4. Run ``Validate`` on the delivery.
-5. Verify:
+   ![ShipIT package type](../static/description/shipit_package_type.png)
 
-   * ``shipit_shipment_id`` is set
-   * ``shipit_tracking_codes`` is set
-   * label attachment exists on the picking
-
-6. Negative test: remove recipient phone/email and validate that user-facing
-   validation error is shown before API call.
+After that you can use that package type with the carrier.
+You can also limit the available package types in `Shipping methods` (see previous step).

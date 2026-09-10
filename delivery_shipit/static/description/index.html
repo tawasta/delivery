@@ -371,28 +371,35 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/Futural/delivery/tree/17.0/delivery_shipit"><img alt="Futural/delivery" src="https://img.shields.io/badge/github-Futural%2Fdelivery-lightgray.png?logo=github" /></a></p>
 <p>ShipIT shipping integration for Odoo.</p>
-<p>With this module you can fetch Shipit pickup points for SO or picking,
-and create a ShipIT delivery by confirming a stock picking in Odoo. You
-will get a PDF label from ShipIT to Odoo, for easy printing.</p>
+<p>With this module you use ShipIT delivery methods for deliveries. The
+delivery will be automatically created to ShipIT when confirming the
+delivery, and you will get a PDF label straight to Odoo for effortless
+printing</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#use-cases-context" id="toc-entry-1">Use Cases / Context</a></li>
 <li><a class="reference internal" href="#installation" id="toc-entry-2">Installation</a></li>
-<li><a class="reference internal" href="#configuration" id="toc-entry-3">Configuration</a></li>
-<li><a class="reference internal" href="#configuration-1" id="toc-entry-4">Configuration</a></li>
-<li><a class="reference internal" href="#local-setup-notes" id="toc-entry-5">Local setup notes</a></li>
-<li><a class="reference internal" href="#manual-test-checklist" id="toc-entry-6">Manual test checklist</a></li>
-<li><a class="reference internal" href="#usage" id="toc-entry-7">Usage</a></li>
-<li><a class="reference internal" href="#usage-1" id="toc-entry-8">Usage</a></li>
-<li><a class="reference internal" href="#known-issues-roadmap" id="toc-entry-9">Known issues / Roadmap</a></li>
-<li><a class="reference internal" href="#changelog" id="toc-entry-10">Changelog</a></li>
-<li><a class="reference internal" href="#bug-tracker" id="toc-entry-11">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-12">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-13">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="toc-entry-14">Contributors</a></li>
-<li><a class="reference internal" href="#other-credits" id="toc-entry-15">Other credits</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-16">Maintainers</a></li>
+<li><a class="reference internal" href="#configuration" id="toc-entry-3">Configuration</a><ul>
+<li><a class="reference internal" href="#shipit-configuration" id="toc-entry-4">ShipIT configuration</a></li>
+<li><a class="reference internal" href="#shipping-methods" id="toc-entry-5">Shipping methods</a></li>
+<li><a class="reference internal" href="#package-types" id="toc-entry-6">Package types</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage" id="toc-entry-7">Usage</a><ul>
+<li><a class="reference internal" href="#basic-usage" id="toc-entry-8">Basic usage</a></li>
+<li><a class="reference internal" href="#advanced-usage" id="toc-entry-9">Advanced usage</a></li>
+<li><a class="reference internal" href="#packing" id="toc-entry-10">Packing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#known-issues-roadmap" id="toc-entry-11">Known issues / Roadmap</a></li>
+<li><a class="reference internal" href="#changelog" id="toc-entry-12">Changelog</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-13">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-14">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-15">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-16">Contributors</a></li>
+<li><a class="reference internal" href="#other-credits" id="toc-entry-17">Other credits</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-18">Maintainers</a></li>
 </ul>
 </li>
 </ul>
@@ -400,9 +407,9 @@ will get a PDF label from ShipIT to Odoo, for easy printing.</p>
 <div class="section" id="use-cases-context">
 <h1><a class="toc-backref" href="#toc-entry-1">Use Cases / Context</a></h1>
 <p>When delivering physical products, you will need carrier or carriers.
-With Shipit you will have multiple possible carriers with just one
+With ShipIT you will have multiple possible carriers with just one
 integration.</p>
-<p>Shipit is an easy and flexible service for sending parcels and freight.
+<p>ShipIT is an easy and flexible service for sending parcels and freight.
 You can send packages domestically and worldwide as a business customer,
 online retailer, or private individual.</p>
 </div>
@@ -412,102 +419,102 @@ online retailer, or private individual.</p>
 </div>
 <div class="section" id="configuration">
 <h1><a class="toc-backref" href="#toc-entry-3">Configuration</a></h1>
-</div>
-<div class="section" id="configuration-1">
-<h1><a class="toc-backref" href="#toc-entry-4">Configuration</a></h1>
-<ol class="arabic simple">
-<li>Go to Inventory -&gt; Configuration -&gt; Delivery -&gt; Shipping Methods</li>
-<li>Create or open a carrier</li>
-<li>Set Provider to <tt class="docutils literal">ShipIT</tt></li>
-<li>Fill in ShipIT configuration fields (API key, reseller ID, service
-IDs)</li>
-<li>Enable <tt class="docutils literal">Store ShipIT debug payloads</tt> if you want request/response
-payloads persisted to picking fields for troubleshooting</li>
+<div class="section" id="shipit-configuration">
+<h2><a class="toc-backref" href="#toc-entry-4">ShipIT configuration</a></h2>
+<ol class="arabic">
+<li><p class="first">After installing, go to <tt class="docutils literal">Settings &gt; ShipIT</tt></p>
+</li>
+<li><p class="first">Fill in your <tt class="docutils literal">API key</tt> and save settings</p>
+</li>
+<li><p class="first">Go back to <tt class="docutils literal">Settings &gt; ShipIT</tt> and click <tt class="docutils literal">Sync ShipIT services</tt></p>
+<p><img alt="ShipIT settings" src="https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_settings.png" /></p>
+</li>
 </ol>
-<p>The module also installs a default delivery product and a <tt class="docutils literal">ShipIT</tt>
-carrier template that can be used as a starting point.</p>
 </div>
-<div class="section" id="local-setup-notes">
-<h1><a class="toc-backref" href="#toc-entry-5">Local setup notes</a></h1>
-<p>To use this addon in the current local workspace, Odoo must include both
-project and delivery addon paths. Example:</p>
-<ul class="simple">
-<li><tt class="docutils literal"><span class="pre">docker-compose.yml</span></tt>:<ul>
-<li><tt class="docutils literal"><span class="pre">./project:/mnt/extra-addons</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">./delivery:/mnt/delivery-addons</span></tt></li>
-</ul>
-</li>
-<li><tt class="docutils literal">config/odoo.conf</tt>:<ul>
-<li><tt class="docutils literal">addons_path = <span class="pre">/mnt/extra-addons,/mnt/delivery-addons</span></tt></li>
-</ul>
-</li>
-</ul>
+<div class="section" id="shipping-methods">
+<h2><a class="toc-backref" href="#toc-entry-5">Shipping methods</a></h2>
+<p>This will fetch the available services and create them in
+<tt class="docutils literal">Shipping methods</tt>. You can go to
+<tt class="docutils literal">Inventory &gt; Configuration &gt; Delivery &gt; Shipping Methods</tt> and see
+what’s available and configure them further.</p>
+<p><tt class="docutils literal">ShipIT Allowed Additional Services</tt> are updated automatically when
+you sync ShipIT services <tt class="docutils literal">ShipIT Allowed Package Types</tt> need to be
+applied manually at the moment <tt class="docutils literal">ShipIT Default Additional Services</tt>
+can be set to always suggest certain service on new deliveries using
+this shipping method</p>
+<p><img alt="ShipIT shipping method" src="https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_shipping_method.png" /></p>
 </div>
-<div class="section" id="manual-test-checklist">
-<h1><a class="toc-backref" href="#toc-entry-6">Manual test checklist</a></h1>
-<ol class="arabic simple">
-<li>Create/verify a ShipIT carrier with API key, reseller ID and service
-ID.</li>
-<li>Create a delivery order with ShipIT as carrier.</li>
-<li>Optional pickup test:<ul>
-<li>click <tt class="docutils literal">Select</tt> on picking <tt class="docutils literal">Pickup point</tt></li>
-<li>search pickup points and select one</li>
-<li>verify pickup fields are stored on picking</li>
-</ul>
-</li>
-<li>Run <tt class="docutils literal">Validate</tt> on the delivery.</li>
-<li>Verify:<ul>
-<li><tt class="docutils literal">shipit_shipment_id</tt> is set</li>
-<li><tt class="docutils literal">shipit_tracking_codes</tt> is set</li>
-<li>label attachment exists on the picking</li>
-</ul>
-</li>
-<li>Negative test: remove recipient phone/email and validate that
-user-facing validation error is shown before API call.</li>
-</ol>
+<div class="section" id="package-types">
+<h2><a class="toc-backref" href="#toc-entry-6">Package types</a></h2>
+<p>If you use packaging, you can configure different package types to use.
+Go to <tt class="docutils literal">Inventory &gt; Configuration &gt; Package Types</tt></p>
+<p>You can create carrier-spesific package types here. Regarding ShipIT,
+the important part is <tt class="docutils literal">ShipIT Package Type</tt>. Available package types
+are listed there, and you should pick one.</p>
+<p><img alt="ShipIT package type" src="https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_package_type.png" /></p>
+<p>After that you can use that package type with the carrier. You can also
+limit the available package types in <tt class="docutils literal">Shipping methods</tt> (see previous
+step).</p>
+</div>
 </div>
 <div class="section" id="usage">
 <h1><a class="toc-backref" href="#toc-entry-7">Usage</a></h1>
-</div>
-<div class="section" id="usage-1">
-<h1><a class="toc-backref" href="#toc-entry-8">Usage</a></h1>
-<p>This module implements the ShipIT integration flow:</p>
+<div class="section" id="basic-usage">
+<h2><a class="toc-backref" href="#toc-entry-8">Basic usage</a></h2>
 <ol class="arabic simple">
-<li>Validate required sender/recipient/carrier fields</li>
-<li>Build shipment payload from picking data</li>
-<li>Create shipment via ShipIT v1 API (<tt class="docutils literal">PUT /v1/shipment</tt> with
-<tt class="docutils literal"><span class="pre">X-SHIPIT-KEY</span></tt>)</li>
-<li>Store shipment id, tracking data and label attachment to picking</li>
-<li>Trigger shipment creation from delivery <tt class="docutils literal">Validate</tt> action for
-ShipIT carriers</li>
-<li>Store request/response debug payloads to picking fields</li>
-<li>Download label document from <tt class="docutils literal">freightDoc</tt> URL when available</li>
-<li>Optional fallback to separate label endpoint if configured</li>
-<li>Search pickup points via ShipIT <tt class="docutils literal">POST /agents</tt> and save selected
-point</li>
-<li>Optional carrier-level pickup point requirement before shipment
-create</li>
-<li>Only trigger API calls automatically for outgoing pickings</li>
+<li><strong>Select</strong> any ShipIT <strong>shipment method</strong> on Sale order (or Delivery
+order)</li>
+<li><strong>Confirm</strong> the <strong>Sale order</strong></li>
+<li><strong>Confirm</strong> the <strong>Delivery order</strong></li>
 </ol>
+<p>You will get a <tt class="docutils literal">Tracking reference</tt> and a PDF label from ShipIT.
+<strong>Done!</strong></p>
+<p>Clicking the <tt class="docutils literal">Tracking</tt>-button will take you to the tracking link. In
+<tt class="docutils literal">Additional info</tt>-tab, you will have the basic shipment info.</p>
+<p><img alt="ShipIT done delivery" src="https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_delivery_done.png" /></p>
+</div>
+<div class="section" id="advanced-usage">
+<h2><a class="toc-backref" href="#toc-entry-9">Advanced usage</a></h2>
+<p>On an unconfirmed <tt class="docutils literal">Delivery order</tt>, you can select more additional
+services and a <tt class="docutils literal">Pickup point</tt> (for some shipment methods)</p>
+<p><img alt="ShipIT draft delivery" src="https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_delivery_draft.png" /></p>
+<p>If you click <strong>Select</strong> next to <tt class="docutils literal">Pickup point</tt>, a popup will open.
+Select your post code, services and pickup point type and click
+<tt class="docutils literal">Search</tt>.</p>
+<p>After that you can just select and use the pickup point.</p>
+<p><img alt="ShipIT pickup point search" src="https://raw.githubusercontent.com/Futural/delivery/17.0/delivery_shipit/static/description/shipit_pickup_search.png" /></p>
+</div>
+<div class="section" id="packing">
+<h2><a class="toc-backref" href="#toc-entry-10">Packing</a></h2>
+<p>If no packing is used, the package type will default to a generic
+<tt class="docutils literal">Package</tt>. You can, however, use the packaging functionality that Odoo
+provides.</p>
+<p>If you pack the products before confirming the Delivery order, the
+shipment is sent to ShipIT as a multi-package delivery. Each package
+having it’s own dimensions and weight.</p>
+</div>
 </div>
 <div class="section" id="known-issues-roadmap">
-<h1><a class="toc-backref" href="#toc-entry-9">Known issues / Roadmap</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-11">Known issues / Roadmap</a></h1>
 <ul class="simple">
-<li>Configurable package dimensions for picking</li>
-<li>Parcel type</li>
-<li>Dangerous goods</li>
-<li>Wizardless carrier picking</li>
+<li>Get delivery method-spesific allowed package types automatically</li>
+<li>Support for dangerous goods</li>
+<li>Wizardless pickup point selection</li>
 <li>Support for e-commerce</li>
+<li>Clean up the unnecessarily complicated structure</li>
+<li>Clean up unused/unnecessary code</li>
 <li>Tests for everything!</li>
 </ul>
 </div>
 <div class="section" id="changelog">
-<h1><a class="toc-backref" href="#toc-entry-10">Changelog</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-12">Changelog</a></h1>
+<p>17.0.2.5.0 (2026-09-10)</p>
+<p>Release version</p>
 <p>17.0.1.1.0 (2026-03-19)</p>
 <p>Initial version</p>
 </div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#toc-entry-11">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-13">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/Futural/delivery/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
@@ -515,15 +522,15 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#toc-entry-12">Credits</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-14">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#toc-entry-13">Authors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-15">Authors</a></h2>
 <ul class="simple">
 <li>Futural</li>
 </ul>
 </div>
 <div class="section" id="contributors">
-<h2><a class="toc-backref" href="#toc-entry-14">Contributors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-16">Contributors</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://futural.fi">Futural Oy</a>:<ul>
 <li>Jarmo Kortetjärvi <a class="reference external" href="mailto:jarmo.kortetjarvi&#64;futural.fi">jarmo.kortetjarvi&#64;futural.fi</a></li>
@@ -532,14 +539,14 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="other-credits">
-<h2><a class="toc-backref" href="#toc-entry-15">Other credits</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-17">Other credits</a></h2>
 <p>The development of this module has been financially supported by:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://futural.fi">Futural Oy</a></li>
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#toc-entry-16">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-18">Maintainers</a></h2>
 <p>This module is part of the <a class="reference external" href="https://github.com/Futural/delivery/tree/17.0/delivery_shipit">Futural/delivery</a> project on GitHub.</p>
 <p>You are welcome to contribute.</p>
 </div>
