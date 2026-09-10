@@ -28,7 +28,7 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["delivery_gls_finland", "sale_order_partner_delivery_method"],
+    "depends": ["delivery_gls_finland"],
     "data": [
         "views/delivery_carrier.xml",
     ],
