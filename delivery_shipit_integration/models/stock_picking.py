@@ -158,7 +158,7 @@ class StockPicking(models.Model):
                 _("Shipit pickup point search is available only for Shipit carrier.")
             )
 
-        view = self.env.ref("delivery_shipit.view_shipit_pickup_point_wizard")
+        view = self.env.ref("delivery_shipit_integration.view_shipit_pickup_point_wizard")
         return {
             "type": "ir.actions.act_window",
             "name": _("Shipit pickup points"),
