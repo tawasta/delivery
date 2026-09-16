@@ -1,2 +1,3 @@
 - [Futural Oy](https://futural.fi):
    - Jarmo Kortetjärvi <jarmo.kortetjarvi@futural.fi>
+   - Joona Isoaho <joona.isoaho@futural.fi>

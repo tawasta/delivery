@@ -73,33 +73,7 @@ This will fetch the available services and create them in
 ``Inventory > Configuration > Delivery > Shipping Methods`` and see
 what's available and configure them further.
 
-``Shipit Allowed Additional Services`` are updated automatically when
-you sync Shipit services ``Shipit Allowed Package Types`` need to be
-applied manually at the moment ``Shipit Default Additional Services``
-can be set to always suggest certain service on new deliveries using
-this shipping method
-
-|Shipit shipping method|
-
-Package types
--------------
-
-If you use packaging, you can configure different package types to use.
-Go to ``Inventory > Configuration > Package Types``
-
-You can create carrier-spesific package types here. Regarding Shipit,
-the important part is ``Shipit Package Type``. Available package types
-are listed there, and you should pick one.
-
-|Shipit package type|
-
-After that you can use that package type with the carrier. You can also
-limit the available package types in ``Shipping methods`` (see previous
-step).
-
 .. |Shipit settings| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_settings.png
-.. |Shipit shipping method| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_shipping_method.png
-.. |Shipit package type| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_package_type.png
 
 Usage
 =====
@@ -120,36 +94,7 @@ Clicking the ``Tracking``-button will take you to the tracking link. In
 
 |Shipit done delivery|
 
-Advanced usage
---------------
-
-On an unconfirmed ``Delivery order``, you can select more additional
-services and a ``Pickup point`` (for some shipment methods)
-
-|Shipit draft delivery|
-
-If you click **Select** next to ``Pickup point``, a popup will open.
-Select your post code, services and pickup point type and click
-``Search``.
-
-After that you can just select and use the pickup point.
-
-|Shipit pickup point search|
-
-Packing
--------
-
-If no packing is used, the package type will default to a generic
-``Package``. You can, however, use the packaging functionality that Odoo
-provides.
-
-If you pack the products before confirming the Delivery order, the
-shipment is sent to Shipit as a multi-package delivery. Each package
-having it's own dimensions and weight.
-
 .. |Shipit done delivery| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_done.png
-.. |Shipit draft delivery| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_draft.png
-.. |Shipit pickup point search| image:: https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_pickup_search.png
 
 Known issues / Roadmap
 ======================
@@ -164,6 +109,11 @@ Known issues / Roadmap
 
 Changelog
 =========
+
+17.0.3.0.0 (2026-09-10)
+
+Major code cleanup. Temporary feature recession to establish more
+maintainable codebase.
 
 17.0.2.5.0 (2026-09-10)
 
@@ -197,6 +147,7 @@ Contributors
 - `Futural Oy <https://futural.fi>`__:
 
   - Jarmo Kortetjärvi jarmo.kortetjarvi@futural.fi
+  - Joona Isoaho joona.isoaho@futural.fi
 
 Other credits
 -------------

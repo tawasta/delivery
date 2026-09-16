@@ -383,23 +383,20 @@ printing</p>
 <li><a class="reference internal" href="#configuration" id="toc-entry-3">Configuration</a><ul>
 <li><a class="reference internal" href="#shipit-configuration" id="toc-entry-4">Shipit configuration</a></li>
 <li><a class="reference internal" href="#shipping-methods" id="toc-entry-5">Shipping methods</a></li>
-<li><a class="reference internal" href="#package-types" id="toc-entry-6">Package types</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#usage" id="toc-entry-7">Usage</a><ul>
-<li><a class="reference internal" href="#basic-usage" id="toc-entry-8">Basic usage</a></li>
-<li><a class="reference internal" href="#advanced-usage" id="toc-entry-9">Advanced usage</a></li>
-<li><a class="reference internal" href="#packing" id="toc-entry-10">Packing</a></li>
+<li><a class="reference internal" href="#usage" id="toc-entry-6">Usage</a><ul>
+<li><a class="reference internal" href="#basic-usage" id="toc-entry-7">Basic usage</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#known-issues-roadmap" id="toc-entry-11">Known issues / Roadmap</a></li>
-<li><a class="reference internal" href="#changelog" id="toc-entry-12">Changelog</a></li>
-<li><a class="reference internal" href="#bug-tracker" id="toc-entry-13">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-14">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-15">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="toc-entry-16">Contributors</a></li>
-<li><a class="reference internal" href="#other-credits" id="toc-entry-17">Other credits</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-18">Maintainers</a></li>
+<li><a class="reference internal" href="#known-issues-roadmap" id="toc-entry-8">Known issues / Roadmap</a></li>
+<li><a class="reference internal" href="#changelog" id="toc-entry-9">Changelog</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-10">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-11">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-12">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-13">Contributors</a></li>
+<li><a class="reference internal" href="#other-credits" id="toc-entry-14">Other credits</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-15">Maintainers</a></li>
 </ul>
 </li>
 </ul>
@@ -438,30 +435,12 @@ individual.</p>
 <tt class="docutils literal">Shipping methods</tt>. You can go to
 <tt class="docutils literal">Inventory &gt; Configuration &gt; Delivery &gt; Shipping Methods</tt> and see
 what’s available and configure them further.</p>
-<p><tt class="docutils literal">Shipit Allowed Additional Services</tt> are updated automatically when
-you sync Shipit services <tt class="docutils literal">Shipit Allowed Package Types</tt> need to be
-applied manually at the moment <tt class="docutils literal">Shipit Default Additional Services</tt>
-can be set to always suggest certain service on new deliveries using
-this shipping method</p>
-<p><img alt="Shipit shipping method" src="https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_shipping_method.png" /></p>
-</div>
-<div class="section" id="package-types">
-<h2><a class="toc-backref" href="#toc-entry-6">Package types</a></h2>
-<p>If you use packaging, you can configure different package types to use.
-Go to <tt class="docutils literal">Inventory &gt; Configuration &gt; Package Types</tt></p>
-<p>You can create carrier-spesific package types here. Regarding Shipit,
-the important part is <tt class="docutils literal">Shipit Package Type</tt>. Available package types
-are listed there, and you should pick one.</p>
-<p><img alt="Shipit package type" src="https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_package_type.png" /></p>
-<p>After that you can use that package type with the carrier. You can also
-limit the available package types in <tt class="docutils literal">Shipping methods</tt> (see previous
-step).</p>
 </div>
 </div>
 <div class="section" id="usage">
-<h1><a class="toc-backref" href="#toc-entry-7">Usage</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-6">Usage</a></h1>
 <div class="section" id="basic-usage">
-<h2><a class="toc-backref" href="#toc-entry-8">Basic usage</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-7">Basic usage</a></h2>
 <ol class="arabic simple">
 <li><strong>Select</strong> any Shipit <strong>shipment method</strong> on Sale order (or Delivery
 order)</li>
@@ -474,29 +453,9 @@ order)</li>
 <tt class="docutils literal">Additional info</tt>-tab, you will have the basic shipment info.</p>
 <p><img alt="Shipit done delivery" src="https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_done.png" /></p>
 </div>
-<div class="section" id="advanced-usage">
-<h2><a class="toc-backref" href="#toc-entry-9">Advanced usage</a></h2>
-<p>On an unconfirmed <tt class="docutils literal">Delivery order</tt>, you can select more additional
-services and a <tt class="docutils literal">Pickup point</tt> (for some shipment methods)</p>
-<p><img alt="Shipit draft delivery" src="https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_delivery_draft.png" /></p>
-<p>If you click <strong>Select</strong> next to <tt class="docutils literal">Pickup point</tt>, a popup will open.
-Select your post code, services and pickup point type and click
-<tt class="docutils literal">Search</tt>.</p>
-<p>After that you can just select and use the pickup point.</p>
-<p><img alt="Shipit pickup point search" src="https://raw.githubusercontent.com/tawasta/delivery/17.0/delivery_shipit_integration/static/description/shipit_pickup_search.png" /></p>
-</div>
-<div class="section" id="packing">
-<h2><a class="toc-backref" href="#toc-entry-10">Packing</a></h2>
-<p>If no packing is used, the package type will default to a generic
-<tt class="docutils literal">Package</tt>. You can, however, use the packaging functionality that Odoo
-provides.</p>
-<p>If you pack the products before confirming the Delivery order, the
-shipment is sent to Shipit as a multi-package delivery. Each package
-having it’s own dimensions and weight.</p>
-</div>
 </div>
 <div class="section" id="known-issues-roadmap">
-<h1><a class="toc-backref" href="#toc-entry-11">Known issues / Roadmap</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-8">Known issues / Roadmap</a></h1>
 <ul class="simple">
 <li>Get delivery method-spesific allowed package types automatically</li>
 <li>Support for dangerous goods</li>
@@ -508,14 +467,17 @@ having it’s own dimensions and weight.</p>
 </ul>
 </div>
 <div class="section" id="changelog">
-<h1><a class="toc-backref" href="#toc-entry-12">Changelog</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-9">Changelog</a></h1>
+<p>17.0.3.0.0 (2026-09-10)</p>
+<p>Major code cleanup. Temporary feature recession to establish more
+maintainable codebase.</p>
 <p>17.0.2.5.0 (2026-09-10)</p>
 <p>Release version</p>
 <p>17.0.1.1.0 (2026-03-19)</p>
 <p>Initial version</p>
 </div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#toc-entry-13">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-10">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/tawasta/delivery/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
@@ -523,31 +485,32 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#toc-entry-14">Credits</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-11">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#toc-entry-15">Authors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-12">Authors</a></h2>
 <ul class="simple">
 <li>Futural</li>
 </ul>
 </div>
 <div class="section" id="contributors">
-<h2><a class="toc-backref" href="#toc-entry-16">Contributors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-13">Contributors</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://futural.fi">Futural Oy</a>:<ul>
 <li>Jarmo Kortetjärvi <a class="reference external" href="mailto:jarmo.kortetjarvi&#64;futural.fi">jarmo.kortetjarvi&#64;futural.fi</a></li>
+<li>Joona Isoaho <a class="reference external" href="mailto:joona.isoaho&#64;futural.fi">joona.isoaho&#64;futural.fi</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="other-credits">
-<h2><a class="toc-backref" href="#toc-entry-17">Other credits</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-14">Other credits</a></h2>
 <p>The development of this module has been financially supported by:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://futural.fi">Futural Oy</a></li>
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#toc-entry-18">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-15">Maintainers</a></h2>
 <p>This module is part of the <a class="reference external" href="https://github.com/tawasta/delivery/tree/17.0/delivery_shipit_integration">tawasta/delivery</a> project on GitHub.</p>
 <p>You are welcome to contribute.</p>
 </div>
