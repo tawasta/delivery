@@ -35,17 +35,12 @@
     ],
     "data": [
         "data/delivery_carrier.xml",
-        "security/ir.model.access.csv",
         "views/choose_delivery_carrier.xml",
         "views/delivery_carrier_form.xml",
         "views/delivery_carrier_search.xml",
         "views/delivery_carrier_tree.xml",
         "views/res_config_settings.xml",
-        "views/res_partner_form.xml",
-        "views/stock_package_type_form.xml",
         "views/stock_picking_form.xml",
         "views/stock_picking_tree.xml",
-        "wizards/choose_delivery_package.xml",
-        "wizards/shipit_pickup_point_wizard.xml",
     ],
 }

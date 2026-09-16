@@ -1,885 +1,621 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* delivery_shipit
+# 	* delivery_shipit_integration
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0-20250320\n"
+"Project-Id-Version: Odoo Server 17.0-20260908\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-18 19:46+0000\n"
-"PO-Revision-Date: 2026-03-18 19:46+0000\n"
+"POT-Creation-Date: 2026-09-16 10:52+0000\n"
+"PO-Revision-Date: 2026-09-16 14:07+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid ""
 "\n"
 "Check Shipit API key and permissions."
 msgstr ""
+"\n"
+"Tarkista Shipit-sovellusliittymän avain ja käyttöoikeudet."
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid ""
 "\n"
 "Endpoint not found."
 msgstr ""
+"\n"
+"Päätepistettä ei löytynyt."
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid ""
 "\n"
 "Request validation failed."
 msgstr ""
+"\n"
+"Pyynnön vahvistus epäonnistui."
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid ""
 "\n"
-"Shipit API server error."
+"ShipIT API server error."
 msgstr ""
+"\n"
+"ShipIT-API-palvelimen virhe."
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__active
-msgid "Active"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__a2b
+msgid "A2B"
+msgstr "A2B"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__address
-msgid "Address"
-msgstr "Osoite"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__asendia
+msgid "Asendia"
+msgstr "Asendia"
 
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_delivery_carrier_form_shipit
-msgid "Advanced API settings"
-msgstr "Edistyneet API-asetukset"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__bring
+msgid "Bring"
+msgstr "Bring"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__available_service_option_ids
-msgid "Available Service Option"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__budbee
+msgid "Budbee"
+msgstr "Budbee"
 
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_auth_mode__bearer
-msgid "Bearer (legacy)"
-msgstr ""
-
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Cancel"
-msgstr "Peruuta"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__carrier_name
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__carrier_name
-msgid "Carrier Name"
-msgstr ""
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
-#, python-format
-msgid "Carrier Shipit API key"
-msgstr ""
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
-#, python-format
-msgid "Carrier Shipit reseller ID"
-msgstr ""
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Carrier Shipit service ID"
-msgstr ""
+msgstr "Carrier Shipit -palvelun tunniste"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__city
-msgid "City"
-msgstr "Kaupunki"
+#. module: delivery_shipit_integration
+#: model:ir.model,name:delivery_shipit_integration.model_res_config_settings
+msgid "Config Settings"
+msgstr "Asetukset"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__code
-msgid "Code"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__db_schenker_suomi
+msgid "DB Schenker Finland"
+msgstr "DB Schenker Finland"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_create_endpoints
-msgid "Comma-separated endpoint paths used for create shipment PUT call."
-msgstr "Pilkuilla erotellut endpoint-polut lähetysten luontiin (PUT-kutsu)."
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__db_schenker_system
+msgid "DB Schenker System"
+msgstr "DB Schenker System"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__country_code
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__country_code
-msgid "Country Code"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__dhl_freight
+msgid "DHL Freight"
+msgstr "DHL Freight"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__create_uid
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__create_uid
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__create_uid
-msgid "Created by"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__dpd
+msgid "DPD"
+msgstr "DPD"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__create_date
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__create_date
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__create_date
-msgid "Created on"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__dsv
+msgid "DSV"
+msgstr "DSV"
 
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_delivery_carrier_form_shipit
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_delivery_carrier_form_shipit
 msgid "Default dimensions"
 msgstr "Oletusmitat"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_default_height_cm
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_default_height_cm
 msgid "Default package height (cm)"
-msgstr "Paketin oletuskorkeus (cm)"
+msgstr "Paketin vakiokorkeus (cm)"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_default_length_cm
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_default_length_cm
 msgid "Default package length (cm)"
 msgstr "Paketin oletuspituus (cm)"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_default_width_cm
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_default_width_cm
 msgid "Default package width (cm)"
 msgstr "Paketin oletusleveys (cm)"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__display_name
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__display_name
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__display_name
-msgid "Display Name"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_environment
+msgid "Environment to use for Shipit API calls."
+msgstr "Shipit-API-kutsuissa käytettävä ympäristö."
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__distance_kilometers
-msgid "Distance Kilometers"
-msgstr "Etäisyys (km)"
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Error %(status_code)s in Shipit API request: %(reason)s"
-msgstr ""
+msgstr "Virhe %(status_code)s Shipit-API-pyynnössä: %(reason)s"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__fetch
+msgid "Fetch"
+msgstr "Nouda"
+
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/res_config_settings.py:0
 #, python-format
 msgid ""
 "Fetching Shipit services failed:\n"
 "%(message)s"
 msgstr ""
+"Shipit-palveluiden hakeminen epäonnistui:\n"
+"%(message)s"
 
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_picking_withcarrier_out_form_shipit
-msgid "Hae noutopiste"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__gls
+msgid "GLS"
+msgstr "GLS"
+
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
+msgid ""
+"Generate Shipit services via API.                         This will create "
+"a shipping method for each service offered by "
+"Shipit.                         This should be done after setting the API "
+"key and whenever new services are added in Shipit."
 msgstr ""
+"Luo Shipit-palvelut API:n kautta.                         Tämä luo "
+"toimitustavan jokaiselle Shipitin tarjoamalle "
+"palvelulle.                         Tämä tulisi tehdä API-avaimen "
+"määrittämisen jälkeen ja aina, kun Shipitiin lisätään uusia palveluja."
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__id
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__id
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__id
-msgid "ID"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_timeout_seconds
+msgid "How long to wait for responses before timing out."
+msgstr "Kuinka kauan vastauksia odotetaan ennen aikakatkaisua."
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__instabox
+msgid "Instabox"
+msgstr "Instabox"
+
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
-#, python-format
-msgid "Invalid Shipit cancel endpoint template: %(message)s"
-msgstr ""
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Invalid Shipit label endpoint template: %(message)s"
-msgstr ""
+msgstr "Virheellinen Shipit-tarran päätepistemalli: %(message)s"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__write_uid
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__write_uid
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__write_uid
-msgid "Last Updated by"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__itella_logistiikka
+msgid "Itella Logistiikka"
+msgstr "Itella Logistiikka"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__write_date
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__write_date
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__write_date
-msgid "Last Updated on"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__jakeluyhtio_suomi
+msgid "Jakeluyhtiö Suomi"
+msgstr "Jakeluyhtiö Suomi"
 
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__shipit_pickup_point_wizard__point_type__letter_box
-msgid "Letter box"
-msgstr "Postilaatikko"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__kaukokiito
+msgid "Kaukokiito"
+msgstr "Kaukokiito"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__limit
-msgid "Limit"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__matkahuolto
+msgid "Matkahuolto"
+msgstr "Matkahuolto"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__line_ids
-msgid "Line"
-msgstr ""
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
-#, python-format
-msgid "Loaded %(total)s services (%(created)s created, %(updated)s updated)."
-msgstr ""
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid ""
 "Missing required Shipit data for picking %(name)s:\n"
 "%(details)s"
 msgstr ""
+"Missing required Shipit data for picking %(name)s:\n"
+"%(details)s"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__name
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__name
-msgid "Name"
-msgstr "Nimi"
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
+msgid "Optional override for Shipit API timeout (seconds)"
+msgstr "Shipit-API:n aikakatkaisun valinnainen ohitus (sekunteina)"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_cancel_endpoint_template
-msgid "Optional endpoint template for cancellation call."
-msgstr "Valinnainen endpoint-malli peruutuskutsulle."
-
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_label_endpoint_template
-msgid "Optional endpoint template for legacy label fetch fallback."
-msgstr "Valinnainen endpoint-malli vanhan osoitekorttihaun varareitille."
-
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_api_base_url
-msgid "Optional override for Shipit API base URL."
-msgstr "Valinnainen yliajo Shipit API:n perus-URL:lle."
-
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__shipit_pickup_point_wizard__point_type__outdoor_parcel_locker
-msgid "Outdoor parcel locker"
-msgstr "Ulkopakettiautomaatti"
-
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_label_format__pdf_a4
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__shipit_label_format__pdf_a4
 msgid "PDF A4"
-msgstr ""
+msgstr "PDF A4"
 
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_label_format__pdf_a6
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__shipit_label_format__pdf_a6
 msgid "PDF A6"
-msgstr ""
+msgstr "PDF A6"
 
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__shipit_pickup_point_wizard__point_type__parcel_locker
-msgid "Parcel locker"
-msgstr "Pakettiautomaatti"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__posti
+msgid "Posti"
+msgstr "Posti"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__picking_id
-msgid "Picking"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__postnord
+msgid "Postnord"
+msgstr "Postnord"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__point_id
-msgid "Pickup ID"
-msgstr "Noutopisteen ID"
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_picking_withcarrier_out_form_shipit
+msgid "Print shipit labels"
+msgstr "Tulosta lähetystarrat"
 
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
-#, python-format
-msgid "Pickup point ID"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__res_config_settings__shipit_environment__prod
+msgid "Production"
+msgstr "Tuotanto"
 
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
-#, python-format
-msgid "Pickup point service ID requires pickup point selection"
-msgstr ""
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__point_type
-msgid "Point Type"
-msgstr "Pistetyyppi"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__postcode
-msgid "Postcode"
-msgstr "Postinumero"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__delivery_type
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__delivery_type
 msgid "Provider"
 msgstr "Palveluntarjoaja"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient city"
-msgstr ""
+msgstr "Vastaanottajan kaupunki"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient country code"
-msgstr ""
+msgstr "Vastaanottajan maakoodi"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient email"
-msgstr ""
+msgstr "Vastaanottajan sähköpostiosoite"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient name"
-msgstr ""
+msgstr "Vastaanottajan nimi"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient phone"
-msgstr ""
+msgstr "Vastaanottajan puhelinnumero"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient postal code"
-msgstr ""
+msgstr "Vastaanottajan postinumero"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Recipient street"
-msgstr ""
+msgstr "Vastaanottajan katu"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_require_pickup_point
-msgid "Require pickup point"
-msgstr "Vaadi noutopiste"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_require_pickup_point
-msgid "Require pickup point selection before creating shipment."
-msgstr "Vaadi noutopisteen valinta ennen lähetyksen luontia."
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__search_count
-msgid "Search Count"
-msgstr "Tulosten määrä"
-
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Search parameters"
-msgstr "Hakuehdot"
-
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Search pickup points"
-msgstr "Hae noutopisteet"
-
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Search results"
-msgstr "Hakutulokset"
-
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Select"
-msgstr "Valitse"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_service_option_ids
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_reseller_id
 msgid ""
-"Select Shipit service IDs. First selected service is used as default "
-"serviceId for shipments."
+"Reseller ID to use in Shipit API calls.We urge users to use reseller ID 57 "
+"of Futural Oy to support the continued development of the integration."
 msgstr ""
-"Valitse Shipit-palvelut. Ensimmäistä valittua palvelua käytetään "
-"lähetysten oletus serviceId-arvona."
+"Shipit-API-kutsuissa käytettävä jälleenmyyjän tunnus. Kehotamme käyttäjiä "
+"käyttämään Futural Oy:n jälleenmyyjän tunnusta 57, jotta integraation "
+"kehittäminen voi jatkua."
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/wizards/shipit_pickup_point_wizard.py:0
-#, python-format
-msgid "Select a pickup point first."
-msgstr "Valitse ensin noutopiste."
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__selected_line_id
-msgid "Selected pickup point"
-msgstr "Valittu noutopiste"
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Sender city"
-msgstr ""
+msgstr "Lähettäjän kaupunki"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Sender country code"
-msgstr ""
+msgstr "Lähettäjän maakoodi"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
+#, python-format
+msgid "Sender email"
+msgstr "Lähettäjän sähköpostiosoite"
+
+#. module: delivery_shipit_integration
+#. odoo-python
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Sender name"
-msgstr ""
+msgstr "Lähettäjän nimi"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Sender postal code"
-msgstr ""
+msgstr "Lähettäjän postinumero"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Sender street"
-msgstr ""
+msgstr "Lähettäjän katu"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_service_option__sequence
-msgid "Sequence"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_api_key
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
+msgid "Set the API key to connect to Shipit"
+msgstr "Määritä API-avain Shipitiin yhdistämistä varten"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__service_name
-msgid "Service"
-msgstr "Palvelu"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__service_id
-msgid "Service ID"
-msgstr "Palvelun ID"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard__service_option_ids
-msgid "Service IDs"
-msgstr "Palvelut"
-
-#. module: delivery_shipit
-#: model:ir.model.constraint,message:delivery_shipit.constraint_shipit_service_option_shipit_service_option_code_uniq
-msgid "Service code must be unique."
-msgstr ""
-
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__shipit_pickup_point_wizard__point_type__service_point
-msgid "Service point"
-msgstr "Noutopiste"
-
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__delivery_type__shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_delivery_carrier_form_shipit
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_delivery_carrier_form_shipit
 msgid "Shipit"
 msgstr "Shipit"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_api_base_url
-msgid "Shipit API base URL"
-msgstr "Shipit API perus-URL"
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
+#, python-format
+msgid "Shipit API does not yet support 'Get rate'"
+msgstr "Shipit-sovellusliittymä ei vielä tue ”Get rate” -toimintoa"
+
+#. module: delivery_shipit_integration
+#. odoo-python
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid ""
 "Shipit API error for %(name)s:\n"
 "%(message)s"
 msgstr ""
+"Shipit-sovellusliittymän virhe %(name)s:\n"
+"%(message)s"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_api_key
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_api_key
 msgid "Shipit API key"
-msgstr "Shipit API-avain"
+msgstr "Shipit-sovellusliittymän avain"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
-#: code:addons/delivery_shipit/models/shipit_request.py:0
-#: code:addons/delivery_shipit/models/shipit_request.py:0
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Shipit API request failed: %(message)s"
-msgstr ""
+msgstr "Shipit-API-pyyntö epäonnistui: %(message)s"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Shipit API returned an error response."
-msgstr ""
+msgstr "Shipit-sovellusliittymä palautti virhevastauksen."
 
-#. module: delivery_shipit
-#: model:delivery.carrier,name:delivery_shipit.delivery_carrier_shipit_default
-msgid "Shipit Default"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_timeout_seconds
+msgid "Shipit API timeout"
+msgstr "Shipit-sovellusliittymän aikakatkaisu"
 
-#. module: delivery_shipit
-#: model:product.template,name:delivery_shipit.product_product_delivery_shipit_product_template
+#. module: delivery_shipit_integration
+#: model:product.template,name:delivery_shipit_integration.product_product_delivery_shipit_integration_product_template
 msgid "Shipit Delivery"
-msgstr ""
+msgstr "Shipit-toimitus"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_auth_mode
-msgid "Shipit auth mode"
-msgstr "Shipit tunnistautumistapa"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_delivery_done
+msgid "Shipit Delivery Done"
+msgstr "Shipit-toimitus suoritettu"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_is_carrier
+msgid "Shipit Is Carrier"
+msgstr "Shipit "
+
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
+msgid "Shipit Settings"
+msgstr "Shipit-asetukset"
+
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
-#, python-format
-msgid "Shipit cancel endpoint is not configured."
-msgstr ""
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_cancel_endpoint_template
-msgid "Shipit cancel endpoint template"
-msgstr "Shipit peruutus-endpointin malli"
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
-#, python-format
-msgid ""
-"Shipit cancel failed for %(name)s:\n"
-"%(message)s"
-msgstr ""
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_create_endpoints
-msgid "Shipit create endpoints"
-msgstr "Shipit luonti-endpointit"
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Shipit document download failed: %(message)s"
-msgstr ""
+msgstr "Shipit-asiakirjan lataaminen epäonnistui: %(message)s"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_label_attachment_id
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_environment
+msgid "Shipit environment"
+msgstr "Shipit-ympäristö"
+
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_label_attachment_id
 msgid "Shipit label attachment"
-msgstr "Shipit osoitekortin liite"
+msgstr "Shipit-tarran kiinnittäminen"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Shipit label endpoint is not configured."
-msgstr ""
+msgstr "Shipit-tarran päätepistettä ei ole määritetty."
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_label_endpoint_template
-msgid "Shipit label endpoint template"
-msgstr "Shipit osoitekortti-endpointin malli"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_label_format
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_label_format
 msgid "Shipit label format"
-msgstr "Shipit osoitekortin muoto"
+msgstr "Shipit-tarran muoto"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_last_error
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_last_error
 msgid "Shipit last error"
-msgstr "Shipit viimeisin virhe"
+msgstr "Shipitin viimeisin virhe"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_payload
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_payload
 msgid "Shipit payload"
-msgstr "Shipit pyyntödata"
+msgstr "Shipit-hyötykuorma"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_id
-msgid "Shipit pickup point ID"
-msgstr "Shipit noutopisteen ID"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_zipcode
-msgid "Shipit pickup point ZIP"
-msgstr "Shipit noutopisteen postinumero"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_address
-msgid "Shipit pickup point address"
-msgstr "Shipit noutopisteen osoite"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_city
-msgid "Shipit pickup point city"
-msgstr "Shipit noutopisteen kaupunki"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_country_code
-msgid "Shipit pickup point country"
-msgstr "Shipit noutopisteen maa"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_name
-msgid "Shipit pickup point name"
-msgstr "Shipit noutopisteen nimi"
-
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Shipit pickup point search"
-msgstr "Shipit noutopistehaku"
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/wizards/shipit_pickup_point_wizard.py:0
-#, python-format
-msgid ""
-"Shipit pickup point search failed for %(name)s:\n"
-"%(message)s"
-msgstr ""
-"Shipit-noutopistehaku epäonnistui siirrolle %(name)s:\n"
-"%(message)s"
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/stock_picking.py:0
-#, python-format
-msgid "Shipit pickup point search is available only for Shipit carrier."
-msgstr "Shipit-noutopistehaku on käytettävissä vain Shipit-toimitustavalle."
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/wizards/shipit_pickup_point_wizard.py:0
-#, python-format
-msgid "Shipit pickup point search is only available for Shipit carrier."
-msgstr "Shipit-noutopistehaku on käytettävissä vain Shipit-toimitustavalle."
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_pickup_point_service_id
-msgid "Shipit pickup point service ID"
-msgstr "Shipit noutopisteen palvelun ID"
-
-#. module: delivery_shipit
-#: model:ir.model,name:delivery_shipit.model_shipit_pickup_point_wizard
-msgid "Shipit pickup point wizard"
-msgstr ""
-
-#. module: delivery_shipit
-#: model:ir.model,name:delivery_shipit.model_shipit_pickup_point_wizard_line
-msgid "Shipit pickup point wizard line"
-msgstr ""
-
-#. module: delivery_shipit
-#. odoo-python
-#: code:addons/delivery_shipit/models/stock_picking.py:0
-#: code:addons/delivery_shipit/wizards/shipit_pickup_point_wizard.py:0
-#, python-format
-msgid "Shipit pickup points"
-msgstr "Shipit noutopisteet"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_reseller_id
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_reseller_id
 msgid "Shipit reseller ID"
-msgstr "Shipit jälleenmyyjän ID"
+msgstr "Shipit-jälleenmyyjän tunnus"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_response
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_response
 msgid "Shipit response"
-msgstr "Shipit vastaus"
+msgstr "Shipitin vastaus"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_service_code
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_service_code
 msgid "Shipit service ID"
-msgstr "Shipit palvelun ID"
+msgstr "Shipit-palvelun tunnus"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_service_option_ids
-msgid "Shipit service IDs"
-msgstr "Shipit palvelut"
-
-#. module: delivery_shipit
-#: model:ir.model,name:delivery_shipit.model_shipit_service_option
-msgid "Shipit service option"
-msgstr ""
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Shipit service point search requires postcode and country."
-msgstr ""
+msgstr "Shipit-palvelupisteen hakuun tarvitaan postinumero ja maa."
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Shipit service point search requires service IDs."
-msgstr ""
+msgstr "Shipit service point search requires service IDs."
 
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_shipit_pickup_point_wizard__service_option_ids
-msgid "Shipit serviceId values used for pickup point search."
-msgstr ""
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/res_config_settings.py:0
 #, python-format
 msgid "Shipit services updated"
-msgstr ""
+msgstr "Shipit-palvelut päivitetty"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_shipment_id
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_shipment_id
 msgid "Shipit shipment ID"
-msgstr "Shipit lähetyksen ID"
+msgstr "Shipit-lähetystunnus"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_timeout_seconds
-msgid "Shipit timeout (seconds)"
-msgstr "Shipit aikakatkaisu (sekuntia)"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_tracking_url
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_tracking_url
 msgid "Shipit tracking URL"
-msgstr "Shipit seurantalinkki"
+msgstr "Shipit-seurannan URL-osoite"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_tracking_codes
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_tracking_codes
 msgid "Shipit tracking codes"
-msgstr "Shipit seurantakoodit"
+msgstr "Shipit-seurantakoodit"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_service_code
+#. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_delivery_carrier__shipit_service_code
 msgid "Shipit v1 serviceId, e.g. posti.po2103"
-msgstr "Shipit v1 serviceId, esim. posti.po2103"
+msgstr "Shipit v1 -palvelutunnus, esim. posti.po2103"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_delivery_done
-msgid "Shipit Delivery Done"
-msgstr "Shipit toimitus tehty"
-
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_stock_picking__shipit_is_carrier
-msgid "Shipit Is Carrier"
-msgstr "Shipit toimitustapa käytössä"
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/delivery_carrier.py:0
+#: code:addons/delivery_shipit_integration/models/delivery_carrier.py:0
 #, python-format
 msgid "Shipment weight"
-msgstr ""
+msgstr "Lähetyksen paino"
 
-#. module: delivery_shipit
-#: model:ir.model,name:delivery_shipit.model_delivery_carrier
+#. module: delivery_shipit_integration
+#: model:ir.model,name:delivery_shipit_integration.model_delivery_carrier
 msgid "Shipping Methods"
 msgstr "Toimitustavat"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_delivery_carrier__shipit_store_debug_payloads
-msgid "Store Shipit debug payloads"
-msgstr "Tallenna Shipit debug-data"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__smartposti
+msgid "SmartPosti"
+msgstr "SmartPosti"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,help:delivery_shipit.field_delivery_carrier__shipit_store_debug_payloads
-msgid "Store request/response payloads to picking debug fields."
-msgstr "Tallenna pyyntö- ja vastausdata siirron debug-kenttiin."
+#. module: delivery_shipit_integration
+#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
+msgid "Sync Shipit services"
+msgstr "Shipit-palveluiden synkronointi"
 
-#. module: delivery_shipit
-#: model:ir.model,name:delivery_shipit.model_stock_picking
+#. module: delivery_shipit_integration
+#. odoo-python
+#: code:addons/delivery_shipit_integration/models/res_config_settings.py:0
+#, python-format
+msgid "Synchronized %s services."
+msgstr "Synkronoitiin %s-palvelut."
+
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__res_config_settings__shipit_environment__test
+msgid "Test"
+msgstr "Testi"
+
+#. module: delivery_shipit_integration
+#: model:ir.model,name:delivery_shipit_integration.model_stock_picking
 msgid "Transfer"
 msgstr "Siirto"
 
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_picking_withcarrier_out_form_shipit
-msgid "Tyhjennä noutopiste"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__ups
+msgid "UPS"
+msgstr "UPS"
 
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "Unable to create shipment."
-msgstr ""
+msgstr "Lähetystä ei voitu luoda."
 
-#. module: delivery_shipit
-#: model_terms:ir.ui.view,arch_db:delivery_shipit.view_shipit_pickup_point_wizard
-msgid "Use selected pickup point"
-msgstr "Käytä valittua noutopistettä"
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__unisend
+msgid "Unisend"
+msgstr "Unisend"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__wizard_id
-msgid "Wizard"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__venipak
+msgid "Venipak"
+msgstr "Venipak"
 
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_auth_mode__x_api_key
-msgid "X-API-Key (legacy)"
-msgstr ""
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__wolt
+msgid "Wolt"
+msgstr "Wolt"
 
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_auth_mode__x_shipit_key
-msgid "X-SHIPIT-KEY"
-msgstr "X-SHIPIT-KEY"
-
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_auth_mode__both
-msgid "X-SHIPIT-KEY + Bearer + X-API-Key"
-msgstr ""
-
-#. module: delivery_shipit
-#: model:ir.model.fields.selection,name:delivery_shipit.selection__delivery_carrier__shipit_label_format__zpl
+#. module: delivery_shipit_integration
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__shipit_label_format__zpl
 msgid "ZPL"
-msgstr ""
+msgstr "ZPL"
 
-#. module: delivery_shipit
-#: model:ir.model.fields,field_description:delivery_shipit.field_shipit_pickup_point_wizard_line__zipcode
-msgid "Zipcode"
-msgstr "Postinumero"
-
-#. module: delivery_shipit
+#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit/models/shipit_request.py:0
+#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
 #, python-format
 msgid "[Code %(code)s] %(message)s"
-msgstr ""
+msgstr "[Koodi %(code)s] %(message)s"

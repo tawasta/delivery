@@ -51,6 +51,10 @@ class DeliveryCarrier(models.Model):
         "mh80": "mh.mh80",
     }
 
+    shipit_default_length_cm = fields.Float(string="Default package length (cm)")
+    shipit_default_width_cm = fields.Float(string="Default package width (cm)")
+    shipit_default_height_cm = fields.Float(string="Default package height (cm)")
+
     delivery_type = fields.Selection(
         selection_add=SHIPIT_CARRIERS,
         ondelete={carrier[0]: "set default" for carrier in SHIPIT_CARRIERS},
@@ -70,71 +74,6 @@ class DeliveryCarrier(models.Model):
         default="PDF_A4",
         required=True,
     )
-    shipit_use_default_dimensions = fields.Boolean(
-        string="Use default dimensions",
-        default=False,
-        help="Use default shipment dimensions, if packages are not used",
-    )
-    shipit_default_length_cm = fields.Float(string="Default package length (cm)")
-    shipit_default_width_cm = fields.Float(string="Default package width (cm)")
-    shipit_default_height_cm = fields.Float(string="Default package height (cm)")
-    shipit_require_pickup_point = fields.Boolean(
-        string="Require pickup point",
-        help="Require pickup point selection before creating shipment.",
-        default=False,
-    )
-
-    shipit_allowed_additional_service_ids = fields.Many2many(
-        comodel_name="shipit.additional.service",
-        string="Shipit Allowed Additional Services",
-        help="Allowed additional services to include in shipments.",
-        readonly=True,
-        relation="delivery_carrier_allowed_shipit_additional_service_rel",
-    )
-    shipit_default_additional_service_ids = fields.Many2many(
-        comodel_name="shipit.additional.service",
-        string="Shipit Default Additional Services",
-        help="Default additional services to include in shipments.",
-        relation="delivery_carrier_default_shipit_additional_service_rel",
-    )
-
-    shipit_allowed_package_type_ids = fields.Many2many(
-        comodel_name="stock.package.type",
-        string="Shipit Allowed Package Types",
-        help="Allowed package types to use in shipments."
-        "If left empty, all available package types are allowed.",
-    )
-
-    shipit_freight_payer_supported = fields.Boolean(
-        string="Freight payer supported",
-        help="Does the service support a different freight payer for shipments.",
-        compute="_compute_shipit_freight_payer_supported",
-    )
-
-    def _compute_shipit_freight_payer_supported(self):
-        """
-        Compute if the carrier/service supports a different freight payer for shipments.
-        Freight payer is only accepted for these serviceId prefixes:
-        posti.*
-        itellalog.*
-        kaukokiito.*
-        kl.*
-        sbtlfi.*
-        sbtlfiexp.sbtlfiexp (exact match)
-        """
-        for record in self:
-            service_code = record.shipit_service_code or ""
-            supported_prefixes = [
-                "posti.",
-                "itellalog.",
-                "kaukokiito.",
-                "kl.",
-                "sbtlfi.",
-            ]
-            record.shipit_freight_payer_supported = (
-                any(service_code.startswith(prefix) for prefix in supported_prefixes)
-                or service_code == "sbtlfiexp.sbtlfiexp"
-            )
 
     def _get_shipit_config(self):
         config = self.env["ir.config_parameter"].sudo()
@@ -252,134 +191,6 @@ class DeliveryCarrier(models.Model):
             "eoriNumber": "",
         }
 
-    def _shipit_map_freight_payer(self, picking):
-        partner = picking.freight_payer_partner_id
-        payer = self._shipit_map_address(partner)
-        payer["type"] = picking.freight_payer_type or "consignor"
-
-        carrier = picking.carrier_id
-        service_code = carrier.shipit_service_code
-        customer_number = False
-        if service_code.startswith("posti."):
-            customer_number = partner.shipit_customer_number_posti
-        elif service_code.startswith("itellalog."):
-            customer_number = partner.shipit_customer_number_itellalog
-        elif service_code.startswith("kaukokiito."):
-            customer_number = partner.shipit_customer_number_kaukokiito
-        elif service_code.startswith("kl."):
-            customer_number = partner.shipit_customer_number_kl
-        elif service_code.startswith("sbtlfi."):
-            customer_number = partner.shipit_customer_number_sbtlfi
-        elif service_code == "sbtlfiexp.sbtlfiexp":
-            customer_number = partner.shipit_customer_number_sbtlfiexp
-
-        if not customer_number:
-            msg = _(
-                "Freight payer customer number is required when using Freight Payer.\n"
-                "\nPlease go to Freight payer contact card 'Shipit'-tab\n"
-                "and fill in the customer number for the relevant carrier/service.\n"
-                "\nCarrier service: '%(service)s'",
-                service=service_code,
-            )
-
-            raise ValidationError(msg)
-
-        payer["customerNumber"] = customer_number
-
-        return payer
-
-    def _shipit_get_supported_package_codes(self):
-        # TODO: Carrier-spesific supported codes
-        supported_codes = [
-            "PACKAGE",
-            "PALLET[EUR-PALLET]",
-            "PALLET[TEHOLAVA]",
-            "PALLET-NON-STACKABLE",
-            "PALLET",
-            "PALLET[FIN-LAVA]",
-            "TROLLEY",
-            "TIRES",
-            "DOCUMENT",
-        ]
-        return supported_codes
-
-    def _shipit_get_parcels(self, picking):
-        parcels = []
-
-        if picking.package_ids:
-            for package in picking.package_ids:
-                # We have packages, use them
-                # TODO: Whan if all lines are not packaged?
-
-                package_type = package.package_type_id
-                # TODO: Dimension conversion?
-                # Package dimensions are mm by default, but are they always?
-                # Shipit expects cm
-
-                # TODO: How about pallets etc.?
-                # When using pallets, the pallet dimensions are not
-                # equal to the actual delivery
-
-                length_mm = package_type.packaging_length
-                width_mm = package_type.width
-                height_mm = package_type.height
-
-                package_code = package_type.shipper_package_code or "PACKAGE"
-                supported_codes = self._shipit_get_supported_package_codes()
-
-                if package_code not in supported_codes:
-                    raise ValidationError(
-                        _(
-                            "Unsupported package code: %(package_code)s."
-                            " Supported codes are: %(supported_codes)s",
-                            package_code=package_code,
-                            supported_codes=", ".join(supported_codes),
-                        )
-                    )
-
-                parcels.append(
-                    {
-                        "type": package_code,
-                        "weight": package.shipping_weight or package.weight,
-                        "length": length_mm / 10 if length_mm else 0,
-                        "width": width_mm / 10 if width_mm else 0,
-                        "height": height_mm / 10 if height_mm else 0,
-                        "copies": 1,
-                    }
-                )
-        else:
-            # No packages. We'll just create a single parcel
-            # with the total weight and optional default dimensions.
-
-            # TODO: picking-specific manual dimensions
-            parcel_vals = {
-                "type": "PACKAGE",
-                "weight": picking.shipping_weight or picking.weight,
-                "copies": 1,
-            }
-
-            if self.shipit_use_default_dimensions:
-                parcel_vals.update(
-                    {
-                        "length": self.shipit_default_length_cm,
-                        "width": self.shipit_default_width_cm,
-                        "height": self.shipit_default_height_cm,
-                    }
-                )
-
-            parcels.append(parcel_vals)
-
-        return parcels
-
-    def _shipit_get_additional_services(self, picking):
-        services = {}
-        for service in picking.shipit_additional_service_ids:
-            if service.code in ["dng", "dangerousGoods", "lq", "limitedQuantities"]:
-                raise ValidationError(_("Sending dangerous goods is not implemented"))
-
-            services[service.code] = True
-        return services
-
     def _shipit_validate_required_fields(self, picking, sender, receiver):
         missing_fields = []
         if not self.shipit_service_code:
@@ -413,17 +224,6 @@ class DeliveryCarrier(models.Model):
         if picking.shipping_weight <= 0 and picking.weight <= 0:
             missing_fields.append(_("Shipment weight"))
 
-        if self.shipit_require_pickup_point and not picking.shipit_pickup_point_id:
-            missing_fields.append(_("Pickup point ID"))
-
-        if (
-            picking.shipit_pickup_point_service_id
-            and not picking.shipit_pickup_point_id
-        ):
-            missing_fields.append(
-                _("Pickup point service ID requires pickup point selection")
-            )
-
         if not missing_fields:
             return True
 
@@ -443,8 +243,16 @@ class DeliveryCarrier(models.Model):
 
         self._shipit_validate_required_fields(picking, sender, receiver)
 
-        parcels = self._shipit_get_parcels(picking)
-        additional_services = self._shipit_get_additional_services(picking)
+        parcels = [
+            {
+                "length": self.shipit_default_length_cm,
+                "width": self.shipit_default_width_cm,
+                "height": self.shipit_default_height_cm,
+                "type": "PACKAGE",
+                "weight": picking.shipping_weight or picking.weight,
+                "copies": 1,
+            }
+        ]
 
         payload = {
             "reference": picking.origin or picking.name,
@@ -454,20 +262,10 @@ class DeliveryCarrier(models.Model):
             "serviceId": self.shipit_service_code,
             "externalId": picking.name,
             "sendOrderConfirmationEmail": False,
-            "additionalServices": additional_services,
         }
-
-        if picking.freight_payer_partner_id:
-            payer = self._shipit_map_freight_payer(picking)
-            payload["freightPayer"] = payer
 
         config = self.env["ir.config_parameter"].sudo()
         payload["resellerId"] = int(config.get_param("shipit.reseller_id"))
-
-        if picking.shipit_pickup_point_id:
-            payload["pickupId"] = picking.shipit_pickup_point_id
-            if picking.shipit_pickup_point_service_id:
-                payload["serviceId"] = picking.shipit_pickup_point_service_id
 
         return payload
 
@@ -744,11 +542,7 @@ class DeliveryCarrier(models.Model):
         picking.shipit_label_attachment_id = attachment.id
         return attachment
 
-    # region Calls for delivery.carrier methods
     def send_shipping(self, pickings):
-        """
-        Override send_shipping to use shipit methods for all its carriers.
-        """
         res = super().send_shipping(pickings)
 
         if not res and self._shipit_is_carrier():
@@ -757,24 +551,12 @@ class DeliveryCarrier(models.Model):
         return res
 
     def get_tracking_link(self, picking):
-        """
-        Override get_tracking_link to use shipit methods for all its carriers.
-        """
         res = super().get_tracking_link(picking)
 
         if not res and self._shipit_is_carrier():
-            return self.shipit_get_tracking_link(picking)
-
-        return res
-
-    def cancel_shipment(self, picking):
-        """
-        Override cancel_shipment to use shipit methods for all its carriers.
-        """
-        res = super().cancel_shipment(picking)
-
-        if not res and self._shipit_is_carrier():
-            return self.shipit_cancel_shipment(picking)
+            if picking.shipit_tracking_url:
+                return picking.shipit_tracking_url
+            return False
 
         return res
 
@@ -883,33 +665,8 @@ class DeliveryCarrier(models.Model):
 
         return values
 
-    def shipit_rate_shipment(self, order):
-        self.ensure_one()
-
-        price = self.fixed_price or 0.0
-        if not price:
-            latest_price = self._shipit_get_latest_known_exact_price()
-            if latest_price not in [False, None]:
-                price = latest_price
-        return {
-            "success": True,
-            "price": price,
-            "error_message": False,
-            "warning_message": False,
-        }
-
-    def shipit_get_tracking_link(self, picking):
-        if picking.shipit_tracking_url:
-            return picking.shipit_tracking_url
-        return False
-
-    def shipit_cancel_shipment(self, pickings):
-        self.ensure_one()
-        for picking in pickings:
-            picking.message_post(
-                body=_(
-                    "PLEASE NOTE: " "Shipment is not cancelled automatically in Shipit."
-                )
-            )
-
-        return True
+    def rate_shipment(self, order):
+        if self._shipit_is_carrier():
+            raise UserError(_("Shipit API does not yet support 'Get rate'"))
+        else:
+            return super().rate_shipment(order)

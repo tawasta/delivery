@@ -1,38 +1,8 @@
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo import api, fields, models
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
-
-    freight_payer_partner_id = fields.Many2one(
-        comodel_name="res.partner",
-        string="Freight payer",
-    )
-    freight_payer_type = fields.Selection(
-        string="Payment type",
-        related="freight_payer_partner_id.shipit_payer_type",
-        store=True,
-        copy=False,
-        readonly=False,
-    )
-    shipit_freight_payer_supported = fields.Boolean(
-        related="carrier_id.shipit_freight_payer_supported",
-    )
-
-    shipit_additional_service_ids = fields.Many2many(
-        string="Shipit Additional Services",
-        comodel_name="shipit.additional.service",
-        compute="_compute_shipit_additional_service_ids",
-        store=True,
-        readonly=False,
-        relation="stock_picking_shipit_additional_service_rel",
-    )
-    shipit_allowed_additional_service_ids = fields.Many2many(
-        comodel_name="shipit.additional.service",
-        related="carrier_id.shipit_allowed_additional_service_ids",
-        relation="stock_picking_shipit_allowed_additional_service_rel",
-    )
 
     shipit_is_carrier = fields.Boolean(
         compute="_compute_shipit_is_carrier",
@@ -54,34 +24,6 @@ class StockPicking(models.Model):
         string="Shipit label attachment",
         copy=False,
     )
-    shipit_pickup_point_id = fields.Char(
-        string="Shipit pickup point ID",
-        copy=False,
-    )
-    shipit_pickup_point_name = fields.Char(
-        string="Shipit pickup point name",
-        copy=False,
-    )
-    shipit_pickup_point_address = fields.Char(
-        string="Shipit pickup point address",
-        copy=False,
-    )
-    shipit_pickup_point_zipcode = fields.Char(
-        string="Shipit pickup point ZIP",
-        copy=False,
-    )
-    shipit_pickup_point_city = fields.Char(
-        string="Shipit pickup point city",
-        copy=False,
-    )
-    shipit_pickup_point_country_code = fields.Char(
-        string="Shipit pickup point country",
-        copy=False,
-    )
-    shipit_pickup_point_service_id = fields.Char(
-        string="Shipit pickup point service ID",
-        copy=False,
-    )
     shipit_payload = fields.Text(
         string="Shipit payload",
         copy=False,
@@ -98,13 +40,6 @@ class StockPicking(models.Model):
         default=False,
         copy=False,
     )
-
-    @api.depends("carrier_id")
-    def _compute_shipit_additional_service_ids(self):
-        for picking in self:
-            picking.shipit_additional_service_ids = (
-                picking.carrier_id.shipit_default_additional_service_ids
-            )
 
     @api.depends("carrier_id")
     def _compute_shipit_is_carrier(self):
@@ -150,40 +85,17 @@ class StockPicking(models.Model):
 
         return res
 
-    def action_open_shipit_pickup_point_wizard(self):
-        self.ensure_one()
+    def action_print_shipit_label(self):
+        for rec in self:
+            if rec.shipit_label_attachment_id:
+                attachment = self.shipit_label_attachment_id
+                url = f"/web/content/{attachment.id}?download=true"
 
-        if not self.carrier_id.shipit_service_code:
-            raise UserError(
-                _("Shipit pickup point search is available only for Shipit carrier.")
-            )
+                attachment = self.shipit_label_attachment_id
 
-        view = self.env.ref("delivery_shipit_integration.view_shipit_pickup_point_wizard")
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Shipit pickup points"),
-            "res_model": "shipit.pickup.point.wizard",
-            "view_mode": "form",
-            "view_id": view.id,
-            "target": "new",
-            "context": {
-                "active_model": "stock.picking",
-                "active_id": self.id,
-            },
-        }
-
-    def action_clear_shipit_pickup_point(self):
-        self.ensure_one()
-
-        self.write(
-            {
-                "shipit_pickup_point_id": False,
-                "shipit_pickup_point_name": False,
-                "shipit_pickup_point_address": False,
-                "shipit_pickup_point_zipcode": False,
-                "shipit_pickup_point_city": False,
-                "shipit_pickup_point_country_code": False,
-                "shipit_pickup_point_service_id": False,
-            }
-        )
-        return True
+                return {
+                    "type": "ir.actions.act_url",
+                    "url": url,
+                    "name": attachment.name,
+                    "target": "new",
+                }

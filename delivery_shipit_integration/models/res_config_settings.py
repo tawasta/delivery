@@ -108,7 +108,6 @@ class ResConfigSettings(models.TransientModel):
         DeliveryCarrier = (
             self.env["delivery.carrier"].sudo().with_context(active_test=False)
         )
-        AdditionalService = self.env["shipit.additional.service"].sudo()
 
         carrier = DeliveryCarrier.search(
             [
@@ -135,34 +134,6 @@ class ResConfigSettings(models.TransientModel):
             )
             if countries:
                 vals["country_ids"] = [(6, 0, countries.ids)]
-
-        additional_services = []
-
-        if service_vals.get("fragile"):
-            fragile_service = AdditionalService.search(
-                [("code", "=", "fragile")], limit=1
-            )
-            if not fragile_service:
-                fragile_service = AdditionalService.create(
-                    {"code": "fragile", "name": "Fragile"}
-                )
-            additional_services.append((4, fragile_service.id))
-
-        for additional_service_name in service_vals.get("additionalServices", []):
-            additional_service = AdditionalService.search(
-                [("code", "=", additional_service_name)], limit=1
-            )
-            if not additional_service:
-                additional_service = AdditionalService.create(
-                    {
-                        "code": additional_service_name,
-                        "name": additional_service_name,
-                    }
-                )
-            additional_services.append((4, additional_service.id))
-
-        if additional_services:
-            vals["shipit_allowed_additional_service_ids"] = additional_services
 
         if not carrier:
             vals.update(
