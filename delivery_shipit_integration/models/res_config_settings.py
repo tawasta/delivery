@@ -124,7 +124,7 @@ class ResConfigSettings(models.TransientModel):
         vals = {
             "name": service_name,
             "product_id": self.env.ref(
-                "delivery_shipit.product_product_delivery_shipit"
+                "delivery_shipit_integration.product_product_delivery_shipit_integration"
             ).id,
             "prod_environment": prod_environment,
         }

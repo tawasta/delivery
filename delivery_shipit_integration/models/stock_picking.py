@@ -158,7 +158,7 @@ class StockPicking(models.Model):
                 _("Shipit pickup point search is available only for Shipit carrier.")
             )
 
-        view = self.env.ref("delivery_shipit.view_shipit_pickup_point_wizard")
+        view = self.env.ref("delivery_shipit_integration.view_shipit_pickup_point_wizard")
         return {
             "type": "ir.actions.act_window",
             "name": _("Shipit pickup points"),
@@ -187,3 +187,18 @@ class StockPicking(models.Model):
             }
         )
         return True
+
+    def action_print_shipit_label(self):
+        for rec in self:
+            if rec.shipit_label_attachment_id:
+                attachment = self.shipit_label_attachment_id
+                url = f"/web/content/{attachment.id}?download=true"
+
+                attachment = self.shipit_label_attachment_id
+
+                return {
+                    "type": "ir.actions.act_url",
+                    "url": url,
+                    "name": attachment.name,
+                    "target": "new",
+                }
