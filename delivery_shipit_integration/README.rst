@@ -175,6 +175,7 @@ Changelog
   carrier is shipit carrier
 - Make tracking reference read only on Delivery Order when carrier is
   shipit carrier
+- Update finnish translations
 
 17.0.2.5.0 (2026-09-10)
 
