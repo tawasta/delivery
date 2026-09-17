@@ -878,7 +878,6 @@ class DeliveryCarrier(models.Model):
         else:
             return super().rate_shipment(order)
 
-
     def shipit_get_tracking_link(self, picking):
         if picking.shipit_tracking_url:
             return picking.shipit_tracking_url

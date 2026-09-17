@@ -18,6 +18,15 @@
                 <attribute name="invisible">shipit_is_carrier</attribute>
             </button>
 
+            <button name="action_open_label_type" position="after">
+                <button
+                    name="action_print_shipit_label"
+                    string="Print shipit labels"
+                    type="object"
+                    invisible="not shipit_is_carrier or state != 'done'"
+                />
+            </button>
+
             <field name="carrier_tracking_ref" position="attributes">
                 <attribute name="readonly">shipit_is_carrier</attribute>
             </field>
