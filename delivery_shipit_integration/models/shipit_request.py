@@ -299,18 +299,12 @@ class ShipitRequest:
         }
 
     def list_methods(self):
-        """
-        List all available shipping methods
-        """
         endpoint = self._get_endpoint_url("list-methods")
         content = self._get(endpoint)
 
         return content
 
     def carrier_contracts(self):
-        """
-        List all available carrier contracts
-        """
         endpoint = self._get_endpoint_url("carrier-contracts")
         content = self._get(endpoint)
 

@@ -57,11 +57,14 @@ Configuration
 Shipit configuration
 --------------------
 
-1. After installing, go to ``Settings > Shipit``
+1. After installing, go to
+   ``Settings -> User and companies -> Companies``
 
-2. Fill in your ``API key`` and save settings
+2. Go to the company you want to configure ShipIT integration for
 
-3. Go back to ``Settings > Shipit`` and click ``Sync Shipit services``
+3. Go to Shipit Settings tab, fill in your ``API key`` and save
+
+4. Click Sync ``Shipit services``
 
    |Shipit settings|
 
@@ -164,6 +167,12 @@ Known issues / Roadmap
 
 Changelog
 =========
+
+17.0.2.6.0 (2026-09-17)
+
+- Multicompany support
+
+  - Note that this changes how module is configured
 
 17.0.2.5.1 (2026-09-17)
 

@@ -7,7 +7,7 @@ import re
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-from .shipit_request import ShipitAPIError, ShipitRequest
+from .shipit_request import ShipitAPIError
 
 try:
     from pdfminer.high_level import extract_text as extract_pdf_text
@@ -135,14 +135,6 @@ class DeliveryCarrier(models.Model):
                 any(service_code.startswith(prefix) for prefix in supported_prefixes)
                 or service_code == "sbtlfiexp.sbtlfiexp"
             )
-
-    def _get_shipit_config(self):
-        config = self.env["ir.config_parameter"].sudo()
-        return {
-            "prod": self.prod_environment,
-            "api_key": config.get_param("shipit.api_key"),
-            "timeout": int(config.get_param("shipit.timeout_seconds", 30)),
-        }
 
     @api.model
     def _shipit_normalize_service_ids(self, service_ids):
@@ -636,7 +628,7 @@ class DeliveryCarrier(models.Model):
         if not recent_pickings:
             return False
 
-        shipit_request = ShipitRequest(**self._get_shipit_config())
+        shipit_request = self.env.company.shipit_request()
         for picking in recent_pickings:
             if picking.carrier_price:
                 return float(picking.carrier_price)
@@ -784,7 +776,7 @@ class DeliveryCarrier(models.Model):
         return result
 
     def shipit_send_picking(self, picking):
-        shipit_request = ShipitRequest(**self._get_shipit_config())
+        shipit_request = self.env.company.shipit_request()
 
         values = {
             "exact_price": 0,

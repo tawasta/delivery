@@ -21,7 +21,7 @@
 {
     "name": "Shipit Shipping Integration",
     "summary": "Shipit shipping integration for Odoo delivery workflows",
-    "version": "17.0.2.5.1",
+    "version": "17.0.2.6.0",
     "category": "Connector",
     "website": "https://github.com/tawasta/delivery",
     "author": "Futural",
@@ -34,13 +34,12 @@
         "stock_delivery",
     ],
     "data": [
-        "data/delivery_carrier.xml",
         "security/ir.model.access.csv",
         "views/choose_delivery_carrier.xml",
         "views/delivery_carrier_form.xml",
         "views/delivery_carrier_search.xml",
         "views/delivery_carrier_tree.xml",
-        "views/res_config_settings.xml",
+        "views/res_company.xml",
         "views/res_partner_form.xml",
         "views/stock_package_type_form.xml",
         "views/stock_picking_form.xml",
