@@ -57,14 +57,11 @@ Configuration
 Shipit configuration
 --------------------
 
-1. After installing, go to
-   ``Settings -> User and companies -> Companies``
+1. After installing, go to ``Settings > Shipit``
 
-2. Go to the company you want to configure ShipIT integration for
+2. Fill in your ``API key`` and save settings
 
-3. Go to Shipit Settings tab, fill in your ``API key`` and save
-
-4. Click Sync ``Shipit services``
+3. Go back to ``Settings > Shipit`` and click ``Sync Shipit services``
 
    |Shipit settings|
 
@@ -157,6 +154,7 @@ having it's own dimensions and weight.
 Known issues / Roadmap
 ======================
 
+- Support for non EU shipments
 - Get delivery method-spesific allowed package types automatically
 - Support for dangerous goods
 - Wizardless pickup point selection
@@ -164,6 +162,7 @@ Known issues / Roadmap
 - Clean up the unnecessarily complicated structure
 - Clean up unused/unnecessary code
 - Tests for everything!
+- Support for a neutral carrier
 
 Changelog
 =========
@@ -171,8 +170,6 @@ Changelog
 17.0.2.6.0 (2026-09-17)
 
 - Multicompany support
-
-  - Note that this changes how module is configured
 
 17.0.2.5.1 (2026-09-17)
 

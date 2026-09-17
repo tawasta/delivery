@@ -39,7 +39,7 @@ class ResCompany(models.Model):
 
     def shipit_request(self, timeout=30):
         # TODO: Optimize so that when this function is called again, same instance
-        # of the ShipitRequest is retuner so it does not need to be initialized
+        # of the ShipitRequest is returned so it does not need to be initialized
         # every time
         return ShipitRequest(
             api_key=self.shipit_api_key,
@@ -49,8 +49,6 @@ class ResCompany(models.Model):
 
     def action_shipit_sync_shipping_methods(self):
         self.ensure_one()
-        if not self.shipit_api_key:
-            raise UserError(_("ShipIT API key not set"))
         sync_result = self._shipit_sync_service_options(raise_on_error=True)
         return {
             "type": "ir.actions.client",

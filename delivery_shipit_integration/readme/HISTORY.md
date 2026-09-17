@@ -1,7 +1,6 @@
 17.0.2.6.0 (2026-09-17)
 
 - Multicompany support
-    - Note that this changes how module is configured
 
 17.0.2.5.1 (2026-09-17)
 

@@ -1,9 +1,8 @@
 ## Shipit configuration
 
-1. After installing, go to `Settings -> User and companies -> Companies`
-2. Go to the company you want to configure ShipIT integration for
-2. Go to Shipit Settings tab, fill in your `API key` and save
-3. Click Sync `Shipit services`
+1. After installing, go to `Settings > Shipit`
+2. Fill in your `API key` and save settings
+3. Go back to `Settings > Shipit` and click `Sync Shipit services`
 
    ![Shipit settings](../static/description/shipit_settings.png)
 
