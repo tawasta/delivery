@@ -49,7 +49,7 @@ class ResCompany(models.Model):
 
     def action_shipit_sync_shipping_methods(self):
         self.ensure_one()
-        sync_result = self._shipit_sync_service_options(raise_on_error=True)
+        sync_result = self._shipit_sync_service_options()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -61,39 +61,37 @@ class ResCompany(models.Model):
             },
         }
 
-    def _shipit_sync_service_options(self, raise_on_error=True):
+    def _shipit_sync_service_options(self):
         try:
             methods = self.shipit_request().list_methods()
         except ShipitAPIError as error:
-            if raise_on_error:
-                raise UserError(
-                    _("Fetching Shipit services failed:\n%(message)s")
-                    % {"message": str(error)}
-                ) from error
-            return {"total": 0}
+            raise UserError(
+                _("Fetching Shipit services failed:\n%(message)s")
+                % {"message": str(error)}
+            ) from error
 
-        DeliveryCarrier = (
-            self.env["delivery.carrier"].sudo().with_context(active_test=False)
-        )
         services = []
         for method in methods:
-            # Create or update carriers
             carrier = self.shipit_upsert_carrier(method)
             if carrier:
                 services.append(carrier)
 
         contracts = self.shipit_request().carrier_contracts()
+        carriers = (
+            self.env["delivery.carrier"]
+            .sudo()
+            .with_context(active_test=False)
+            .search([])
+        )
         for contract in contracts:
-            # Activate the carriers that have active contracts
-            carrier = DeliveryCarrier.search(
-                [("shipit_service_code", "=", contract["service"])]
-            )
-            if carrier and contract["status"] == "active":
-                carrier.active = True
+            for carrier in carriers:
+                if (
+                    carrier["shipit_service_code"] == contract["service"]
+                    and contract["status"] == "active"
+                ):
+                    carrier.active = True
 
-        return {
-            "total": len(services),
-        }
+        return {"total": len(services)}
 
     def shipit_upsert_carrier(self, service_vals):
         service_name = service_vals.get("name")
@@ -107,18 +105,20 @@ class ResCompany(models.Model):
             )
             return False
 
-        DeliveryCarrier = (
-            self.env["delivery.carrier"].sudo().with_context(active_test=False)
-        )
         AdditionalService = self.env["shipit.additional.service"].sudo()
 
-        carrier = DeliveryCarrier.search(
-            [
-                ("shipit_service_code", "=", service_code),
-                ("delivery_type", "=", delivery_type),
-                ("company_id", "=", current_company_id),
-            ],
-            limit=1,
+        carrier = (
+            self.env["delivery.carrier"]
+            .sudo()
+            .with_context(active_test=False)
+            .search(
+                [
+                    ("shipit_service_code", "=", service_code),
+                    ("delivery_type", "=", delivery_type),
+                    ("company_id", "=", current_company_id),
+                ],
+                limit=1,
+            )
         )
 
         prod_environment = self.shipit_environment == "prod"
@@ -133,7 +133,6 @@ class ResCompany(models.Model):
                     "name": "Shipit Delivery",
                     "default_code": "shipit",
                     "type": "service",
-                    # "categ_id": delivery.product_category_deliveries,
                     "sale_ok": False,
                     "purchase_ok": False,
                     "list_price": 0,
@@ -199,7 +198,12 @@ class ResCompany(models.Model):
                     "shipit_service_code": service_code,
                 }
             )
-            carrier = DeliveryCarrier.create(vals)
+            carrier = (
+                self.env["delivery.carrier"]
+                .sudo()
+                .with_context(active_test=False)
+                .create(vals)
+            )
         else:
             carrier.write(vals)
 

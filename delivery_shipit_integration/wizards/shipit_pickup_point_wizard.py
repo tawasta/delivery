@@ -7,9 +7,6 @@ from ..models.shipit_request import ShipitAPIError
 
 _logger = logging.getLogger(__name__)
 
-PICKUP_POINT_COUNTRY_CODE = "FI"
-PICKUP_POINT_LIMIT = 10
-
 
 class ShipitPickupPointWizard(models.TransientModel):
     _name = "shipit.pickup.point.wizard"
@@ -19,25 +16,17 @@ class ShipitPickupPointWizard(models.TransientModel):
         comodel_name="stock.picking",
         required=True,
     )
+
     postcode = fields.Char(
         required=True,
     )
+
     country_code = fields.Char(
-        default=PICKUP_POINT_COUNTRY_CODE,
+        default="FI",
         required=True,
         readonly=True,
     )
 
-    # TODO: Remove service options?
-    service_option_ids = fields.Many2many(
-        comodel_name="shipit.service.option",
-        string="Service IDs",
-        help="Shipit serviceId values used for pickup point search.",
-    )
-    available_service_option_ids = fields.Many2many(
-        comodel_name="shipit.service.option",
-        compute="_compute_available_service_option_ids",
-    )
     point_type = fields.Selection(
         selection=[
             ("service_point", "Service point"),
@@ -48,21 +37,21 @@ class ShipitPickupPointWizard(models.TransientModel):
         default="service_point",
         required=True,
     )
-    limit = fields.Integer(
-        default=PICKUP_POINT_LIMIT,
+
+    pickup_point_limit = fields.Integer(
+        default=10,
         required=True,
         readonly=True,
     )
+
     line_ids = fields.One2many(
         comodel_name="shipit.pickup.point.wizard.line",
         inverse_name="wizard_id",
     )
+
     selected_line_id = fields.Many2one(
         comodel_name="shipit.pickup.point.wizard.line",
         string="Selected pickup point",
-    )
-    search_count = fields.Integer(
-        readonly=True,
     )
 
     @api.model
@@ -82,49 +71,24 @@ class ShipitPickupPointWizard(models.TransientModel):
         postcode = receiver_partner.zip or commercial_partner.zip or ""
         result.setdefault("picking_id", picking.id)
         result.setdefault("postcode", postcode)
-        result["country_code"] = PICKUP_POINT_COUNTRY_CODE
-        result["limit"] = PICKUP_POINT_LIMIT
-        carrier_service_ids = picking.carrier_id._shipit_get_service_codes()
-        if carrier_service_ids:
-            service_options = self.env["shipit.service.option"].search(
-                [("code", "in", carrier_service_ids)]
-            )
-            if service_options:
-                result.setdefault("service_option_ids", [(6, 0, service_options.ids)])
+        result["country_code"] = self.country_code or "FI"
+        result["pickup_point_limit"] = self.pickup_point_limit
         return result
-
-    @api.depends("picking_id")
-    def _compute_available_service_option_ids(self):
-        service_model = self.env["shipit.service.option"]
-        all_options = service_model.search([])
-
-        for wizard in self:
-            carrier_codes = wizard.picking_id.carrier_id._shipit_get_service_codes()
-            _logger.debug(carrier_codes)
-            if carrier_codes:
-                wizard.available_service_option_ids = service_model.search(
-                    [("code", "in", carrier_codes)]
-                )
-            else:
-                wizard.available_service_option_ids = all_options
 
     def _get_action(self):
         self.ensure_one()
-        view = self.env.ref(
-            "delivery_shipit_integration.view_shipit_pickup_point_wizard"
-        )
         return {
             "type": "ir.actions.act_window",
             "name": _("Shipit pickup points"),
             "res_model": self._name,
             "view_mode": "form",
-            "view_id": view.id,
+            "view_id": self.env.ref(
+                "delivery_shipit_integration.view_shipit_pickup_point_wizard"
+            ).id,
             "target": "new",
             "res_id": self.id,
         }
 
-    # TODO: Could we use onchange for usability?
-    # @api.onchange("postcode", "service_option_ids", "point_type")
     def action_search_points(self):
         self.ensure_one()
 
@@ -139,10 +103,10 @@ class ShipitPickupPointWizard(models.TransientModel):
         try:
             points = shipit_request.search_service_points(
                 postcode=self.postcode,
-                country_code=PICKUP_POINT_COUNTRY_CODE,
+                country_code=self.country_code,
                 service_ids=[self.picking_id.carrier_id.shipit_service_code],
                 point_type=self.point_type,
-                limit=PICKUP_POINT_LIMIT,
+                limit=self.pickup_point_limit,
             )
         except ShipitAPIError as error:
             raise UserError(
@@ -152,22 +116,6 @@ class ShipitPickupPointWizard(models.TransientModel):
                     "message": str(error),
                 }
             ) from error
-
-        service_ids = {
-            str(point.get("service_id") or "").strip()
-            for point in points
-            if point.get("service_id")
-        }
-        service_name_by_code = {}
-        if service_ids:
-            service_options = self.env["shipit.service.option"].search(
-                [("code", "in", list(service_ids))]
-            )
-            service_name_by_code = {
-                service_option.code: service_option.name
-                for service_option in service_options
-                if service_option.code
-            }
 
         lines = []
         for point in points:
@@ -184,22 +132,14 @@ class ShipitPickupPointWizard(models.TransientModel):
                         "city": point.get("city") or "",
                         "country_code": point.get("country_code") or "",
                         "service_id": service_id,
-                        "service_name": service_name_by_code.get(service_id)
-                        or point.get("carrier")
-                        or service_id,
+                        "service_name": point.get("carrier") or service_id,
                         "carrier_name": point.get("carrier") or "",
                         "distance_kilometers": point.get("distance_kilometers") or 0.0,
                     },
                 )
             )
 
-        self.write(
-            {
-                "line_ids": [(5, 0, 0)] + lines,
-                "selected_line_id": False,
-                "search_count": len(lines),
-            }
-        )
+        self.write({"line_ids": [(5, 0, 0)] + lines, "selected_line_id": False})
 
         if self.line_ids:
             self.selected_line_id = self.line_ids[0]

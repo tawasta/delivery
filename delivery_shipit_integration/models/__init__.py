@@ -3,7 +3,6 @@ from . import res_company
 from . import res_config_settings
 from . import res_partner
 from . import shipit_additional_service
-from . import shipit_service_option
 from . import shipit_request
 from . import stock_package_type
 from . import stock_picking
