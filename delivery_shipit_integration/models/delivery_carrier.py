@@ -241,9 +241,6 @@ class DeliveryCarrier(models.Model):
     def _shipit_get_parcels(self, picking):
         parcels = []
 
-        _logger.error("HERE: ")
-        _logger.error(picking.shipit_package_ids)
-
         if picking.shipit_package_ids:
             for package in picking.shipit_package_ids:
                 # We have packages, use them
