@@ -153,9 +153,7 @@ class DeliveryCarrier(models.Model):
             return ""
         commercial_partner = partner.commercial_partner_id
         return (
-            partner.mobile
-            or partner.phone
-            or commercial_partner.mobile
+            partner.phone
             or commercial_partner.phone
             or ""
         )
