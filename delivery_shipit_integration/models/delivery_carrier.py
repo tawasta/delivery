@@ -85,6 +85,7 @@ class DeliveryCarrier(models.Model):
         readonly=True,
         relation="delivery_carrier_allowed_shipit_additional_service_rel",
     )
+
     shipit_default_additional_service_ids = fields.Many2many(
         comodel_name="shipit.additional.service",
         string="Shipit Default Additional Services",
@@ -245,8 +246,8 @@ class DeliveryCarrier(models.Model):
     def _shipit_get_parcels(self, picking):
         parcels = []
 
-        if picking.package_ids:
-            for package in picking.package_ids:
+        if picking.shipit_package_ids:
+            for package in picking.shipit_package_ids:
                 # We have packages, use them
                 # TODO: Whan if all lines are not packaged?
 

@@ -98,6 +98,29 @@ class StockPicking(models.Model):
         copy=False,
     )
 
+    # Compability field for making maintaining multiple versions of module easier
+    shipit_package_ids = fields.Many2many('stock.quant.package', compute='_compute_shipit_packages', string='Packages')
+
+    # Compability function for making maintaining multiple versions of module easier
+    @api.depends('move_line_ids', 'move_line_ids.result_package_id')
+    def _compute_shipit_packages(self):
+        counts = dict(self.env['stock.move.line']._read_group(
+           domain=[
+              ('picking_id', 'in', self.ids),
+              ('result_package_id', '!=', False)],
+              groupby=['picking_id'],
+              aggregates=['__count'],
+        ))
+        self.fetch(['move_line_ids'])
+        self.move_line_ids.fetch(['result_package_id'])
+        for picking in self:
+            packs = set()
+            if counts.get(picking, 0):
+                for move_line in picking.move_line_ids:
+                    if move_line.result_package_id:
+                        packs.add(move_line.result_package_id.id)
+            picking.shipit_package_ids = list(packs)
+
     @api.depends("carrier_id")
     def _compute_shipit_additional_service_ids(self):
         for picking in self:
