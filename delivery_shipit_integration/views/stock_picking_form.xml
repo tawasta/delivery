@@ -8,8 +8,6 @@
             ref="stock_delivery.view_picking_withcarrier_out_form"
         />
         <field name="arch" type="xml">
-            <!-- TODO: hide the default "Print"-button. It's a hard one to reference... -->
-            <!-- Hide the default print buttons if using Shipit -->
             <button name="action_open_label_type" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
             </button>
