@@ -100,7 +100,7 @@ class StockPicking(models.Model):
 
     # Compability field for making maintaining multiple versions of module easier
     shipit_package_ids = fields.Many2many(
-        "stock.package", compute="_compute_shipit_packages", string="Packages"
+        "stock.package", compute="_compute_shipit_packages"
     )
 
     # Compability function for making maintaining multiple versions of module easier
