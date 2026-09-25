@@ -49,10 +49,13 @@ class ShipitRequest:
         if response.status_code in [200, 201, 202, 204]:
             return True
 
-        msg = _("Error %(status_code)s in Shipit API request: %(reason)s") % {
-            "status_code": response.status_code,
-            "reason": response.reason,
-        }
+        msg = (
+            _("Error %(status_code)s in Shipit API request: %(reason)s"),
+            {
+                "status_code": response.status_code,
+                "reason": response.reason,
+            },
+        )
 
         if response.status_code in [401, 403]:
             msg += _("\nCheck Shipit API key and permissions.")
@@ -84,7 +87,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", {"message": str(error)})
             ) from error
 
         self._validate_response(response)
@@ -106,7 +109,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", {"message": str(error)})
             ) from error
 
         self._validate_response(response)
@@ -125,7 +128,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", {"message": str(error)})
             ) from error
 
         self._validate_response(response)
@@ -142,7 +145,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", {"message": str(error)})
             ) from error
         self._validate_response(response)
         content = response.json()
@@ -181,8 +184,10 @@ class ShipitRequest:
             endpoint = self.label_endpoint_template.format(shipment_id=shipment_id)
         except Exception as error:
             raise ShipitAPIError(
-                _("Invalid Shipit label endpoint template: %(message)s")
-                % {"message": str(error)}
+                _(
+                    "Invalid Shipit label endpoint template: %(message)s",
+                    {"message": str(error)},
+                )
             ) from error
 
         return self._get(endpoint)
@@ -197,8 +202,10 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit document download failed: %(message)s")
-                % {"message": str(error)}
+                _(
+                    "Shipit document download failed: %(message)s",
+                    {"message": str(error)},
+                )
             ) from error
 
         self._validate_response(response)

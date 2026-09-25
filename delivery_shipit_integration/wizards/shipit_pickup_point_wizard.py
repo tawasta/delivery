@@ -110,11 +110,13 @@ class ShipitPickupPointWizard(models.TransientModel):
             )
         except ShipitAPIError as error:
             raise UserError(
-                _("Shipit pickup point search failed for %(name)s:\n%(message)s")
-                % {
-                    "name": self.picking_id.name,
-                    "message": str(error),
-                }
+                _(
+                    "Shipit pickup point search failed for %(name)s:\n%(message)s",
+                    {
+                        "name": self.picking_id.name,
+                        "message": str(error),
+                    },
+                )
             ) from error
 
         lines = []

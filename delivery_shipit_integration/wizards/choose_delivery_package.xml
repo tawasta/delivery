@@ -8,9 +8,10 @@
             ref="stock_delivery.choose_delivery_package_view_form"
         />
         <field name="arch" type="xml">
+            <!-- FIXME: Does not show anything if shipit_allowed_package_type_ids is empty
             <field name="delivery_package_type_id" position="before">
                 <field
-                    name="allowed_package_type_ids"
+                    name="shipit_allowed_package_type_ids"
                     readonly="1"
                     widget="many2many_tags"
                 />
@@ -18,7 +19,12 @@
             <field name="delivery_package_type_id" position="attributes">
                 <attribute
                     name="domain"
-                >[('id', 'in', allowed_package_type_ids)]</attribute>
+                >[('id', 'in', shipit_allowed_package_type_ids)]</attribute>
+            </field>
+            -->
+            <!-- FIXME: Fix previous and remove me -->
+            <field name="delivery_package_type_id" position="before">
+                <span />
             </field>
         </field>
     </record>

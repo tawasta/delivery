@@ -153,11 +153,7 @@ class DeliveryCarrier(models.Model):
         if not partner:
             return ""
         commercial_partner = partner.commercial_partner_id
-        return (
-            partner.phone
-            or commercial_partner.phone
-            or ""
-        )
+        return partner.phone or commercial_partner.phone or ""
 
     def _shipit_map_address(self, partner):
         commercial_partner = partner.commercial_partner_id
@@ -368,10 +364,13 @@ class DeliveryCarrier(models.Model):
             return True
 
         details = "\n".join([f"- {field_name}" for field_name in missing_fields])
-        msg = _("Missing required Shipit data for picking %(name)s:\n%(details)s") % {
-            "name": picking.name,
-            "details": details,
-        }
+        msg = _(
+            "Missing required Shipit data for picking %(name)s:\n%(details)s",
+            {
+                "name": picking.name,
+                "details": details,
+            },
+        )
         raise ValidationError(msg)
 
     def _shipit_build_payload(self, picking):
@@ -629,11 +628,13 @@ class DeliveryCarrier(models.Model):
         except ShipitAPIError as error:
             picking.shipit_last_error = str(error)
             raise UserError(
-                _("Shipit API error for %(name)s:\n%(message)s")
-                % {
-                    "name": picking.name,
-                    "message": str(error),
-                }
+                _(
+                    "Shipit API error for %(name)s:\n%(message)s",
+                    {
+                        "name": picking.name,
+                        "message": str(error),
+                    },
+                )
             ) from error
 
         response_bundle = {"create_shipment": response}

@@ -66,8 +66,10 @@ class ResCompany(models.Model):
             methods = self.shipit_request().list_methods()
         except ShipitAPIError as error:
             raise UserError(
-                _("Fetching Shipit services failed:\n%(message)s")
-                % {"message": str(error)}
+                _(
+                    "Fetching Shipit services failed:\n%(message)s",
+                    {"message": str(error)},
+                )
             ) from error
 
         services = []
@@ -81,7 +83,7 @@ class ResCompany(models.Model):
             self.env["delivery.carrier"]
             .sudo()
             .with_context(active_test=False)
-            .search([])
+            .search([], limit=1000)
         )
         for contract in contracts:
             for carrier in carriers:
