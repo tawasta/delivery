@@ -23,7 +23,7 @@
             </field>
             -->
             <!-- FIXME: Fix previous and remove me -->
-            <field name="delivery_package_type_id" position="before">
+            <field name="delivery_package_type_id" position="after">
                 <span />
             </field>
         </field>
