@@ -19,14 +19,12 @@
         />
         <field name="line_ids" nolabel="1" readonly="1">
           <list create="0" delete="0" edit="0" default_order="distance_kilometers asc">
-            <!-- FIXME
-                        <button
-                            name="action_select_point"
-                            string="Select"
-                            type="object"
-                            class="btn-link"
-                        />
-                    -->
+            <button
+              name="action_select_point"
+              string="Select"
+              type="object"
+              class="btn-link"
+            />
             <field name="point_id" />
             <field name="name" />
             <field name="address" />

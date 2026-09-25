@@ -366,11 +366,12 @@ class DeliveryCarrier(models.Model):
 
         details = "\n".join([f"- {field_name}" for field_name in missing_fields])
         msg = self.env._(
-            "Missing required Shipit data for picking %(name)s:\n%(details)s"
-        ) % {
-            "name": picking.name,
-            "details": details,
-        }
+            "Missing required Shipit data for picking %(name)s:\n%(details)s",
+            {
+                "name": picking.name,
+                "details": details,
+            },
+        )
         raise ValidationError(msg)
 
     def _shipit_build_payload(self, picking):
@@ -628,11 +629,13 @@ class DeliveryCarrier(models.Model):
         except ShipitAPIError as error:
             picking.shipit_last_error = str(error)
             raise UserError(
-                self.env._("Shipit API error for %(name)s:\n%(message)s")
-                % {
-                    "name": picking.name,
-                    "message": str(error),
-                }
+                self.env._(
+                    "Shipit API error for %(name)s:\n%(message)s",
+                    {
+                        "name": picking.name,
+                        "message": str(error),
+                    },
+                )
             ) from error
 
         response_bundle = {"create_shipment": response}

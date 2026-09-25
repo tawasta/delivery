@@ -1,4 +1,4 @@
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class StockPicking(models.Model):
@@ -145,7 +145,7 @@ class StockPicking(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Shipit pickup points"),
+            "name": self.env._("Shipit pickup points"),
             "res_model": "shipit.pickup.point.wizard",
             "view_mode": "form",
             "view_id": self.env.ref(

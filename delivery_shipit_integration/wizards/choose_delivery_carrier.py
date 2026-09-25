@@ -1,4 +1,4 @@
-from odoo import _, api, models
+from odoo import api, models
 
 
 class ChooseDeliveryCarrier(models.TransientModel):
@@ -12,7 +12,9 @@ class ChooseDeliveryCarrier(models.TransientModel):
             if vals.get("error_message"):
                 return {
                     "warning": {
-                        "title": _("%(carrier)s Error", carrier=self.carrier_id.name),
+                        "title": self.env._(
+                            "%(carrier)s Error", carrier=self.carrier_id.name
+                        ),
                         "message": vals["error_message"],
                         "type": "notification",
                     }

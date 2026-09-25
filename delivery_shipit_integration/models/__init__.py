@@ -6,3 +6,4 @@ from . import shipit_additional_service
 from . import shipit_request
 from . import stock_package_type
 from . import stock_picking
+from . import stock_put_in_pack

@@ -2,8 +2,6 @@ import logging
 
 import requests
 
-from odoo import _
-
 _logger = logging.getLogger(__name__)
 
 SHIPIT_API_BASE_URL = {
@@ -49,19 +47,22 @@ class ShipitRequest:
         if response.status_code in [200, 201, 202, 204]:
             return True
 
-        msg = _("Error %(status_code)s in Shipit API request: %(reason)s") % {
-            "status_code": response.status_code,
-            "reason": response.reason,
-        }
+        msg = self.env._(
+            "Error %(status_code)s in Shipit API request: %(reason)s",
+            {
+                "status_code": response.status_code,
+                "reason": response.reason,
+            },
+        )
 
         if response.status_code in [401, 403]:
-            msg += _("\nCheck Shipit API key and permissions.")
+            msg += self.env._("\nCheck Shipit API key and permissions.")
         elif response.status_code == 404:
-            msg += _("\nEndpoint not found.")
+            msg += self.env._("\nEndpoint not found.")
         elif response.status_code == 422:
-            msg += _("\nRequest validation failed.")
+            msg += self.env._("\nRequest validation failed.")
         elif response.status_code >= 500:
-            msg += _("\nShipIT API server error.")
+            msg += self.env._("\nShipIT API server error.")
 
         raise ShipitAPIError(
             message=msg,
@@ -84,7 +85,9 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                self.env._(
+                    "Shipit API request failed: %(message)s", {"message": str(error)}
+                )
             ) from error
 
         self._validate_response(response)
@@ -106,7 +109,9 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                self.env._(
+                    "Shipit API request failed: %(message)s", {"message": str(error)}
+                )
             ) from error
 
         self._validate_response(response)
@@ -125,7 +130,9 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                self.env._(
+                    "Shipit API request failed: %(message)s", {"message": str(error)}
+                )
             ) from error
 
         self._validate_response(response)
@@ -142,7 +149,9 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                self.env._(
+                    "Shipit API request failed: %(message)s", {"message": str(error)}
+                )
             ) from error
         self._validate_response(response)
         content = response.json()
@@ -171,18 +180,20 @@ class ShipitRequest:
         if last_error:
             raise last_error
 
-        raise ShipitAPIError(_("Unable to create shipment."))
+        raise ShipitAPIError(self.env._("Unable to create shipment."))
 
     def get_label(self, shipment_id):
         if not self.label_endpoint_template:
-            raise ShipitAPIError(_("Shipit label endpoint is not configured."))
+            raise ShipitAPIError(self.env._("Shipit label endpoint is not configured."))
 
         try:
             endpoint = self.label_endpoint_template.format(shipment_id=shipment_id)
         except Exception as error:
             raise ShipitAPIError(
-                _("Invalid Shipit label endpoint template: %(message)s")
-                % {"message": str(error)}
+                self.env._(
+                    "Invalid Shipit label endpoint template: %(message)s",
+                    {"message": str(error)},
+                )
             ) from error
 
         return self._get(endpoint)
@@ -197,8 +208,10 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit document download failed: %(message)s")
-                % {"message": str(error)}
+                self.env._(
+                    "Shipit document download failed: %(message)s",
+                    {"message": str(error)},
+                )
             ) from error
 
         self._validate_response(response)
@@ -258,7 +271,9 @@ class ShipitRequest:
     ):
         service_ids = self._normalize_service_ids(service_ids)
         if not service_ids:
-            raise ShipitAPIError(_("Shipit service point search requires service IDs."))
+            raise ShipitAPIError(
+                self.env._("Shipit service point search requires service IDs.")
+            )
 
         payload = {
             "postcode": str(postcode or "").strip(),
@@ -269,7 +284,7 @@ class ShipitRequest:
 
         if not payload["postcode"] or not payload["country"]:
             raise ShipitAPIError(
-                _("Shipit service point search requires postcode and country.")
+                self.env._("Shipit service point search requires postcode and country.")
             )
 
         if limit:

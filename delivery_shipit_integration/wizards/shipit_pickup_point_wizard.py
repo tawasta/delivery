@@ -1,6 +1,6 @@
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 from ..models.shipit_request import ShipitAPIError
@@ -79,7 +79,7 @@ class ShipitPickupPointWizard(models.TransientModel):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Shipit pickup points"),
+            "name": self.env._("Shipit pickup points"),
             "res_model": self._name,
             "view_mode": "form",
             "view_id": self.env.ref(
@@ -95,7 +95,9 @@ class ShipitPickupPointWizard(models.TransientModel):
         carrier = self.picking_id.carrier_id
         if carrier.shipit_service_code is False:
             raise UserError(
-                _("Shipit pickup point search is only available for Shipit carrier.")
+                self.env._(
+                    "Shipit pickup point search is only available for Shipit carrier."
+                )
             )
 
         shipit_request = self.env.company.shipit_request()
@@ -110,11 +112,13 @@ class ShipitPickupPointWizard(models.TransientModel):
             )
         except ShipitAPIError as error:
             raise UserError(
-                _("Shipit pickup point search failed for %(name)s:\n%(message)s")
-                % {
-                    "name": self.picking_id.name,
-                    "message": str(error),
-                }
+                self.env._(
+                    "Shipit pickup point search failed for %(name)s:\n%(message)s",
+                    {
+                        "name": self.picking_id.name,
+                        "message": str(error),
+                    },
+                )
             ) from error
 
         lines = []
@@ -149,7 +153,7 @@ class ShipitPickupPointWizard(models.TransientModel):
     def action_apply_selected_point(self):
         self.ensure_one()
         if not self.selected_line_id:
-            raise UserError(_("Select a pickup point first."))
+            raise UserError(self.env._("Select a pickup point first."))
 
         selected = self.selected_line_id
         self.picking_id.write(

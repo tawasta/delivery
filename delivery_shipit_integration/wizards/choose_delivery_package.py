@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class ChooseDeliveryPackage(models.TransientModel):
     _inherit = "choose.delivery.package"
 
-    allowed_package_type_ids = fields.Many2many(
+    shipit_allowed_package_type_ids = fields.Many2many(
         comodel_name="stock.package.type",
         string="Allowed Package Types",
         compute="_compute_allowed_package_type_ids",
@@ -26,11 +26,13 @@ class ChooseDeliveryPackage(models.TransientModel):
             picking = record.picking_id
             carrier = picking.carrier_id if picking else None
             if carrier._shipit_is_carrier() and carrier.shipit_allowed_package_type_ids:
-                record.allowed_package_type_ids = (
+                record.shipit_allowed_package_type_ids = (
                     carrier.shipit_allowed_package_type_ids
                 )
             else:
-                record.allowed_package_type_ids = self.env["stock.package.type"].search(
+                record.shipit_allowed_package_type_ids = self.env[
+                    "stock.package.type"
+                ].search(
                     [
                         (
                             "package_carrier_type",

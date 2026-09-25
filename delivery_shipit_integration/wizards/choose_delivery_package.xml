@@ -2,14 +2,20 @@
 <odoo>
   <record id="choose_delivery_package_view_form" model="ir.ui.view">
     <field name="name">choose.delivery.package.form.shipit</field>
-    <field name="model">choose.delivery.package</field>
-    <field name="inherit_id" ref="stock_delivery.choose_delivery_package_view_form" />
+    <field name="model">stock.put.in.pack</field>
+    <field name="inherit_id" ref="stock.stock_put_in_pack_form" />
     <field name="arch" type="xml">
-      <field name="delivery_package_type_id" position="before">
-        <field name="allowed_package_type_ids" readonly="1" widget="many2many_tags" />
+      <!-- FIXME: Does not show anything if shipit_allowed_package_type_ids is empty
+      <field name="package_type_id" position="before">
+        <field name="shipit_allowed_package_type_ids" readonly="1" widget="many2many_tags" />
       </field>
-      <field name="delivery_package_type_id" position="attributes">
-        <attribute name="domain">[('id', 'in', allowed_package_type_ids)]</attribute>
+      <field name="package_type_id" position="attributes">
+        <attribute name="domain">[('id', 'in', shipit_allowed_package_type_ids)]</attribute>
+      </field>
+      -->
+      <!-- FIXME: Fix previous and remove me -->
+      <field name="package_type_id" position="after">
+        <span />
       </field>
     </field>
   </record>

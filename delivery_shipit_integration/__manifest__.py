@@ -44,7 +44,7 @@
         "views/stock_package_type_form.xml",
         "views/stock_picking_form.xml",
         "views/stock_picking_tree.xml",
-        # "wizards/choose_delivery_package.xml", # FIXME
+        "wizards/choose_delivery_package.xml",
         "wizards/shipit_pickup_point_wizard.xml",
     ],
 }

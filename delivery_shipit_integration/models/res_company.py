@@ -1,6 +1,6 @@
 import logging
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 from .shipit_request import ShipitAPIError, ShipitRequest
@@ -55,8 +55,10 @@ class ResCompany(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "success",
-                "title": _("Shipit services updated"),
-                "message": _("Synchronized %s services.", sync_result["total"]),
+                "title": self.env._("Shipit services updated"),
+                "message": self.env._(
+                    "Synchronized %s services.", sync_result["total"]
+                ),
                 "sticky": False,
             },
         }
@@ -66,8 +68,10 @@ class ResCompany(models.Model):
             methods = self.shipit_request().list_methods()
         except ShipitAPIError as error:
             raise UserError(
-                _("Fetching Shipit services failed:\n%(message)s")
-                % {"message": str(error)}
+                self.env._(
+                    "Fetching Shipit services failed:\n%(message)s",
+                    {"message": str(error)},
+                )
             ) from error
 
         services = []
@@ -81,7 +85,7 @@ class ResCompany(models.Model):
             self.env["delivery.carrier"]
             .sudo()
             .with_context(active_test=False)
-            .search([])
+            .search([], limit=1000)
         )
         for contract in contracts:
             for carrier in carriers:
