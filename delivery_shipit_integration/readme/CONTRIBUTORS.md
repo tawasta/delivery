@@ -1,0 +1,2 @@
+- [Futural Oy](https://futural.fi):
+   - Jarmo Kortetjärvi <jarmo.kortetjarvi@futural.fi>
