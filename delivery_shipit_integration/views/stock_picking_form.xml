@@ -8,15 +8,26 @@
             ref="stock_delivery.view_picking_withcarrier_out_form"
         />
         <field name="arch" type="xml">
-            <!-- Hide the default print buttons if using Shipit -->
             <button name="action_open_label_type" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
             </button>
-            <!-- TODO: hide the default "Print"-button. It's a hard one to reference... -->
 
-            <button name="action_open_label_type" position="attributes">
+            <button name="cancel_shipment" position="attributes">
                 <attribute name="invisible">shipit_is_carrier</attribute>
             </button>
+
+            <xpath expr="/form/header/button[last()]" position="after">
+                <button
+                    name="action_print_shipit_label"
+                    string="Print shipit labels"
+                    type="object"
+                    invisible="not shipit_is_carrier or state != 'done'"
+                />
+            </xpath>
+
+            <field name="carrier_tracking_ref" position="attributes">
+                <attribute name="readonly">shipit_is_carrier</attribute>
+            </field>
 
             <field name="partner_id" position="after">
                 <field name="shipit_freight_payer_supported" invisible="1" />

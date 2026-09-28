@@ -34,4 +34,4 @@ class ShipitPickupPointWizardLine(models.TransientModel):
     def action_select_point(self):
         self.ensure_one()
         self.wizard_id.selected_line_id = self
-        return self.wizard_id._get_action()
+        return self.wizard_id.action_apply_selected_point()
