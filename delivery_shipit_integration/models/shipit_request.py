@@ -49,10 +49,8 @@ class ShipitRequest:
 
         msg = self.env._(
             "Error %(status_code)s in Shipit API request: %(reason)s",
-            {
-                "status_code": response.status_code,
-                "reason": response.reason,
-            },
+            status_code=response.status_code,
+            reason=response.reason,
         )
 
         if response.status_code in [401, 403]:
@@ -85,9 +83,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                self.env._(
-                    "Shipit API request failed: %(message)s", {"message": str(error)}
-                )
+                self.env._("Shipit API request failed: %(message)s", message=str(error))
             ) from error
 
         self._validate_response(response)
@@ -109,9 +105,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                self.env._(
-                    "Shipit API request failed: %(message)s", {"message": str(error)}
-                )
+                self.env._("Shipit API request failed: %(message)s", message=str(error))
             ) from error
 
         self._validate_response(response)
@@ -130,9 +124,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                self.env._(
-                    "Shipit API request failed: %(message)s", {"message": str(error)}
-                )
+                self.env._("Shipit API request failed: %(message)s", message=str(error))
             ) from error
 
         self._validate_response(response)
@@ -149,9 +141,7 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                self.env._(
-                    "Shipit API request failed: %(message)s", {"message": str(error)}
-                )
+                self.env._("Shipit API request failed: %(message)s", message=str(error))
             ) from error
         self._validate_response(response)
         content = response.json()
@@ -192,7 +182,7 @@ class ShipitRequest:
             raise ShipitAPIError(
                 self.env._(
                     "Invalid Shipit label endpoint template: %(message)s",
-                    {"message": str(error)},
+                    message=str(error),
                 )
             ) from error
 
@@ -210,7 +200,7 @@ class ShipitRequest:
             raise ShipitAPIError(
                 self.env._(
                     "Shipit document download failed: %(message)s",
-                    {"message": str(error)},
+                    message=str(error),
                 )
             ) from error
 

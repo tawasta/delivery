@@ -367,10 +367,8 @@ class DeliveryCarrier(models.Model):
         details = "\n".join([f"- {field_name}" for field_name in missing_fields])
         msg = self.env._(
             "Missing required Shipit data for picking %(name)s:\n%(details)s",
-            {
-                "name": picking.name,
-                "details": details,
-            },
+            name=picking.name,
+            details=details,
         )
         raise ValidationError(msg)
 
@@ -631,10 +629,8 @@ class DeliveryCarrier(models.Model):
             raise UserError(
                 self.env._(
                     "Shipit API error for %(name)s:\n%(message)s",
-                    {
-                        "name": picking.name,
-                        "message": str(error),
-                    },
+                    name=picking.name,
+                    message=str(error),
                 )
             ) from error
 
