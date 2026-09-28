@@ -68,7 +68,7 @@ class ResCompany(models.Model):
             raise UserError(
                 _(
                     "Fetching Shipit services failed:\n%(message)s",
-                    {"message": str(error)},
+                    message=str(error),
                 )
             ) from error
 
