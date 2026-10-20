@@ -3,6 +3,7 @@ import logging
 import requests
 
 from odoo import _
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -46,29 +47,40 @@ class ShipitRequest:
         }
 
     def _validate_response(self, response):
-        if response.status_code in [200, 201, 202, 204]:
+        # Catch normal status errors
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            raise ValidationError(str(e)) from e
+
+        try:
+            res_json = response.json()
+        except ValueError:
+            res_json = {}
+
+        status = res_json.get("status", 0)
+
+        # Even failed responses have status code of 200.
+        # status "0" indicates a failed response
+        if status == 1:
             return True
 
-        msg = _(
-            "Error %(status_code)s in Shipit API request: %(reason)s",
-            status_code=response.status_code,
-            reason=response.reason,
-        )
+        # Errors are in "errors" as a dict
+        # with keys being the field names and values being lists of error messages.
+        # For example:
+        # {
+        # 'parcels.0': ['width: Parcel width is required'],
+        # 'parcels.0.length': ['The parcels.0.length field is required'],
+        # 'parcels.0.width': ['The parcels.0.width field is required'],
+        # 'parcels.0.height': ['The parcels.0.height field is required']
+        # }
 
-        if response.status_code in [401, 403]:
-            msg += _("\nCheck Shipit API key and permissions.")
-        elif response.status_code == 404:
-            msg += _("\nEndpoint not found.")
-        elif response.status_code == 422:
-            msg += _("\nRequest validation failed.")
-        elif response.status_code >= 500:
-            msg += _("\nShipIT API server error.")
+        errors = []
+        for error_list in res_json.get("errors", {}).values():
+            for error in error_list:
+                errors.append(error)
 
-        raise ShipitAPIError(
-            message=msg,
-            status_code=response.status_code,
-            response_body=response.json(),
-        )
+        raise ValidationError("\n".join(errors))
 
     def _post(self, endpoint, payload=None, params=None):
         headers = self._get_headers()
