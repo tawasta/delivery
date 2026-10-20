@@ -10,7 +10,7 @@
                 <app
                     data-string="Shipit"
                     string="Shipit"
-                    name="delivery_shipit"
+                    name="delivery_shipit_integration"
                     groups="stock.group_stock_manager"
                 >
                     <block title="Shipit Settings" id="shipit_settings">

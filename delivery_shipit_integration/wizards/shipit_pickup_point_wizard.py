@@ -3,7 +3,7 @@ import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from ..models.shipit_request import ShipitAPIError, ShipitRequest
+from ..models.shipit_request import ShipitAPIError
 
 _logger = logging.getLogger(__name__)
 
@@ -110,7 +110,9 @@ class ShipitPickupPointWizard(models.TransientModel):
 
     def _get_action(self):
         self.ensure_one()
-        view = self.env.ref("delivery_shipit.view_shipit_pickup_point_wizard")
+        view = self.env.ref(
+            "delivery_shipit_integration.view_shipit_pickup_point_wizard"
+        )
         return {
             "type": "ir.actions.act_window",
             "name": _("Shipit pickup points"),
@@ -132,7 +134,7 @@ class ShipitPickupPointWizard(models.TransientModel):
                 _("Shipit pickup point search is only available for Shipit carrier.")
             )
 
-        shipit_request = ShipitRequest(**carrier._get_shipit_config())
+        shipit_request = self.env.company.shipit_request()
 
         try:
             points = shipit_request.search_service_points(

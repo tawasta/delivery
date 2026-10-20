@@ -7,7 +7,7 @@ import re
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-from .shipit_request import ShipitAPIError, ShipitRequest
+from .shipit_request import ShipitAPIError
 
 try:
     from pdfminer.high_level import extract_text as extract_pdf_text
@@ -135,14 +135,6 @@ class DeliveryCarrier(models.Model):
                 any(service_code.startswith(prefix) for prefix in supported_prefixes)
                 or service_code == "sbtlfiexp.sbtlfiexp"
             )
-
-    def _get_shipit_config(self):
-        config = self.env["ir.config_parameter"].sudo()
-        return {
-            "prod": self.prod_environment,
-            "api_key": config.get_param("shipit.api_key"),
-            "timeout": int(config.get_param("shipit.timeout_seconds", 30)),
-        }
 
     @api.model
     def _shipit_normalize_service_ids(self, service_ids):
@@ -636,7 +628,7 @@ class DeliveryCarrier(models.Model):
         if not recent_pickings:
             return False
 
-        shipit_request = ShipitRequest(**self._get_shipit_config())
+        shipit_request = self.env.company.shipit_request()
         for picking in recent_pickings:
             if picking.carrier_price:
                 return float(picking.carrier_price)
@@ -767,17 +759,6 @@ class DeliveryCarrier(models.Model):
 
         return res
 
-    def cancel_shipment(self, picking):
-        """
-        Override cancel_shipment to use shipit methods for all its carriers.
-        """
-        res = super().cancel_shipment(picking)
-
-        if not res and self._shipit_is_carrier():
-            return self.shipit_cancel_shipment(picking)
-
-        return res
-
     def _shipit_is_carrier(self):
         self.ensure_one()
         return self.delivery_type in [carrier[0] for carrier in SHIPIT_CARRIERS]
@@ -795,7 +776,7 @@ class DeliveryCarrier(models.Model):
         return result
 
     def shipit_send_picking(self, picking):
-        shipit_request = ShipitRequest(**self._get_shipit_config())
+        shipit_request = self.env.company.shipit_request()
 
         values = {
             "exact_price": 0,
@@ -883,33 +864,13 @@ class DeliveryCarrier(models.Model):
 
         return values
 
-    def shipit_rate_shipment(self, order):
-        self.ensure_one()
-
-        price = self.fixed_price or 0.0
-        if not price:
-            latest_price = self._shipit_get_latest_known_exact_price()
-            if latest_price not in [False, None]:
-                price = latest_price
-        return {
-            "success": True,
-            "price": price,
-            "error_message": False,
-            "warning_message": False,
-        }
+    def rate_shipment(self, order):
+        if self._shipit_is_carrier():
+            raise UserError(_("Shipit integration does not yet support 'Get rate'"))
+        else:
+            return super().rate_shipment(order)
 
     def shipit_get_tracking_link(self, picking):
         if picking.shipit_tracking_url:
             return picking.shipit_tracking_url
         return False
-
-    def shipit_cancel_shipment(self, pickings):
-        self.ensure_one()
-        for picking in pickings:
-            picking.message_post(
-                body=_(
-                    "PLEASE NOTE: " "Shipment is not cancelled automatically in Shipit."
-                )
-            )
-
-        return True
