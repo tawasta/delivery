@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0-20260908\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-17 06:01+0000\n"
-"PO-Revision-Date: 2026-09-17 09:53+0300\n"
+"POT-Creation-Date: 2026-09-23 05:53+0000\n"
+"PO-Revision-Date: 2026-09-23 08:57+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -75,11 +75,6 @@ msgid "A2B"
 msgstr "A2B"
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__active
-msgid "Active"
-msgstr "Aktiivinen"
-
-#. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__address
 msgid "Address"
 msgstr "Osoite"
@@ -111,11 +106,6 @@ msgid "Asendia"
 msgstr "Asendia"
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__available_service_option_ids
-msgid "Available Service Option"
-msgstr "Saatavilla oleva palveluvaihtoehto"
-
-#. module: delivery_shipit_integration
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__bring
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__stock_package_type__package_carrier_type__bring
 msgid "Bring"
@@ -128,18 +118,12 @@ msgid "Budbee"
 msgstr "Budbee"
 
 #. module: delivery_shipit_integration
-#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_shipit_pickup_point_wizard
-msgid "Cancel"
-msgstr "Peruuta"
-
-#. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_package_type__package_carrier_type
 msgid "Carrier"
 msgstr "Kuljetusyritys"
 
 #. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__carrier_name
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__carrier_name
 msgid "Carrier Name"
 msgstr "Kuljetusyhtiön nimi"
 
@@ -172,9 +156,13 @@ msgstr "Tyhjennä noutopaikka?"
 
 #. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__code
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__code
 msgid "Code"
 msgstr "Koodi"
+
+#. module: delivery_shipit_integration
+#: model:ir.model,name:delivery_shipit_integration.model_res_company
+msgid "Companies"
+msgstr "Yritykset"
 
 #. module: delivery_shipit_integration
 #: model:ir.model,name:delivery_shipit_integration.model_res_config_settings
@@ -196,7 +184,6 @@ msgstr "Maakoodi"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__create_uid
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__create_uid
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__create_uid
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__create_uid
 msgid "Created by"
 msgstr "Luonut"
 
@@ -204,7 +191,6 @@ msgstr "Luonut"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__create_date
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__create_date
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__create_date
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__create_date
 msgid "Created on"
 msgstr "Luotu"
 
@@ -313,7 +299,6 @@ msgstr "Toimituspaketin valinta -toiminto"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__display_name
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__display_name
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__display_name
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__display_name
 msgid "Display Name"
 msgstr "Näytönimi"
 
@@ -339,6 +324,7 @@ msgid "EUR-pallet"
 msgstr "EUR-lava"
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_company__shipit_environment
 #: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_environment
 msgid "Environment to use for Shipit API calls."
 msgstr "Shipit-API-kutsuissa käytettävä ympäristö."
@@ -358,7 +344,7 @@ msgstr "Nouda"
 
 #. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit_integration/models/res_config_settings.py:0
+#: code:addons/delivery_shipit_integration/models/res_company.py:0
 #, python-format
 msgid ""
 "Fetching Shipit services failed:\n"
@@ -417,6 +403,7 @@ msgstr ""
 "määrittämisen jälkeen ja aina, kun Shipitiin lisätään uusia palveluja."
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_company__shipit_timeout_seconds
 #: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_timeout_seconds
 msgid "How long to wait for responses before timing out."
 msgstr "Kuinka kauan vastauksia odotetaan ennen aikakatkaisua."
@@ -425,7 +412,6 @@ msgstr "Kuinka kauan vastauksia odotetaan ennen aikakatkaisua."
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__id
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__id
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__id
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__id
 msgid "ID"
 msgstr "ID"
 
@@ -488,7 +474,6 @@ msgstr "Kaukokiiton asiakastunnus Shipit-integraatiota varten"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__write_uid
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__write_uid
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__write_uid
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__write_uid
 msgid "Last Updated by"
 msgstr "Viimeksi päivittänyt"
 
@@ -496,7 +481,6 @@ msgstr "Viimeksi päivittänyt"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__write_date
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__write_date
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__write_date
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__write_date
 msgid "Last Updated on"
 msgstr "Viimeksi päivitetty"
 
@@ -504,11 +488,6 @@ msgstr "Viimeksi päivitetty"
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__shipit_pickup_point_wizard__point_type__letter_box
 msgid "Letter box"
 msgstr "Postilaatikko"
-
-#. module: delivery_shipit_integration
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__limit
-msgid "Limit"
-msgstr "Raja"
 
 #. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__line_ids
@@ -535,14 +514,8 @@ msgstr ""
 #. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_additional_service__name
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__name
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__name
 msgid "Name"
 msgstr "Nimi"
-
-#. module: delivery_shipit_integration
-#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_shipit_pickup_point_wizard
-msgid "No results found!"
-msgstr "Tuloksia ei löytynyt!"
 
 #. module: delivery_shipit_integration
 #: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
@@ -610,6 +583,11 @@ msgid "Pickup ID"
 msgstr "Noutotunnus"
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__pickup_point_limit
+msgid "Pickup Point Limit"
+msgstr "Noutopisteiden enimmäismäärä"
+
+#. module: delivery_shipit_integration
 #: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_picking_withcarrier_out_form_shipit
 msgid "Pickup point"
 msgstr "Noutopiste"
@@ -668,9 +646,9 @@ msgid "Print shipit labels"
 msgstr "Tulosta shipit lähetystarrat"
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__res_config_settings__shipit_environment__prod
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__res_company__shipit_environment__prod
 msgid "Production"
-msgstr "Tuotanto"
+msgstr "Production"
 
 #. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__delivery_type
@@ -742,6 +720,7 @@ msgid "Require pickup point selection before creating shipment."
 msgstr "Vaadi noutopisteen valinta ennen lähetyksen luomista."
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_company__shipit_reseller_id
 #: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_reseller_id
 msgid ""
 "Reseller ID to use in Shipit API calls.We urge users to use reseller ID 57 "
@@ -755,21 +734,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_shipit_pickup_point_wizard
 msgid "Search"
 msgstr "Hae"
-
-#. module: delivery_shipit_integration
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__search_count
-msgid "Search Count"
-msgstr "Hakujen määrä"
-
-#. module: delivery_shipit_integration
-#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_shipit_pickup_point_wizard
-msgid "Search parameters"
-msgstr "Hakuparametrit"
-
-#. module: delivery_shipit_integration
-#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_shipit_pickup_point_wizard
-msgid "Search results"
-msgstr "Hakutulokset"
 
 #. module: delivery_shipit_integration
 #: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_picking_withcarrier_out_form_shipit
@@ -849,11 +813,6 @@ msgid "Sending dangerous goods is not implemented"
 msgstr "Vaarallisten aineiden lähettämistä ei ole implementoitu"
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_service_option__sequence
-msgid "Sequence"
-msgstr "Järjestys"
-
-#. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__service_name
 msgid "Service"
 msgstr "Palvelu"
@@ -864,13 +823,7 @@ msgid "Service ID"
 msgstr "Palvelun tunnus"
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard__service_option_ids
-msgid "Service IDs"
-msgstr "Palvelutunnukset"
-
-#. module: delivery_shipit_integration
 #: model:ir.model.constraint,message:delivery_shipit_integration.constraint_shipit_additional_service_shipit_additional_service_code_uniq
-#: model:ir.model.constraint,message:delivery_shipit_integration.constraint_shipit_service_option_shipit_service_option_code_uniq
 msgid "Service code must be unique."
 msgstr "Palvelukoodin on oltava yksilöllinen."
 
@@ -880,6 +833,7 @@ msgid "Service point"
 msgstr "Palvelupiste"
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,help:delivery_shipit_integration.field_res_company__shipit_api_key
 #: model:ir.model.fields,help:delivery_shipit_integration.field_res_config_settings__shipit_api_key
 #: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.res_config_settings_view_form
 msgid "Set the API key to connect to Shipit"
@@ -905,6 +859,7 @@ msgstr ""
 "%(message)s"
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_company__shipit_api_key
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_api_key
 msgid "Shipit API key"
 msgstr "Shipit-sovellusliittymän avain"
@@ -917,13 +872,7 @@ msgid "Shipit API request failed: %(message)s"
 msgstr "Shipit-API-pyyntö epäonnistui: %(message)s"
 
 #. module: delivery_shipit_integration
-#. odoo-python
-#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
-#, python-format
-msgid "Shipit API returned an error response."
-msgstr "Shipit-API palautti virhevastauksen."
-
-#. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_company__shipit_timeout_seconds
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_timeout_seconds
 msgid "Shipit API timeout"
 msgstr "Shipit-sovellusliittymän aikakatkaisu"
@@ -948,11 +897,6 @@ msgstr "Shipitin sallimat pakettityypit"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_default_additional_service_ids
 msgid "Shipit Default Additional Services"
 msgstr "Shipitin oletusarvoiset lisäpalvelut"
-
-#. module: delivery_shipit_integration
-#: model:product.template,name:delivery_shipit_integration.product_product_delivery_shipit_integration_product_template
-msgid "Shipit Delivery"
-msgstr "Shipit-toimitus"
 
 #. module: delivery_shipit_integration
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_stock_picking__shipit_delivery_done
@@ -988,6 +932,7 @@ msgid "Shipit document download failed: %(message)s"
 msgstr "Shipit-asiakirjan lataaminen epäonnistui: %(message)s"
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_company__shipit_environment
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_environment
 msgid "Shipit environment"
 msgstr "Shipit-ympäristö"
@@ -1080,13 +1025,6 @@ msgstr ""
 
 #. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit_integration/models/stock_picking.py:0
-#, python-format
-msgid "Shipit pickup point search is available only for Shipit carrier."
-msgstr "Shipit-noutopistehaku on käytettävissä vain Shipit-toimitustavalle."
-
-#. module: delivery_shipit_integration
-#. odoo-python
 #: code:addons/delivery_shipit_integration/wizards/shipit_pickup_point_wizard.py:0
 #, python-format
 msgid "Shipit pickup point search is only available for Shipit carrier."
@@ -1116,6 +1054,7 @@ msgid "Shipit pickup points"
 msgstr "Shipit noutopisteet"
 
 #. module: delivery_shipit_integration
+#: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_company__shipit_reseller_id
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_res_config_settings__shipit_reseller_id
 msgid "Shipit reseller ID"
 msgstr "Shipit-jälleenmyyjän tunnus"
@@ -1129,11 +1068,6 @@ msgstr "Shipitin vastaus"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_delivery_carrier__shipit_service_code
 msgid "Shipit service ID"
 msgstr "Shipit-palvelun tunnus"
-
-#. module: delivery_shipit_integration
-#: model:ir.model,name:delivery_shipit_integration.model_shipit_service_option
-msgid "Shipit service option"
-msgstr "Shipit-palveluvaihtoehto"
 
 #. module: delivery_shipit_integration
 #. odoo-python
@@ -1150,13 +1084,8 @@ msgid "Shipit service point search requires service IDs."
 msgstr "Shipit-palvelupisteiden hakuun tarvitaan palvelutunnukset."
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields,help:delivery_shipit_integration.field_shipit_pickup_point_wizard__service_option_ids
-msgid "Shipit serviceId values used for pickup point search."
-msgstr "Shipit-palvelun tunnistearvot, joita käytetään noutopisteiden hakuun."
-
-#. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit_integration/models/res_config_settings.py:0
+#: code:addons/delivery_shipit_integration/models/res_company.py:0
 #, python-format
 msgid "Shipit services updated"
 msgstr "Shipit-palvelut päivitetty"
@@ -1221,13 +1150,13 @@ msgstr "Synkronoi Shipit-palvelut"
 
 #. module: delivery_shipit_integration
 #. odoo-python
-#: code:addons/delivery_shipit_integration/models/res_config_settings.py:0
+#: code:addons/delivery_shipit_integration/models/res_company.py:0
 #, python-format
 msgid "Synchronized %s services."
 msgstr "Synkronoitiin %s-palvelua."
 
 #. module: delivery_shipit_integration
-#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__res_config_settings__shipit_environment__test
+#: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__res_company__shipit_environment__test
 msgid "Test"
 msgstr "Testi"
 
@@ -1244,7 +1173,7 @@ msgstr "Siirto"
 #. module: delivery_shipit_integration
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__stock_package_type__shipit_package_type__trolley
 msgid "Trolley"
-msgstr "Trolley"
+msgstr "Kärry"
 
 #. module: delivery_shipit_integration
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__stock_package_type__shipit_package_type__tires
@@ -1292,11 +1221,6 @@ msgid "Use default shipment dimensions, if packages are not used"
 msgstr "Käytä oletusarvoisia lähetysmitoja, jos pakkauksia ei käytetä"
 
 #. module: delivery_shipit_integration
-#: model_terms:ir.ui.view,arch_db:delivery_shipit_integration.view_shipit_pickup_point_wizard
-msgid "Use selected pickup point"
-msgstr "Käytä valittua noutopistettä"
-
-#. module: delivery_shipit_integration
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__delivery_carrier__delivery_type__venipak
 #: model:ir.model.fields.selection,name:delivery_shipit_integration.selection__stock_package_type__package_carrier_type__venipak
 msgid "Venipak"
@@ -1322,10 +1246,3 @@ msgstr "ZPL"
 #: model:ir.model.fields,field_description:delivery_shipit_integration.field_shipit_pickup_point_wizard_line__zipcode
 msgid "Zipcode"
 msgstr "Postinumero"
-
-#. module: delivery_shipit_integration
-#. odoo-python
-#: code:addons/delivery_shipit_integration/models/shipit_request.py:0
-#, python-format
-msgid "[Code %(code)s] %(message)s"
-msgstr "[Koodi %(code)s] %(message)s"

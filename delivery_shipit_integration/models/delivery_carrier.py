@@ -1,18 +1,12 @@
 import base64
-import io
 import json
 import logging
 import re
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from .shipit_request import ShipitAPIError
-
-try:
-    from pdfminer.high_level import extract_text as extract_pdf_text
-except Exception:  # pragma: no cover - optional dependency in runtime image
-    extract_pdf_text = None
 
 _logger = logging.getLogger(__name__)
 
@@ -91,6 +85,7 @@ class DeliveryCarrier(models.Model):
         readonly=True,
         relation="delivery_carrier_allowed_shipit_additional_service_rel",
     )
+
     shipit_default_additional_service_ids = fields.Many2many(
         comodel_name="shipit.additional.service",
         string="Shipit Default Additional Services",
@@ -136,33 +131,6 @@ class DeliveryCarrier(models.Model):
                 or service_code == "sbtlfiexp.sbtlfiexp"
             )
 
-    @api.model
-    def _shipit_normalize_service_ids(self, service_ids):
-        if not service_ids:
-            return []
-
-        if isinstance(service_ids, str):
-            values = [value.strip() for value in service_ids.split(",")]
-        elif isinstance(service_ids, list | tuple):
-            values = [str(value).strip() for value in service_ids if value]
-        else:
-            values = [str(service_ids).strip()]
-
-        normalized = []
-        seen = set()
-        for value in values:
-            if not value:
-                continue
-            code = self._shipit_service_code_aliases.get(value.lower(), value.lower())
-            if code not in seen:
-                seen.add(code)
-                normalized.append(code)
-        return normalized
-
-    def _shipit_get_service_codes(self):
-        self.ensure_one()
-        return self._shipit_normalize_service_ids(self.shipit_service_code)
-
     def _shipit_get_sender_partner(self, picking):
         warehouse_partner = picking.picking_type_id.warehouse_id.partner_id
         return warehouse_partner or picking.company_id.partner_id
@@ -185,33 +153,9 @@ class DeliveryCarrier(models.Model):
         if not partner:
             return ""
         commercial_partner = partner.commercial_partner_id
-        return (
-            partner.mobile
-            or partner.phone
-            or commercial_partner.mobile
-            or commercial_partner.phone
-            or ""
-        )
+        return partner.phone or commercial_partner.phone or ""
 
     def _shipit_map_address(self, partner):
-        if not partner:
-            # Why do we need to return empty values?
-            return {
-                "name": "",
-                "email": "",
-                "phone": "",
-                "address": "",
-                "city": "",
-                "postcode": "",
-                "country": "",
-                "address2": "",
-                "state": "",
-                "isCompany": False,
-                "contactPerson": "",
-                "vatNumber": "",
-                "eoriNumber": "",
-            }
-
         commercial_partner = partner.commercial_partner_id
         country = partner.country_id.code or commercial_partner.country_id.code or ""
         state = (
@@ -298,8 +242,8 @@ class DeliveryCarrier(models.Model):
     def _shipit_get_parcels(self, picking):
         parcels = []
 
-        if picking.package_ids:
-            for package in picking.package_ids:
+        if picking.shipit_package_ids:
+            for package in picking.shipit_package_ids:
                 # We have packages, use them
                 # TODO: Whan if all lines are not packaged?
 
@@ -420,10 +364,11 @@ class DeliveryCarrier(models.Model):
             return True
 
         details = "\n".join([f"- {field_name}" for field_name in missing_fields])
-        msg = _("Missing required Shipit data for picking %(name)s:\n%(details)s") % {
-            "name": picking.name,
-            "details": details,
-        }
+        msg = _(
+            "Missing required Shipit data for picking %(name)s:\n%(details)s",
+            name=picking.name,
+            details=details,
+        )
         raise ValidationError(msg)
 
     def _shipit_build_payload(self, picking):
@@ -537,115 +482,6 @@ class DeliveryCarrier(models.Model):
         except Exception:
             return False
 
-    def _shipit_extract_exact_price_from_receipt_text(self, text):
-        if not text:
-            return False
-
-        patterns = [
-            r"Hinta\s*alv\.?\s*0\s*%[^\d]{0,80}([0-9]+[.,][0-9]{2})",
-            r"Summa\s*\(veroton\)[^\d]{0,80}([0-9]+[.,][0-9]{2})",
-            r"Subtotal[^\d]{0,80}([0-9]+[.,][0-9]{2})",
-            r"Amount\s*(?:excl\.?|excluding|without)\s*VAT[^\d]{0,80}([0-9]+[.,][0-9]{2})",
-        ]
-        for pattern in patterns:
-            match = re.search(pattern, text, flags=re.IGNORECASE | re.DOTALL)
-            if match:
-                amount = self._shipit_parse_decimal(match.group(1))
-                if amount not in [False, None]:
-                    return amount
-
-        row_match = re.search(
-            r"\n1\s*\n([0-9]+[.,][0-9]{2})\s*€?\s*\n[0-9]+(?:[.,][0-9]+)?\s*%\s*\n([0-9]+[.,][0-9]{2})\s*€?",
-            text,
-            flags=re.IGNORECASE,
-        )
-        if row_match:
-            amount = self._shipit_parse_decimal(row_match.group(1))
-            if amount not in [False, None]:
-                return amount
-
-        return False
-
-    def _shipit_extract_exact_price_from_receipt(self, receipt_url, shipit_request):
-        if not receipt_url:
-            return False
-
-        try:
-            receipt_data = shipit_request.download_document(receipt_url)
-        except ShipitAPIError:
-            return False
-
-        if not receipt_data:
-            return False
-
-        text = ""
-        if receipt_data.startswith(b"%PDF") and extract_pdf_text:
-            try:
-                text = extract_pdf_text(io.BytesIO(receipt_data))
-            except Exception:
-                text = ""
-        if not text:
-            text = receipt_data.decode("utf-8", errors="ignore")
-
-        return self._shipit_extract_exact_price_from_receipt_text(text)
-
-    def _shipit_extract_exact_price(self, response_bundle, shipit_request):
-        direct_price = self._shipit_find_value(
-            response_bundle,
-            {
-                "price",
-                "cost",
-                "amountExcludingVat",
-                "amountExclVat",
-                "subtotal",
-                "net",
-            },
-        )
-        parsed_direct_price = self._shipit_parse_decimal(direct_price)
-        if parsed_direct_price not in [False, None]:
-            return parsed_direct_price
-
-        receipt_url = self._shipit_find_value(
-            response_bundle,
-            {"receipt", "receiptUrl", "receiptURL", "receipt_document_url"},
-        )
-        receipt_url = self._shipit_extract_first_url(receipt_url)
-        return self._shipit_extract_exact_price_from_receipt(
-            receipt_url, shipit_request
-        )
-
-    def _shipit_get_latest_known_exact_price(self):
-        self.ensure_one()
-        recent_pickings = self.env["stock.picking"].search(
-            [
-                ("carrier_id", "=", self.id),
-                ("shipit_shipment_id", "!=", False),
-                ("state", "=", "done"),
-            ],
-            order="id desc",
-            limit=10,
-        )
-        if not recent_pickings:
-            return False
-
-        shipit_request = self.env.company.shipit_request()
-        for picking in recent_pickings:
-            if picking.carrier_price:
-                return float(picking.carrier_price)
-            if not picking.shipit_response:
-                continue
-            try:
-                response_bundle = json.loads(picking.shipit_response)
-            except Exception:
-                continue
-            exact_price = self._shipit_extract_exact_price(
-                response_bundle, shipit_request
-            )
-            if exact_price not in [False, None]:
-                return exact_price
-
-        return False
-
     def _shipit_parse_response(self, response):
         tracking_value = self._shipit_find_value(
             response,
@@ -738,9 +574,6 @@ class DeliveryCarrier(models.Model):
 
     # region Calls for delivery.carrier methods
     def send_shipping(self, pickings):
-        """
-        Override send_shipping to use shipit methods for all its carriers.
-        """
         res = super().send_shipping(pickings)
 
         if not res and self._shipit_is_carrier():
@@ -749,9 +582,6 @@ class DeliveryCarrier(models.Model):
         return res
 
     def get_tracking_link(self, picking):
-        """
-        Override get_tracking_link to use shipit methods for all its carriers.
-        """
         res = super().get_tracking_link(picking)
 
         if not res and self._shipit_is_carrier():
@@ -796,11 +626,11 @@ class DeliveryCarrier(models.Model):
         except ShipitAPIError as error:
             picking.shipit_last_error = str(error)
             raise UserError(
-                _("Shipit API error for %(name)s:\n%(message)s")
-                % {
-                    "name": picking.name,
-                    "message": str(error),
-                }
+                _(
+                    "Shipit API error for %(name)s:\n%(message)s",
+                    name=picking.name,
+                    message=str(error),
+                )
             ) from error
 
         response_bundle = {"create_shipment": response}
@@ -844,10 +674,6 @@ class DeliveryCarrier(models.Model):
                     picking.name,
                     str(error),
                 )
-
-        exact_price = self._shipit_extract_exact_price(response_bundle, shipit_request)
-        if exact_price not in [False, None]:
-            values["exact_price"] = exact_price
 
         if self.debug_logging:
             if isinstance(response_bundle, dict | list):
