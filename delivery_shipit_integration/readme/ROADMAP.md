@@ -1,3 +1,4 @@
+- ISSUE: Choosing delivery package does not filter by shipit package type, disabled temporarily
 - Support for non EU shipments
 - Get delivery method-spesific allowed package types automatically
 - Support for dangerous goods
