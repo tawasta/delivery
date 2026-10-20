@@ -154,6 +154,7 @@ having it's own dimensions and weight.
 Known issues / Roadmap
 ======================
 
+- Support for non EU shipments
 - Get delivery method-spesific allowed package types automatically
 - Support for dangerous goods
 - Wizardless pickup point selection
@@ -161,9 +162,14 @@ Known issues / Roadmap
 - Clean up the unnecessarily complicated structure
 - Clean up unused/unnecessary code
 - Tests for everything!
+- Support for a neutral carrier
 
 Changelog
 =========
+
+17.0.2.6.0 (2026-09-17)
+
+- Multicompany support
 
 17.0.2.5.1 (2026-09-17)
 

@@ -1,3 +1,7 @@
+17.0.2.6.0 (2026-09-17)
+
+- Multicompany support
+
 17.0.2.5.1 (2026-09-17)
 
 - Better error message when using "Get rate" on Sale Order as it is not yet
