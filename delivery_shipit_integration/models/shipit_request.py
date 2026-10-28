@@ -3,6 +3,7 @@ import logging
 import requests
 
 from odoo import _
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -29,7 +30,6 @@ class ShipitRequest:
         api_env = "prod" if prod else "test"
         self.api_key = api_key or ""
         self.base_url = SHIPIT_API_BASE_URL[api_env]
-        self.auth_mode = "x_shipit_key"
         self.create_endpoints = ["shipment"]
         self.cancel_endpoint_template = "shipments/{shipment_id}"
         self.label_endpoint_template = "shipments/{shipment_id}/label"
@@ -40,83 +40,47 @@ class ShipitRequest:
         return f"{self.base_url}/{endpoint}"
 
     def _get_headers(self):
-        headers = {
+        return {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "X-SHIPIT-KEY": self.api_key,
         }
 
-        if self.auth_mode == "x_api_key":
-            headers["X-API-Key"] = self.api_key
-
-        if self.auth_mode == "bearer":
-            headers["Authorization"] = f"Bearer {self.api_key}"
-
-        return headers
-
-    def _parse_response_content(self, response):
-        try:
-            return response.json()
-        except Exception:
-            return response.text
-
-    def _raise_if_api_payload_error(self, content):
-        if not isinstance(content, dict):
-            return
-
-        has_error = content.get("error")
-        status_value = content.get("status")
-        success_value = content.get("success")
-
-        is_error_status = status_value in [0, "0", False] or success_value is False
-        if not has_error and not is_error_status:
-            return
-
-        if isinstance(has_error, dict):
-            error_message = has_error.get("message") or ""
-            error_code = has_error.get("code")
-        else:
-            error_message = str(has_error or "")
-            error_code = None
-
-        if not error_message:
-            error_message = _("Shipit API returned an error response.")
-
-        if error_code not in [None, ""]:
-            error_message = _("[Code %(code)s] %(message)s") % {
-                "code": error_code,
-                "message": error_message,
-            }
-
-        raise ShipitAPIError(
-            message=error_message,
-            response_body=content,
-        )
-
     def _validate_response(self, response):
-        if response.status_code in [200, 201, 202, 204]:
+        # Catch normal status errors
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            raise ValidationError(str(e)) from e
+
+        try:
+            res_json = response.json()
+        except ValueError:
+            res_json = {}
+
+        status = res_json.get("status", 0)
+
+        # Even failed responses have status code of 200.
+        # status "0" indicates a failed response
+        if status == 1:
             return True
 
-        content = self._parse_response_content(response)
-        msg = _("Error %(status_code)s in Shipit API request: %(reason)s") % {
-            "status_code": response.status_code,
-            "reason": response.reason,
-        }
+        # Errors are in "errors" as a dict
+        # with keys being the field names and values being lists of error messages.
+        # For example:
+        # {
+        # 'parcels.0': ['width: Parcel width is required'],
+        # 'parcels.0.length': ['The parcels.0.length field is required'],
+        # 'parcels.0.width': ['The parcels.0.width field is required'],
+        # 'parcels.0.height': ['The parcels.0.height field is required']
+        # }
 
-        if response.status_code in [401, 403]:
-            msg += _("\nCheck Shipit API key and permissions.")
-        elif response.status_code == 404:
-            msg += _("\nEndpoint not found.")
-        elif response.status_code == 422:
-            msg += _("\nRequest validation failed.")
-        elif response.status_code >= 500:
-            msg += _("\nShipIT API server error.")
+        errors = []
+        for error_list in res_json.get("errors", {}).values():
+            for error in error_list:
+                errors.append(error)
 
-        raise ShipitAPIError(
-            message=msg,
-            status_code=response.status_code,
-            response_body=content,
-        )
+        raise ValidationError("\n".join(errors))
 
     def _post(self, endpoint, payload=None, params=None):
         headers = self._get_headers()
@@ -133,12 +97,11 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", message=str(error))
             ) from error
 
         self._validate_response(response)
-        content = self._parse_response_content(response)
-        self._raise_if_api_payload_error(content)
+        content = response.json()
         return content
 
     def _put(self, endpoint, payload=None, params=None):
@@ -156,15 +119,15 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", message=str(error))
             ) from error
 
         self._validate_response(response)
-        content = self._parse_response_content(response)
-        self._raise_if_api_payload_error(content)
+        content = response.json()
         return content
 
-    def _get(self, endpoint, params=None):
+    def _get(self, endpoint_name, params=None):
+        endpoint = self._get_endpoint_url(endpoint_name)
         headers = self._get_headers()
         try:
             response = requests.get(
@@ -175,12 +138,11 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", message=str(error))
             ) from error
 
         self._validate_response(response)
-        content = self._parse_response_content(response)
-        self._raise_if_api_payload_error(content)
+        content = response.json()
         return content
 
     def _delete(self, endpoint):
@@ -193,10 +155,10 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit API request failed: %(message)s") % {"message": str(error)}
+                _("Shipit API request failed: %(message)s", message=str(error))
             ) from error
         self._validate_response(response)
-        content = self._parse_response_content(response)
+        content = response.json()
         self._raise_if_api_payload_error(content)
         return content
 
@@ -224,13 +186,6 @@ class ShipitRequest:
 
         raise ShipitAPIError(_("Unable to create shipment."))
 
-    def cancel_shipment(self, shipment_id):
-        _logger.warning(
-            "Shipit cancel is not implemented. Shipment ID: %s", shipment_id
-        )
-
-        return
-
     def get_label(self, shipment_id):
         if not self.label_endpoint_template:
             raise ShipitAPIError(_("Shipit label endpoint is not configured."))
@@ -239,11 +194,12 @@ class ShipitRequest:
             endpoint = self.label_endpoint_template.format(shipment_id=shipment_id)
         except Exception as error:
             raise ShipitAPIError(
-                _("Invalid Shipit label endpoint template: %(message)s")
-                % {"message": str(error)}
+                _(
+                    "Invalid Shipit label endpoint template: %(message)s",
+                    message=str(error),
+                )
             ) from error
 
-        endpoint = self._get_endpoint_url(endpoint)
         return self._get(endpoint)
 
     def download_document(self, document_url):
@@ -256,8 +212,10 @@ class ShipitRequest:
             )
         except requests.RequestException as error:
             raise ShipitAPIError(
-                _("Shipit document download failed: %(message)s")
-                % {"message": str(error)}
+                _(
+                    "Shipit document download failed: %(message)s",
+                    message=str(error),
+                )
             ) from error
 
         self._validate_response(response)
@@ -299,16 +257,10 @@ class ShipitRequest:
         }
 
     def list_methods(self):
-        endpoint = self._get_endpoint_url("list-methods")
-        content = self._get(endpoint)
-
-        return content
+        return self._get("list-methods")
 
     def carrier_contracts(self):
-        endpoint = self._get_endpoint_url("carrier-contracts")
-        content = self._get(endpoint)
-
-        return content
+        return self._get("carrier-contracts")
 
     def search_service_points(
         self,
