@@ -1,0 +1,147 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* delivery_estimated_delivery_time
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 00:00+0000\n"
+"PO-Revision-Date: 2026-11-04 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__active
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: delivery_estimated_delivery_time
+#, python-format
+msgid "%(min)s days"
+msgstr "%(min)s jours"
+
+#. module: delivery_estimated_delivery_time
+#, python-format
+msgid "%(min)s-%(max)s days"
+msgstr "%(min)s-%(max)s jours"
+
+#. module: delivery_estimated_delivery_time
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_rule_view_form
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_exceptions_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_max_days
+msgid "Base Max Days"
+msgstr "Jours maximum de base"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_max_days
+msgid "Base maximum number of days the delivery takes to reach the destination."
+msgstr ""
+"Nombre maximum de jours de base que la livraison met pour atteindre la "
+"destination."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_min_days
+msgid "Base Min Days"
+msgstr "Jours minimum de base"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_min_days
+msgid "Base minimum number of days the delivery takes to reach the destination."
+msgstr ""
+"Nombre minimum de jours de base que la livraison met pour atteindre la "
+"destination."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__days
+msgid "Days"
+msgstr "Jours"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__country_id
+msgid "Destination Country"
+msgstr "Pays destination"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_sale_order__delivery_time_range
+msgid "Estimated Delivery Time"
+msgstr "Délai de livraison estimé"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time
+msgid "Estimated Delivery Time Base"
+msgstr "Base du délai de livraison estimé"
+
+#. module: delivery_estimated_delivery_time
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_exceptions_view_form
+msgid "Estimated Delivery Time Exception"
+msgstr "Exception du délai de livraison estimé"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.actions.act_window,name:delivery_estimated_delivery_time.delivery_estimated_time_exceptions_action
+#: model:ir.model,name:delivery_estimated_delivery_time.model_delivery_estimated_time_exceptions
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time_exceptions
+#: model:ir.ui.menu,name:delivery_estimated_delivery_time.menu_delivery_estimated_time_exceptions
+msgid "Estimated Delivery Time Exceptions"
+msgstr "Exceptions du délai de livraison estimé"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model,name:delivery_estimated_delivery_time.model_delivery_estimated_time_rule
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_rule_view_form
+msgid "Estimated Delivery Time Rule"
+msgstr "Règle de délai de livraison estimé"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.actions.act_window,name:delivery_estimated_delivery_time.delivery_estimated_time_rule_action
+#: model:ir.ui.menu,name:delivery_estimated_delivery_time.menu_delivery_estimated_time_rule
+msgid "Estimated Delivery Times"
+msgstr "Délais de livraison estimés"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_sale_order__delivery_time_range
+msgid "Estimated delivery time range for the order."
+msgstr "Délai de livraison estimé pour la commande."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__days
+msgid "Number of days for the estimated delivery time exception."
+msgstr "Nombre de jours pour l'exception du délai de livraison estimé."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__country_id
+msgid ""
+"Leave empty to define a fallback rule used when no rule matches the "
+"destination country."
+msgstr ""
+"Laisser vide pour définir une règle de repli utilisée lorsqu'aucune règle "
+"ne correspond au pays destination."
+
+#. module: delivery_estimated_delivery_time
+msgid "N/A"
+msgstr "N/A"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__name
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time
+msgid "Select estimated delivery time"
+msgstr "Sélectionner un délai de livraison estimé"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time_exceptions
+msgid "Select estimated delivery time exceptions"
+msgstr "Sélectionner des exceptions du délai de livraison estimé"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_order_form_est_time" model="ir.ui.view">
+        <field name="name">sale.order.view.form.estimated.delivery.time</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <field name="picking_policy" position="after">
+                <field name="estimated_delivery_time" />
+                <field
+                    name="estimated_delivery_time_exceptions"
+                    widget="many2many_tags"
+                />
+                <field name="delivery_time_range" />
+            </field>
+        </field>
+    </record>
+</odoo>
