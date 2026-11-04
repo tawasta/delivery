@@ -20,14 +20,14 @@ msgstr ""
 #: code:addons/delivery_estimated_delivery_time/models/sale_order.py:0
 #, python-format
 msgid "%(min)s days"
-msgstr ""
+msgstr "%(min)s päivää"
 
 #. module: delivery_estimated_delivery_time
 #. odoo-python
 #: code:addons/delivery_estimated_delivery_time/models/sale_order.py:0
 #, python-format
 msgid "%(min)s-%(max)s days"
-msgstr ""
+msgstr "%(min)s-%(max)s päivää"
 
 #. module: delivery_estimated_delivery_time
 #: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__active
