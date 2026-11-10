@@ -58,10 +58,13 @@ class ShipitRequest:
         except ValueError:
             res_json = {}
 
-        status = res_json.get("status", 0)
+        # Even (some) failed responses have status code of 200.
+        # If given, status "0" indicates a failed response
+        if "status" not in res_json and response.status_code == 200:
+            status = 1
+        else:
+            status = res_json.get("status", 0)
 
-        # Even failed responses have status code of 200.
-        # status "0" indicates a failed response
         if status == 1:
             return True
 
@@ -76,9 +79,19 @@ class ShipitRequest:
         # }
 
         errors = []
+        # Try to extract errors from "errors"
         for error_list in res_json.get("errors", {}).values():
             for error in error_list:
                 errors.append(error)
+
+        if not errors:
+            # Try to extract error from "error"
+            error = res_json.get("error")
+            if error:
+                errors.append(error.get("message"))
+
+        if not errors:
+            errors.append(_("Unknown error occurred"))
 
         raise ValidationError("\n".join(errors))
 
