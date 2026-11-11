@@ -1,0 +1,192 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* delivery_estimated_delivery_time
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0-20260908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 08:44+0000\n"
+"PO-Revision-Date: 2026-11-04 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: delivery_estimated_delivery_time
+#. odoo-python
+#: code:addons/delivery_estimated_delivery_time/models/sale_order.py:0
+#, python-format
+msgid "%(min)s days"
+msgstr "%(min)s päivää"
+
+#. module: delivery_estimated_delivery_time
+#. odoo-python
+#: code:addons/delivery_estimated_delivery_time/models/sale_order.py:0
+#, python-format
+msgid "%(min)s-%(max)s days"
+msgstr "%(min)s-%(max)s päivää"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__active
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__active
+msgid "Active"
+msgstr "Aktiivinen"
+
+#. module: delivery_estimated_delivery_time
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_exceptions_view_form
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_rule_view_form
+msgid "Archived"
+msgstr "Arkistoitu"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_max_days
+msgid "Base Max Days"
+msgstr "Perusmaksimi (pv)"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_min_days
+msgid "Base Min Days"
+msgstr "Perusminimi (pv)"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_max_days
+msgid ""
+"Base maximum number of days the delivery takes to reach the destination."
+msgstr "Toimituksen enimmäiskesto (päivinä) kohdemaahan."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__base_min_days
+msgid ""
+"Base minimum number of days the delivery takes to reach the destination."
+msgstr "Toimituksen vähimmäiskesto (päivinä) kohdemaahan."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__create_uid
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__create_date
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__days
+msgid "Days"
+msgstr "Päivät"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__country_id
+msgid "Destination Country"
+msgstr "Kohdemaa"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__display_name
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_sale_order__delivery_time_range
+msgid "Estimated Delivery Time"
+msgstr "Arvioitu toimitusaika"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time
+msgid "Estimated Delivery Time Base"
+msgstr "Arvioidun toimitusajan perussääntö"
+
+#. module: delivery_estimated_delivery_time
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_exceptions_view_form
+msgid "Estimated Delivery Time Exception"
+msgstr "Arvioidun toimitusajan poikkeus"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.actions.act_window,name:delivery_estimated_delivery_time.delivery_estimated_time_exceptions_action
+#: model:ir.model,name:delivery_estimated_delivery_time.model_delivery_estimated_time_exceptions
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time_exceptions
+#: model:ir.ui.menu,name:delivery_estimated_delivery_time.menu_delivery_estimated_time_exceptions
+msgid "Estimated Delivery Time Exceptions"
+msgstr "Arvioidun toimitusajan poikkeukset"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model,name:delivery_estimated_delivery_time.model_delivery_estimated_time_rule
+#: model_terms:ir.ui.view,arch_db:delivery_estimated_delivery_time.delivery_estimated_time_rule_view_form
+msgid "Estimated Delivery Time Rule"
+msgstr "Arvioidun toimitusajan sääntö"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.actions.act_window,name:delivery_estimated_delivery_time.delivery_estimated_time_rule_action
+#: model:ir.ui.menu,name:delivery_estimated_delivery_time.menu_delivery_estimated_time_rule
+msgid "Estimated Delivery Times"
+msgstr "Arvioidut toimitusajat"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_sale_order__delivery_time_range
+msgid "Estimated delivery time range for the order."
+msgstr "Arvioitu toimitusaikaväli tilaukselle."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__id
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__id
+msgid "ID"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__write_uid
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__write_date
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__country_id
+msgid ""
+"Leave empty to define a fallback rule used when no rule matches the "
+"destination country."
+msgstr ""
+"Jätä tyhjäksi määrittääksesi säännön, jota käytetään, jos mikään sääntö ei "
+"vastaa kohdemaata."
+
+#. module: delivery_estimated_delivery_time
+#. odoo-python
+#: code:addons/delivery_estimated_delivery_time/models/sale_order.py:0
+#, python-format
+msgid "N/A"
+msgstr ""
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__name
+#: model:ir.model.fields,field_description:delivery_estimated_delivery_time.field_delivery_estimated_time_rule__name
+msgid "Name"
+msgstr "Nimi"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_delivery_estimated_time_exceptions__days
+msgid "Number of days for the estimated delivery time exception."
+msgstr "Arvioidun toimitusajan poikkeuksen kesto (päivinä)."
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model,name:delivery_estimated_delivery_time.model_sale_order
+msgid "Sales Order"
+msgstr "Myyntitilaus"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time
+msgid "Select estimated delivery time"
+msgstr "Valitse arvioitu toimitusaika"
+
+#. module: delivery_estimated_delivery_time
+#: model:ir.model.fields,help:delivery_estimated_delivery_time.field_sale_order__estimated_delivery_time_exceptions
+msgid "Select estimated delivery time exceptions"
+msgstr "Valitse arvioidun toimitusajan poikkeukset"
